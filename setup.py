@@ -12,11 +12,11 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="brackets",
     version="3.0.0",
-    author="Tu Nombre",
+    author="CodeAndRes",
     description="Sistema modular de gestión de bitácoras semanales y notas organizadas",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/tuusuario/brackets",
+    url="https://github.com/CodeAndRes/Brackets",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
