@@ -1,22 +1,72 @@
-# 🗓️ Brackets - Sistema de Gestión de Bitácoras y Notas
+# 🗓️ Brackets
 
-Sistema modular y escalable para generar automáticamente bitácoras semanales, archivos mensuales de seguimiento y gestionar documentos organizados por categorías.
+<div align="center">
 
-**Versión:** 3.0.0 - Core Independiente  
-**Estado:** ✅ Producción
+**Sistema modular de gestión de bitácoras semanales y notas organizadas**
 
-## 🎯 Descripción
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-3.0.0-green.svg)](https://github.com/CodeAndRes/Brackets/releases)
 
-Brackets es un sistema que combina:
-- **Gestión temporal**: Bitácoras semanales y consolidaciones mensuales/anuales
-- **Gestión de notas**: Categorías jerárquicas y documentos organizados
-- **Herramientas**: Búsqueda/reemplazo global, renombrado inteligente, sincronización YAML
+[Características](#-características) •
+[Instalación](#-instalación) •
+[Uso Rápido](#-uso-rápido) •
+[Documentación](#-documentación)
 
-Puede funcionar en **dos modos**:
-1. **Modo completo (bitácoras + notas)**: Dimensión temporal con seguimiento semanal
-2. **Modo notas**: Solo gestión de documentos sin bitácoras (via `feature_flags.bitacoras_enabled: false`)
+</div>
 
-## 📁 Estructura del Repositorio
+---
+
+## 🎯 ¿Qué es Brackets?
+
+Brackets es un sistema Python que combina **gestión temporal con organización estructurada de notas**:
+
+- 📝 **Bitácoras semanales** con transferencia automática de tareas pendientes
+- 📦 **Consolidación mensual/anual** para archivar contenido
+- 📂 **Categorías jerárquicas** infinitas para organizar documentos
+- 🔍 **Búsqueda y reemplazo global** en nombres y contenido
+- ⚙️ **Configuración flexible** por vault (horarios, festivos, paths)
+- 🧩 **Modo opcional sin bitácoras** - úsalo solo para gestionar notas
+
+## ✨ Características
+
+### 📝 Generación de Bitácoras
+- **Bitácoras semanales automáticas**: Calcula fechas y transfiere tareas pendientes
+- **Creación manual**: Para vaults nuevos o control total de fechas
+- **Gestión de peso**: Seguimiento opcional
+- **Patrón de trabajo configurable**: Teletrabajo/presencial con semanas alternas
+
+### 📦 Consolidación
+- **Mensual**: Agrupa todas las semanas de un mes en un archivo
+- **Anual**: Consolida todo el año basándose en archivos mensuales
+- **Orden inverso**: Contenido más reciente primero
+- **Jerarquía clara**: Año > Meses > Semanas > Días
+
+### 📂 Gestión de Documentos
+- **Categorías jerárquicas**: Anidación infinita (Categoría → Sub → Sub → ...)
+- **Nomenclatura automática**: `[CATEGORIA][SUBCATEGORIA]nombre.ext`
+- **Múltiples extensiones**: `.md`, `.py`, `.sql`, `.yaml`, etc.
+- **Navegación interactiva**: Menú guiado para crear documentos
+
+### 🔧 Herramientas
+- **Búsqueda y reemplazo global**: En contenido y nombres de archivo
+- **Renombrado inteligente**: Actualiza referencias automáticamente
+- **Sincronización YAML**: Mantiene `categories.yaml` actualizado con el repo
+- **Vista previa completa**: Simula cambios antes de aplicarlos
+
+### ⚙️ Configuración Avanzada
+- **Feature flags**: Activa/desactiva funcionalidades por vault
+- **Paths configurables**: Separa código de datos
+- **Horarios y festivos**: Gestión de calendario laboral
+- **Modo sin bitácoras**: Úsalo solo como gestor de notas
+
+## 🚀 Instalación
+
+### Requisitos
+- Python 3.9+
+- PyYAML
+
+### Opción 1: Clonar y usar directamente
 
 ```
 brackets/
@@ -41,57 +91,61 @@ brackets/
 
 ## 📦 Instalación
 
-### Opción 1: Instalación pip (editable)
+### Opción 1: Clonar y usar directamente
 
 ```bash
-# Clonar repositorio
-cd C:\Projects\brackets-workspace\brackets
+git clone https://github.com/CodeAndRes/Brackets.git
+cd Brackets
+pip install pyyaml
+python run_brackets.py
+```
 
-# Instalar en modo editable
+### Opción 2: Instalación pip (editable)
+
+```bash
+git clone https://github.com/CodeAndRes/Brackets.git
+cd Brackets
 pip install -e .
 ```
 
-### Opción 2: Uso directo desde vault
+### Opción 3: Integrar con vault existente
 
-Desde tu vault (MyNotes, MyNotesPersonal, etc.), agrega el path del core:
+Si tienes un vault de notas, crea un `run_brackets.py`:
 
 ```python
-# En run_brackets.py de tu vault
+#!/usr/bin/env python3
 import sys
 import os
 
-# Agregar path al core
-CORE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "brackets-workspace", "brackets"))
+# Path al core de Brackets
+CORE_PATH = r"C:\ruta\a\Brackets"
 if CORE_PATH not in sys.path:
     sys.path.insert(0, CORE_PATH)
 
-# Ahora puedes importar
-from brackets.main import BitacoraManager
+from brackets.main import main
+
+if __name__ == "__main__":
+    main()
 ```
 
-## 🚀 Configuración del Vault
+## 🎯 Uso Rápido
 
-Cada vault necesita su propia estructura de datos:
+### Crear tu primer vault
 
-### Estructura mínima
-
+```bash
+# 1. Crear estructura
+mkdir mi-vault
+cd mi-vault
+mkdir data
 ```
-mi-vault/
-├── data/
-│   ├── config.yaml        # Configuración del vault
-│   └── categories.yaml    # Categorías y documentos
-├── run_brackets.py        # Script que importa el core
-└── [archivos .md]         # Tus notas
-```
-
-### config.yaml mínimo
 
 ```yaml
+# 2. Crear data/config.yaml
 version: "1.0.0"
 system: "Brackets"
 
 feature_flags:
-  bitacoras_enabled: true  # false para modo solo-notas
+  bitacoras_enabled: true
 
 paths:
   notes_root: "."
@@ -99,43 +153,210 @@ paths:
 
 sync_yaml:
   include_extensions: [".md"]
-  excluded_prefixes: ["[2025]", "[2026]"]
+  excluded_prefixes: []
   output_file: "categories_SYNCED.yaml"
 ```
 
-### categories.yaml mínimo
-
 ```yaml
+# 3. Crear data/categories.yaml
 version: "1.0.0"
 categories: []
 ```
 
-## 🎯 Uso
+```bash
+# 4. Ejecutar (desde el directorio de Brackets)
+cd ../Brackets
+python run_brackets.py --directory ../mi-vault
+```
+
+### Menú Interactivo
 
 ```bash
-# Desde tu vault
-cd C:\Projects\MyNotes
 python run_brackets.py
+```
 
-# Con directorio específico
-python run_brackets.py --directory .
+Opciones disponibles:
+- 📝 Crear bitácora semanal (automática desde última semana)
+- ✏️ Crear bitácora manual (especifica fechas)
+- 📋 Crear archivo mensual
+- 📦 Consolidar mes completo
+- 📅 Consolidar año completo
+- 📂 Gestionar categorías y documentos
+- 🔍 Búsqueda y reemplazo global
+- ⚙️ Configuración (horarios, festivos, vacaciones)
 
-# Ayuda
+### Línea de Comandos
+
+```bash
+# Crear bitácora semanal directamente
+python run_brackets.py --weekly
+
+# Listar archivos recientes
+python run_brackets.py --list
+
+# Consolidar mes específico
+python run_brackets.py --consolidate 2026-02
+
+# Consolidar año completo
+python run_brackets.py --consolidate-year 2026
+
+# Ver ayuda
 python run_brackets.py --help
 ```
 
-## 📚 Documentación Completa
+## 📁 Estructura del Repositorio
 
-Para documentación detallada del sistema, ver:
-- **Guía de Instalación**: SETUP.md en tu vault
-- **Arquitectura**: Architecture.md en tu vault
-- **Nomenclatura**: Nomenclatura.md en tu vault
-- **Changelog**: Changelog.md en tu vault
+```
+brackets/
+├── brackets/              # 🎯 Código principal
+│   ├── core/             # Clases base y núcleo
+│   ├── utils/            # Utilidades compartidas
+│   ├── managers/         # Gestores de alto nivel
+│   │   ├── category_manager.py
+│   │   ├── settings_manager.py
+│   │   └── file_rename_manager.py
+│   ├── consolidators/    # Consolidación mensual/anual
+│   ├── generators/       # Generación de bitácoras
+│   ├── models/           # Modelos de datos
+│   ├── tools/            # Herramientas auxiliares
+│   └── tests/            # Tests automatizados
+├── run_brackets.py       # Punto de entrada
+├── requirements.txt      # Dependencias
+├── setup.py             # Instalación pip
+├── README.md
+└── LICENSE
+```
+
+## 📋 Ejemplos
+
+### Bitácora Semanal Generada
+
+```markdown
+# 📅 Semana 8 - Febrero 2026 (17/02 → 23/02)
+
+## 🎯 Objetivos de la Semana
+- [ ] Objetivo 1
+- [ ] Objetivo 2
+
+## 📆 Lunes 17/02/2026 🏠
+### ✅ Tareas Completadas
+- [x] Tarea completada la semana anterior
+
+### 📝 Tareas del Día
+- [ ] Nueva tarea
+
+### 📋 Notas
+...
+```
+
+### Estructura de Categorías
+
+```yaml
+categories:
+  - name: "🎓LEARNING"
+    description: "Aprendizaje y formación"
+    subcategories:
+      - name: "PYTHON"
+        subcategories:
+          - name: "ADVANCED"
+            documents:
+              - "decorators.md"
+              - "async_io.md"
+      - name: "GIT"
+        documents:
+          - "commands.md"
+          - "workflows.md"
+  
+  - name: "📋PROJECTS"
+    description: "Proyectos activos"
+    subcategories:
+      - name: "WEB"
+        documents:
+          - "api_design.md"
+```
+
+### Archivos Generados
+
+```
+vault/
+├── [2026][02]Week08.md              # Bitácora semanal
+├── [2026][02].md                    # Consolidado mensual
+├── [2026].md                        # Consolidado anual
+├── [🎓LEARNING][PYTHON]decorators.md
+├── [🎓LEARNING][GIT]commands.md
+└── [📋PROJECTS][WEB]api_design.md
+```
+
+## ⚙️ Configuración Avanzada
+
+### Feature Flags
+
+```yaml
+feature_flags:
+  bitacoras_enabled: false  # Desactiva modo temporal, solo notas
+```
+
+### Paths Personalizados
+
+```yaml
+paths:
+  notes_root: "notes"       # Carpeta con archivos .md
+  data_dir: "config"        # Carpeta con YAML de configuración
+```
+
+### Horario de Trabajo
+
+```yaml
+# En data/settings.yaml
+work_pattern:
+  monday:
+    location: "casa"
+    emoji: "🏠"
+  tuesday:
+    location: "oficina"
+    emoji: "🚗"
+  # ...
+  friday:
+    location: "alternativo"
+    semana_par: "casa"
+    semana_impar: "oficina"
+```
+
+## 🧪 Tests
+
+```bash
+# Ejecutar todos los tests
+cd brackets
+python -m pytest tests/
+
+# Test específico
+python -m pytest tests/test_content_parser.py -v
+```
 
 ## 🤝 Contribuir
 
-Este es un proyecto personal, pero si tienes sugerencias o encuentras bugs, siéntete libre de abrir un issue.
+¿Encontraste un bug o tienes una idea? ¡Abre un issue!
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add: amazing feature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
 ## 📝 Licencia
 
-Proyecto personal - Uso libre
+Este proyecto está bajo la licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 🙏 Agradecimientos
+
+Desarrollado por [CodeAndRes](https://github.com/CodeAndRes) como sistema personal de gestión de bitácoras y notas.
+
+---
+
+<div align="center">
+
+**[⬆ Volver arriba](#-brackets)**
+
+Made with ❤️ and Python
+
+</div>
