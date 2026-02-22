@@ -195,6 +195,13 @@ class VaultManager:
         """
         vault_name = vault_info['name']
         vault_path = vault_info['path']
+        workspace_root = os.path.abspath(self.workspace_root)
+        vault_abs_path = os.path.abspath(vault_path)
+
+        if os.path.commonpath([vault_abs_path, workspace_root]) != workspace_root:
+            print("\n❌ Seguridad: ruta fuera del workspace")
+            input("Presiona Enter para continuar...")
+            return
 
         print("\n" + "=" * 60)
         print("⚠️  CONFIRMACIÓN DE BORRADO")
@@ -228,14 +235,17 @@ class VaultManager:
         try:
             print(f"\n🗑️  Borrando vault...")
 
-            # Borrar directorio
-            shutil.rmtree(vault_path)
-            print(f"   ✅ Directorio borrado")
+            # Borrar directorio si existe
+            if os.path.exists(vault_abs_path):
+                shutil.rmtree(vault_abs_path)
+                print("   ✅ Directorio borrado")
+            else:
+                print("   ⚠️  Directorio no encontrado, se limpiara el workspace")
 
             # Quitar del workspace
             workspace_file = os.path.join(self.workspace_root, "Brackets.code-workspace")
             if os.path.exists(workspace_file):
-                if self._remove_from_workspace(workspace_file, vault_name):
+                if self._remove_from_workspace(workspace_file, vault_abs_path, vault_name):
                     print(f"   ✅ Removido del workspace de VS Code")
 
             print(f"\n✅ Vault '{vault_name}' borrado exitosamente")
@@ -248,31 +258,49 @@ class VaultManager:
 
         input("\nPresiona Enter para continuar...")
 
-    def _remove_from_workspace(self, workspace_file: str, vault_name: str) -> bool:
+    def _remove_from_workspace(self, workspace_file: str, vault_path: str, vault_name: str) -> bool:
         """Remueve el vault del archivo .code-workspace.
 
         Args:
             workspace_file: Ruta al archivo .code-workspace
+            vault_path: Ruta absoluta del vault a remover
             vault_name: Nombre del vault a remover
 
         Returns:
             True si se removió correctamente, False en caso contrario
         """
         try:
+            workspace_root = os.path.dirname(workspace_file)
+            target_rel = os.path.relpath(vault_path, workspace_root)
+            target_rel_norm = os.path.normcase(os.path.normpath(target_rel))
+            target_abs_norm = os.path.normcase(os.path.normpath(vault_path))
+
             # Leer workspace
             with open(workspace_file, 'r', encoding='utf-8') as f:
                 workspace_config = json.load(f)
 
             # Buscar y remover
             folders = workspace_config.get('folders', [])
-            original_count = len(folders)
+            new_folders = []
+            removed = False
 
-            folders = [f for f in folders if vault_name not in f.get('path', '')]
+            for folder in folders:
+                folder_path = folder.get('path', '')
+                folder_norm = os.path.normcase(os.path.normpath(folder_path))
 
-            if len(folders) == original_count:
+                if folder_norm == target_rel_norm or folder_norm == target_abs_norm:
+                    removed = True
+                    continue
+                if folder.get('name', '').strip().endswith(vault_name):
+                    removed = True
+                    continue
+
+                new_folders.append(folder)
+
+            if not removed:
                 return True  # No estaba, no es error
 
-            workspace_config['folders'] = folders
+            workspace_config['folders'] = new_folders
 
             # Guardar
             with open(workspace_file, 'w', encoding='utf-8') as f:

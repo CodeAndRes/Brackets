@@ -678,13 +678,14 @@ class BitacoraManager:
             self.category_manager = CategoryManager(self.data_dir)
 
         while True:
-            print("\n📂 GESTIONAR CATEGORÍAS Y DOCUMENTOS")
-            print("=" * 45)
+            clear_screen()
+            print(f"\n📂 GESTIONAR CATEGORÍAS Y DOCUMENTOS - {self.vault_name}")
+            print("=" * 60)
             print("1. 📄 Crear nuevo documento")
             print("2. 📚 Ver todas las categorías")
             print("3. 🔍 Explorar categorías")
             print("0. ↩️ Volver al menú principal")
-            print("-" * 45)
+            print("-" * 60)
 
             choice = input("Opción: ").strip()
 
@@ -720,7 +721,8 @@ class BitacoraManager:
 
         # Mostrar menú de opciones
         while True:
-            print("\n🔍 BÚSQUEDA Y REEMPLAZO")
+            clear_screen()
+            print(f"\n🔍 BÚSQUEDA Y REEMPLAZO - {self.vault_name}")
             print("=" * 60)
             print("1. 🔍 Búsqueda y reemplazo global")
             print("   (Busca y reemplaza texto en nombres y contenido)")
@@ -747,14 +749,15 @@ class BitacoraManager:
     def handle_configuration(self) -> None:
         """Maneja la configuración viva (horarios y calendario)."""
         while True:
-            print("\n⚙️ CONFIGURACIÓN")
-            print("=" * 30)
+            clear_screen()
+            print(f"\n⚙️ CONFIGURACIÓN - {self.vault_name}")
+            print("=" * 50)
             print("1. 👁️ Ver configuración actual")
             print("2. 🏢 Ajustar patrón de trabajo")
             print("3. 🎉 Gestionar festivos")
             print("4. 🏖️ Gestionar vacaciones")
             print("0. ↩️ Volver al menú principal")
-            print("-" * 30)
+            print("-" * 50)
 
             choice = input("Opción: ").strip()
 
@@ -773,8 +776,9 @@ class BitacoraManager:
                 print("❌ Opción inválida")
 
     def _show_configuration_overview(self) -> None:
-        print("\n👁️ CONFIGURACIÓN ACTUAL")
-        print("=" * 35)
+        clear_screen()
+        print(f"\n👁️ CONFIGURACIÓN ACTUAL - {self.vault_name}")
+        print("=" * 55)
         print(self.settings.describe_work_pattern())
 
         holidays = self.settings.list_holidays()
@@ -802,8 +806,9 @@ class BitacoraManager:
             "5": "friday",
         }
         while True:
-            print("\n🏢 PATRÓN DE TRABAJO")
-            print("-" * 30)
+            clear_screen()
+            print(f"\n🏢 PATRÓN DE TRABAJO - {self.vault_name}")
+            print("-" * 50)
             print(self.settings.describe_work_pattern())
             print("\n1. Cambiar día específico")
             print("2. Configurar día alterno par/impar")
@@ -857,8 +862,9 @@ class BitacoraManager:
     def _configure_holidays(self) -> None:
         while True:
             holidays = self.settings.list_holidays()
-            print("\n🎉 FESTIVOS")
-            print("-" * 30)
+            clear_screen()
+            print(f"\n🎉 FESTIVOS - {self.vault_name}")
+            print("-" * 50)
             if holidays:
                 for i, item in enumerate(holidays, 1):
                     print(f" {i}. {item.get('date')} - {item.get('name', '')}")
@@ -902,8 +908,9 @@ class BitacoraManager:
     def _configure_vacations(self) -> None:
         while True:
             vacations = self.settings.list_vacations()
-            print("\n🏖️ VACACIONES")
-            print("-" * 30)
+            clear_screen()
+            print(f"\n🏖️ VACACIONES - {self.vault_name}")
+            print("-" * 50)
             if vacations:
                 for i, item in enumerate(vacations, 1):
                     print(f" {i}. {item.get('start')} → {item.get('end')} - {item.get('name', '')}")
@@ -962,8 +969,10 @@ class BitacoraManager:
 
     def show_help(self) -> None:
         """Muestra información de ayuda."""
-        print("\n❓ AYUDA - GENERADOR DE BITÁCORAS")
-        print("=" * 45)
+        clear_screen()
+        print(f"\n❓ AYUDA - GENERADOR DE BITÁCORAS")
+        print(f"📁 Vault: {self.vault_name}")
+        print("=" * 55)
         bitacoras_status = "activadas" if self.bitacoras_enabled else "desactivadas"
         print("""
 📝 BITÁCORAS SEMANALES:
