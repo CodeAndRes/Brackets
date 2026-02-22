@@ -48,6 +48,7 @@ class BitacoraManager:
         self.directory = self.notes_root
         self.feature_flags = self._load_feature_flags()
         self.bitacoras_enabled = bool(self.feature_flags.get("bitacoras_enabled", True))
+        self.vault_name = self._get_vault_name()
         self.settings = SettingsManager(directory)
         set_global_settings_manager(self.settings)
         self.weekly_gen = WeeklyGenerator(self.notes_root, self.settings)
@@ -113,6 +114,25 @@ class BitacoraManager:
         except Exception:
             return {}
 
+    def _get_vault_name(self) -> str:
+        """Obtiene el nombre del vault desde config.yaml o del nombre del directorio."""
+        config_path = os.path.join(self.vault_root, "data", "config.yaml")
+
+        # Intentar leer desde config.yaml
+        if os.path.exists(config_path):
+            try:
+                import yaml
+                with open(config_path, "r", encoding="utf-8") as f:
+                    config_data = yaml.safe_load(f) or {}
+                vault_name = config_data.get("vault_name")
+                if vault_name and isinstance(vault_name, str):
+                    return vault_name.strip()
+            except Exception:
+                pass
+
+        # Fallback: usar nombre del directorio
+        return os.path.basename(self.vault_root)
+
     def _show_bitacoras_disabled_message(self) -> None:
         print("\n⚠️ Función no disponible: bitácoras desactivadas en data/config.yaml")
         print("   Activa 'feature_flags.bitacoras_enabled: true' para usar esta opción.")
@@ -121,7 +141,8 @@ class BitacoraManager:
     def show_main_menu(self) -> None:
         """Muestra el menú principal."""
         clear_screen()
-        print("\n🗓️ GENERADOR DE BITÁCORAS - SISTEMA BRACKETS")
+        print(f"\n🗓️ GENERADOR DE BITÁCORAS - SISTEMA BRACKETS")
+        print(f"📁 Vault: {self.vault_name}")
         print("=" * 50)
         if self.bitacoras_enabled:
             print("1. 📝 Generación de Bitácoras")
@@ -139,8 +160,8 @@ class BitacoraManager:
     def show_generation_menu(self) -> None:
         """Muestra el menú de generación."""
         clear_screen()
-        print("\n📝 GENERACIÓN DE BITÁCORAS")
-        print("=" * 40)
+        print(f"\n📝 GENERACIÓN DE BITÁCORAS - {self.vault_name}")
+        print("=" * 50)
         print("1. 📋 Crear bitácora semanal")
         print("2. ✏️ Crear bitácora semanal manual")
         print("3. 📋 Crear archivo mensual")
@@ -150,8 +171,8 @@ class BitacoraManager:
     def show_consolidation_menu(self) -> None:
         """Muestra el menú de consolidación."""
         clear_screen()
-        print("\n📦 CONSOLIDACIÓN DE ARCHIVOS")
-        print("=" * 40)
+        print(f"\n📦 CONSOLIDACIÓN DE ARCHIVOS - {self.vault_name}")
+        print("=" * 50)
         print("1. 📋 Consolidar mes completo")
         print("2. 📋 Consolidar año completo")
         print("0. ↩️ Volver al menú principal")
@@ -160,8 +181,8 @@ class BitacoraManager:
     def show_file_management_menu(self) -> None:
         """Muestra el menú de gestión de archivos."""
         clear_screen()
-        print("\n📂 GESTIÓN DE ARCHIVOS Y CATEGORÍAS")
-        print("=" * 50)
+        print(f"\n📂 GESTIÓN DE ARCHIVOS Y CATEGORÍAS - {self.vault_name}")
+        print("=" * 60)
         print("1. 📋 Listar archivos recientes")
         print("2. 📄 Analizar archivo específico")
         print("3. 📚 Gestionar categorías y documentos")
@@ -173,8 +194,8 @@ class BitacoraManager:
     def show_tools_menu(self) -> None:
         """Muestra el menú de herramientas."""
         clear_screen()
-        print("\n🔧 HERRAMIENTAS Y UTILIDADES")
-        print("=" * 40)
+        print(f"\n🔧 HERRAMIENTAS Y UTILIDADES - {self.vault_name}")
+        print("=" * 50)
         print("1. 🔍 Analizar contenido de archivo")
         print("2. 📁 Debug archivos en directorio")
         print("3. 🌨 Probar patrón de emojis")
@@ -185,8 +206,8 @@ class BitacoraManager:
     def show_list_menu(self) -> None:
         """Muestra el menú de listado."""
         clear_screen()
-        print("\n📋 LISTAR ARCHIVOS")
-        print("=" * 25)
+        print(f"\n📋 LISTAR ARCHIVOS - {self.vault_name}")
+        print("=" * 40)
         print("1. 📝 Bitácoras semanales")
         print("2. 📋 Archivos mensuales")
         print("3. 🔍 Debug - Todos los archivos")

@@ -6,6 +6,7 @@ Asistente interactivo para crear nuevos vaults.
 
 import os
 import sys
+import json
 
 
 def create_new_vault(workspace_root: str) -> str:
@@ -125,6 +126,15 @@ def create_new_vault(workspace_root: str) -> str:
 
         print(f"\n🎉 ¡Vault '{vault_name}' creado exitosamente!")
         print(f"\n📂 Ubicación: {vault_path}")
+
+        # Añadir al workspace de VS Code
+        workspace_file = os.path.join(workspace_root, "Brackets.code-workspace")
+        if os.path.exists(workspace_file):
+            if _add_to_workspace(workspace_file, vault_name, vault_name):
+                print(f"✅ Añadido al workspace de VS Code")
+            else:
+                print(f"⚠️  No se pudo añadir al workspace automáticamente")
+
         print("\n💡 Próximos pasos:")
         print(f"   1. cd {vault_path}")
         print(f"   2. python run_brackets.py")
@@ -277,3 +287,62 @@ Thumbs.db
 brackets/
 categories_SYNCED.yaml
 """
+
+
+def _add_to_workspace(workspace_file: str, vault_name: str, folder_path: str) -> bool:
+    """Añade el vault al archivo .code-workspace.
+
+    Args:
+        workspace_file: Ruta al archivo .code-workspace
+        vault_name: Nombre del vault
+        folder_path: Path relativo del vault desde workspace root
+
+    Returns:
+        True si se añadió correctamente, False en caso contrario
+    """
+    try:
+        # Leer workspace actual
+        with open(workspace_file, 'r', encoding='utf-8') as f:
+            workspace_config = json.load(f)
+
+        # Verificar que no existe ya
+        folders = workspace_config.get('folders', [])
+        for folder in folders:
+            if folder.get('path') == folder_path:
+                return True  # Ya existe, no es error
+
+        # Añadir nuevo vault
+        emoji_map = {
+            'PersonalNotes': '📓',
+            'PersonalVault': '📓',
+            'ProjectNotes': '📋',
+            'WorkNotes': '💼',
+        }
+        emoji = emoji_map.get(vault_name, '📁')
+
+        new_folder = {
+            'name': f"{emoji} {vault_name}",
+            'path': folder_path
+        }
+
+        # Insertar antes de SharedContext (si existe) o al final
+        shared_idx = None
+        for idx, folder in enumerate(folders):
+            if 'SharedContext' in folder.get('path', ''):
+                shared_idx = idx
+                break
+
+        if shared_idx is not None:
+            folders.insert(shared_idx, new_folder)
+        else:
+            folders.append(new_folder)
+
+        # Guardar
+        with open(workspace_file, 'w', encoding='utf-8') as f:
+            json.dump(workspace_config, f, indent='\t', ensure_ascii=False)
+
+        return True
+
+    except Exception as e:
+        print(f"Error al actualizar workspace: {e}")
+        return False

@@ -7,6 +7,8 @@ Permite descubrir, listar y seleccionar vaults en el workspace.
 
 import os
 import sys
+import json
+import shutil
 from typing import List, Dict, Optional
 
 
@@ -115,6 +117,8 @@ class VaultManager:
                         print(f"   {vault['description']}")
 
             print(f"\n{len(self.vaults) + 1}. ➕ Crear nuevo vault")
+            if self.vaults:
+                print(f"{len(self.vaults) + 2}. 🗑️  Borrar vault")
             print("0. 🚪 Salir")
             print("-" * 60)
 
@@ -126,6 +130,11 @@ class VaultManager:
             # Crear nuevo vault
             if choice == str(len(self.vaults) + 1):
                 return 'CREATE_NEW'
+
+            # Borrar vault
+            if self.vaults and choice == str(len(self.vaults) + 2):
+                self._delete_vault_menu()
+                continue
 
             # Seleccionar vault existente
             try:
@@ -142,3 +151,135 @@ class VaultManager:
     def refresh_vaults(self):
         """Refresca la lista de vaults disponibles."""
         self.vaults = self._discover_vaults()
+
+    def _delete_vault_menu(self):
+        """Menú para seleccionar y borrar un vault."""
+        if not self.vaults:
+            return
+
+        print("\n" + "=" * 60)
+        print("🗑️  BORRAR VAULT")
+        print("=" * 60)
+        print("\n⚠️  ADVERTENCIA: Esta acción es PERMANENTE")
+        print("\n📂 Selecciona el vault a borrar:\n")
+
+        for idx, vault in enumerate(self.vaults, 1):
+            print(f"{idx}. {vault['name']}")
+            print(f"   📍 {vault['path']}")
+
+        print("\n0. ← Cancelar")
+        print("-" * 60)
+
+        choice = input("\nSelecciona vault a borrar: ").strip()
+
+        if choice == "0" or not choice:
+            return
+
+        try:
+            idx = int(choice) - 1
+            if 0 <= idx < len(self.vaults):
+                vault = self.vaults[idx]
+                self._delete_vault(vault)
+            else:
+                print("\n❌ Opción inválida")
+                input("Presiona Enter para continuar...")
+        except ValueError:
+            print("\n❌ Opción inválida")
+            input("Presiona Enter para continuar...")
+
+    def _delete_vault(self, vault_info: Dict[str, str]):
+        """Borra un vault con doble confirmación.
+
+        Args:
+            vault_info: Información del vault a borrar
+        """
+        vault_name = vault_info['name']
+        vault_path = vault_info['path']
+
+        print("\n" + "=" * 60)
+        print("⚠️  CONFIRMACIÓN DE BORRADO")
+        print("=" * 60)
+        print(f"\n📁 Vault: {vault_name}")
+        print(f"📍 Ubicación: {vault_path}")
+        print("\n🔥 Se borrará PERMANENTEMENTE:")
+        print("   • Todos los archivos y carpetas")
+        print("   • Configuración y datos")
+        print("   • No se puede recuperar")
+        print("\n" + "=" * 60)
+
+        # Primera confirmación
+        confirm1 = input(f"\n¿Borrar '{vault_name}'? Escribe 'BORRAR' para confirmar: ").strip()
+
+        if confirm1 != 'BORRAR':
+            print("\n❌ Borrado cancelado")
+            input("Presiona Enter para continuar...")
+            return
+
+        # Segunda confirmación
+        print("\n⚠️  ÚLTIMA CONFIRMACIÓN")
+        confirm2 = input(f"¿ESTÁS SEGURO de borrar '{vault_name}'? (escribe el nombre completo): ").strip()
+
+        if confirm2 != vault_name:
+            print("\n❌ Borrado cancelado - nombre no coincide")
+            input("Presiona Enter para continuar...")
+            return
+
+        # Proceder con borrado
+        try:
+            print(f"\n🗑️  Borrando vault...")
+
+            # Borrar directorio
+            shutil.rmtree(vault_path)
+            print(f"   ✅ Directorio borrado")
+
+            # Quitar del workspace
+            workspace_file = os.path.join(self.workspace_root, "Brackets.code-workspace")
+            if os.path.exists(workspace_file):
+                if self._remove_from_workspace(workspace_file, vault_name):
+                    print(f"   ✅ Removido del workspace de VS Code")
+
+            print(f"\n✅ Vault '{vault_name}' borrado exitosamente")
+
+            # Refrescar lista
+            self.refresh_vaults()
+
+        except Exception as e:
+            print(f"\n❌ Error al borrar vault: {e}")
+
+        input("\nPresiona Enter para continuar...")
+
+    def _remove_from_workspace(self, workspace_file: str, vault_name: str) -> bool:
+        """Remueve el vault del archivo .code-workspace.
+
+        Args:
+            workspace_file: Ruta al archivo .code-workspace
+            vault_name: Nombre del vault a remover
+
+        Returns:
+            True si se removió correctamente, False en caso contrario
+        """
+        try:
+            # Leer workspace
+            with open(workspace_file, 'r', encoding='utf-8') as f:
+                workspace_config = json.load(f)
+
+            # Buscar y remover
+            folders = workspace_config.get('folders', [])
+            original_count = len(folders)
+
+            folders = [f for f in folders if vault_name not in f.get('path', '')]
+
+            if len(folders) == original_count:
+                return True  # No estaba, no es error
+
+            workspace_config['folders'] = folders
+
+            # Guardar
+            with open(workspace_file, 'w', encoding='utf-8') as f:
+                json.dump(workspace_config, f, indent='\t', ensure_ascii=False)
+
+            return True
+
+        except Exception as e:
+            print(f"Error al actualizar workspace: {e}")
+            return False
