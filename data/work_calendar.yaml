@@ -1,0 +1,19 @@
+version: 1
+locations:
+  home: 🏠
+  office: 🚗
+  remote: 💻
+  'off': 🏖️
+work_pattern:
+  alternating_day: friday
+  even_week: home
+  odd_week: office
+  defaults:
+    monday: home
+    tuesday: office
+    wednesday: office
+    thursday: home
+    friday: alternating
+calendar:
+  holidays: []
+  vacations: []
