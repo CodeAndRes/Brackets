@@ -124,6 +124,13 @@ def create_new_vault(workspace_root: str) -> str:
             f.write(gitignore_content)
         print(f"  ✅ Creado: .gitignore")
 
+        # Crear script de bootstrap para publicar en GitHub
+        bootstrap_content = _generate_github_bootstrap_script(vault_name)
+        bootstrap_path = os.path.join(vault_path, "publish_vault.ps1")
+        with open(bootstrap_path, 'w', encoding='utf-8') as f:
+            f.write(bootstrap_content)
+        print(f"  ✅ Creado: publish_vault.ps1")
+
         print(f"\n🎉 ¡Vault '{vault_name}' creado exitosamente!")
         print(f"\n📂 Ubicación: {vault_path}")
 
@@ -135,9 +142,17 @@ def create_new_vault(workspace_root: str) -> str:
             else:
                 print(f"⚠️  No se pudo añadir al workspace automáticamente")
 
+        # Añadir al .gitignore del repo de configuración raíz
+        root_gitignore = os.path.join(workspace_root, ".gitignore")
+        if _add_vault_to_root_gitignore(root_gitignore, vault_name):
+            print(f"✅ Añadido a .gitignore raíz: /{vault_name}/")
+        else:
+            print(f"⚠️  No se pudo actualizar .gitignore raíz")
+
         print("\n💡 Próximos pasos:")
         print(f"   1. cd {vault_path}")
         print(f"   2. python run_brackets.py")
+        print(f"   3. (Opcional) .\\publish_vault.ps1 -RemoteUrl <url-del-repo>")
 
         input("\nPresiona Enter para continuar...")
         return vault_path
@@ -287,6 +302,74 @@ Thumbs.db
 brackets/
 categories_SYNCED.yaml
 """
+
+
+def _generate_github_bootstrap_script(vault_name: str) -> str:
+    """Genera script para inicializar/publicar el vault en un repo GitHub independiente."""
+    return f"""param(
+    [Parameter(Mandatory=$true)]
+    [string]$RemoteUrl,
+
+    [string]$MainBranch = "main"
+)
+
+$ErrorActionPreference = "Stop"
+
+Write-Host "🚀 Publicando vault '{vault_name}' en repo independiente..."
+
+if (-not (Test-Path ".git")) {{
+    git init
+}}
+
+git add .
+
+try {{
+    git commit -m "Initial commit - {vault_name} vault"
+}} catch {{
+    Write-Host "ℹ️ No hay cambios para commit inicial"
+}}
+
+git branch -M $MainBranch
+
+$hasOrigin = git remote | Select-String -Pattern "^origin$" -Quiet
+if (-not $hasOrigin) {{
+    git remote add origin $RemoteUrl
+}} else {{
+    git remote set-url origin $RemoteUrl
+}}
+
+git push -u origin $MainBranch
+
+Write-Host "✅ Vault publicado correctamente en: $RemoteUrl"
+"""
+
+
+def _add_vault_to_root_gitignore(gitignore_path: str, vault_name: str) -> bool:
+    """Añade el vault al .gitignore del repo de configuración raíz."""
+    try:
+        entry = f"/{vault_name}/"
+
+        # Si no existe .gitignore raíz, crearlo con cabecera mínima
+        if not os.path.exists(gitignore_path):
+            with open(gitignore_path, 'w', encoding='utf-8') as f:
+                f.write("# Root workspace ignores\n")
+
+        with open(gitignore_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Ya existe: no hacer nada
+        if entry in content:
+            return True
+
+        # Añadir al final en nueva línea
+        append_prefix = "" if content.endswith("\n") else "\n"
+        with open(gitignore_path, 'a', encoding='utf-8') as f:
+            f.write(f"{append_prefix}{entry}\n")
+
+        return True
+    except Exception as e:
+        print(f"Error al actualizar .gitignore raíz: {e}")
+        return False
 
 
 def _add_to_workspace(workspace_file: str, vault_name: str, folder_path: str) -> bool:
