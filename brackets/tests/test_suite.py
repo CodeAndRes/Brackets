@@ -22,6 +22,7 @@ from brackets.tests.test_utils_legacy import TestLegacyUtils
 from brackets.tests.test_utils_content_parser import TestContentParser
 from brackets.tests.test_utils_content_generator import TestContentGenerator
 from brackets.tests.test_utils_file_finder import TestFileFinder
+from brackets.tests.test_generators_weekly import TestWeeklyGenerator
 
 
 def run_all_tests():
@@ -91,6 +92,12 @@ def run_all_tests():
     # Tests de file_finder
     tester = TestFileFinder()
     finder_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de weekly generator
+    tester = TestWeeklyGenerator()
+    weekly_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
     
