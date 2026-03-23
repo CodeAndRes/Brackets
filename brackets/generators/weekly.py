@@ -4,7 +4,8 @@ Generador especializado para bitácoras semanales.
 """
 
 import os
-from typing import Optional
+from datetime import datetime, timedelta
+from typing import List, Optional
 
 from brackets.config import MESSAGES
 from brackets.utils.file_finder import FileFinder
@@ -67,11 +68,17 @@ class WeeklyGenerator:
             new_weight = parse_float_input(weight_input)
         # Calcular fechas PRIMERO
         try:
-            next_week_dates = parser.get_next_week_dates()
+            next_week_dates = self._calculate_next_week_dates_iso(year, current_week)
             print_calculated_dates(0, next_week_dates)  # Mostrar sin número de semana aún
-        except Exception as e:
-            print(f"⚠️ Error calculando fechas: {e}")
-            return False
+        except Exception as iso_error:
+            # Fallback al parser legacy para no romper flujos existentes.
+            try:
+                print(f"⚠️ Cálculo ISO no disponible ({iso_error}). Usando fallback legacy...")
+                next_week_dates = parser.get_next_week_dates()
+                print_calculated_dates(0, next_week_dates)
+            except Exception as e:
+                print(f"⚠️ Error calculando fechas: {e}")
+                return False
         
         # Calcular próxima semana basándose en las fechas reales
         next_year, next_month, next_week = calculate_next_week_info_from_dates(next_week_dates, current_week)
@@ -114,6 +121,19 @@ class WeeklyGenerator:
         print(f"📅 Semana actual: {week}, Año: {year}, Mes: {month}")
         if weight:
             print(f"⚖️ Peso actual registrado: {weight}")
+
+    def _calculate_next_week_dates_iso(self, year: int, week: int) -> List[datetime]:
+        """Calcula lunes-viernes de la siguiente semana usando calendario ISO.
+
+        Esta ruta evita depender de encabezados diarios parseados del archivo,
+        que pueden variar por emojis/ediciones manuales y provocar saltos de día.
+        """
+        if not year or not week:
+            raise ValueError("Año/semana ISO inválidos")
+
+        current_monday = datetime.fromisocalendar(year, week, 1)
+        next_monday = current_monday + timedelta(days=7)
+        return [next_monday + timedelta(days=i) for i in range(5)]
     
     def create_weekly_from_template(self, week_num: int, year: int, month: int) -> bool:
         """Crea una bitácora semanal desde una plantilla."""
