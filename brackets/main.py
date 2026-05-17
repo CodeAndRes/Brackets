@@ -200,6 +200,7 @@ class BitacoraManager:
         print("2. 📁 Debug archivos en directorio")
         print("3. 🌨 Probar patrón de emojis")
         print("4. 📋 Calcular fechas de archivo")
+        print("5. ⏲️ Pomodoro Timer")
         print("0. ↩️ Volver al menú principal")
         print("-" * 40)
 
@@ -333,6 +334,11 @@ class BitacoraManager:
                 else:
                     print("❌ Archivo no encontrado")
                 input("\nPresiona Enter para continuar...")
+
+            elif choice == "5":
+                clear_screen()
+                from brackets.modules.pomodoro_timer import run_pomodoro_standalone
+                run_pomodoro_standalone(self.vault_root)
 
             elif choice == "0":
                 break
@@ -1067,6 +1073,7 @@ Ejemplos de uso:
   python main.py -d .                        # Modo interactivo (vault actual)
   python main.py --weekly                   # Crear bitácora semanal directamente
   python main.py --monthly                  # Crear archivo mensual directamente
+    python main.py --timer                    # Abrir Pomodoro Timer
   python main.py --consolidate 2025-07      # Consolidar mes específico
   python main.py --consolidate-year 2025    # Consolidar año completo
   python main.py --list                     # Listar archivos recientes
@@ -1090,6 +1097,12 @@ Ejemplos de uso:
         "--monthly", "-m",
         action="store_true",
         help="Crear archivo mensual directamente"
+    )
+
+    parser.add_argument(
+        "--timer",
+        action="store_true",
+        help="Abrir Pomodoro Timer"
     )
 
     parser.add_argument(
@@ -1135,7 +1148,7 @@ Ejemplos de uso:
 
     # Si no se pasó --directory y no hay flags de acción, mostrar VaultManager
     has_action_flags = any([
-        args.weekly, args.monthly, args.consolidate, args.consolidate_year,
+        args.weekly, args.monthly, args.timer, args.consolidate, args.consolidate_year,
         args.list, args.debug, args.test_emoji, args.analyze
     ])
 
@@ -1201,6 +1214,11 @@ Ejemplos de uso:
         print("📋 Creando archivo mensual...")
         success = manager.monthly_gen.create_next_monthly_topics()
         sys.exit(0 if success else 1)
+
+    elif args.timer:
+        from brackets.modules.pomodoro_timer import run_pomodoro_standalone
+        run_pomodoro_standalone(vault_directory)
+        sys.exit(0)
 
     elif args.consolidate:
         if not manager.bitacoras_enabled:

@@ -5,4 +5,16 @@
 # from brackets.modules.projects import ProjectManager
 # from brackets.modules.learning import LearningManager
 
-__all__ = []
+from brackets.modules.pomodoro_timer import (
+	TimerConfig,
+	PomodoroTimerEngine,
+	PomodoroConsoleApp,
+	run_pomodoro_standalone,
+)
+
+__all__ = [
+	"TimerConfig",
+	"PomodoroTimerEngine",
+	"PomodoroConsoleApp",
+	"run_pomodoro_standalone",
+]
