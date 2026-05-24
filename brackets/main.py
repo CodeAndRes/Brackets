@@ -34,6 +34,7 @@ from brackets.core.configuration_controller import ConfigurationController
 from brackets.core.cli_parser import build_cli_parser
 from brackets.core.menu_engine import MenuEngine
 from brackets.core.startup import run_startup_flow
+from brackets.core.tools_controller import ToolsController
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 
 
@@ -139,6 +140,7 @@ class BitacoraManager:
         self.category_manager = None  # Lazy load cuando se necesite
         self.file_rename_manager = None  # Lazy load cuando se necesite
         self.configuration_controller = None  # Lazy load cuando se necesite
+        self.tools_controller = None  # Lazy load cuando se necesite
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -460,69 +462,18 @@ class BitacoraManager:
 
     def handle_tools_menu(self) -> None:
         """Maneja el submenú de herramientas."""
-        selected_index = 0
-        while True:
-            self.show_tools_menu(selected_index)
-            choice = read_single_key("Selecciona una opción: ")
-            command, selected_index, valid = self._resolve_menu_command("tools", choice, selected_index)
-            if not valid:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
-                continue
-            if command is None:
-                continue
-
-            if command == "tool_analyze_content":
-                clear_screen()
-                filename = input("Nombre del archivo a analizar: ").strip()
-                filepath = filename if os.path.exists(filename) else os.path.join(self.directory, filename)
-                if os.path.exists(filepath):
-                    debug_content_parsing(filepath)
-                else:
-                    print("❌ Archivo no encontrado")
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "tool_debug_files":
-                clear_screen()
-                debug_files_in_directory(self.directory)
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "tool_emoji":
-                clear_screen()
-                test_emoji_pattern()
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "tool_calc_dates":
-                clear_screen()
-                filename = input("Nombre del archivo para calcular fechas: ").strip()
-                from brackets.utils.legacy_utils import safe_file_read
-                from brackets.utils.content_parser import ContentParser
-
-                filepath = filename if os.path.exists(filename) else os.path.join(self.directory, filename)
-                if os.path.exists(filepath):
-                    content = safe_file_read(filepath)
-                    if content:
-                        parser = ContentParser(content)
-                        dates = parser.get_next_week_dates()
-                        print("📋 Próximas fechas calculadas:")
-                        from brackets.config import WEEKDAYS
-                        for i, date in enumerate(dates):
-                            print(f"  {WEEKDAYS[i]}: {date.strftime('%d/%m/%Y')}")
-                else:
-                    print("❌ Archivo no encontrado")
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "tool_pomodoro":
-                clear_screen()
-                from brackets.modules.pomodoro_timer import run_pomodoro_standalone
-                run_pomodoro_standalone(self.vault_root)
-
-            elif command == "back":
-                break
-
-            else:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
+        if self.tools_controller is None:
+            self.tools_controller = ToolsController(
+                directory=self.directory,
+                vault_root=self.vault_root,
+                show_tools_menu_fn=self.show_tools_menu,
+                resolve_menu_command_fn=self._resolve_menu_command,
+                clear_screen_fn=clear_screen,
+                read_single_key_fn=read_single_key,
+                input_fn=input,
+                print_fn=print,
+            )
+        self.tools_controller.run()
 
     def handle_sync_yaml(self) -> None:
         """Maneja la sincronización del YAML con el repositorio."""

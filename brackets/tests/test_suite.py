@@ -28,6 +28,7 @@ from brackets.tests.test_core_cli_actions import TestCoreCliActions
 from brackets.tests.test_core_configuration_controller import TestCoreConfigurationController
 from brackets.tests.test_core_cli_parser import TestCoreCliParser
 from brackets.tests.test_core_startup import TestCoreStartup
+from brackets.tests.test_core_tools_controller import TestCoreToolsController
 from brackets.tests.test_core_vault_selection import TestCoreVaultSelection
 from brackets.tests.test_version_policy import TestVersionPolicy
 
@@ -135,6 +136,12 @@ def run_all_tests():
     # Tests de orquestación de arranque
     tester = TestCoreStartup()
     startup_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de controlador de herramientas
+    tester = TestCoreToolsController()
+    tools_controller_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 
