@@ -61,6 +61,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/category_management_controller.py, brackets/main.py, brackets/tests/test_core_category_management_controller.py, brackets/tests/test_suite.py.
 - Bloque incremental: extraccion de la orquestacion de sync-yaml a controlador dedicado.
   - Evidencia: brackets/core/sync_yaml_controller.py, brackets/main.py, brackets/tests/test_core_sync_yaml_controller.py, brackets/tests/test_suite.py.
+- Bloque incremental: extraccion del flujo de file-rename/global-replace a controlador dedicado.
+  - Evidencia: brackets/core/file_rename_controller.py, brackets/main.py, brackets/tests/test_core_file_rename_controller.py, brackets/tests/test_suite.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -78,7 +80,8 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de file-management/list/analyze controller.
 - Ultimo objetivo tecnico incremental: extraccion de category-management controller.
 - Ultimo objetivo tecnico incremental: extraccion de sync-yaml controller.
-- Siguiente bloque recomendado: extraer file-rename/global-replace flow a controlador dedicado para seguir adelgazando BitacoraManager.
+- Ultimo objetivo tecnico incremental: extraccion de file-rename/global-replace controller.
+- Siguiente bloque recomendado: extraer debug-tools legacy flow a controlador dedicado para seguir adelgazando BitacoraManager.
 
 ## Vision objetivo del usuario
 
