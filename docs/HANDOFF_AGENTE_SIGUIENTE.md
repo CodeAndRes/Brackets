@@ -57,6 +57,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/tools_controller.py, brackets/main.py, brackets/tests/test_core_tools_controller.py.
 - Bloque incremental: extraccion del flujo de file-management/list/analyze a controlador dedicado.
   - Evidencia: brackets/core/file_management_controller.py, brackets/main.py, brackets/tests/test_core_file_management_controller.py, brackets/tests/test_suite.py.
+- Bloque incremental: extraccion del flujo de category-management a controlador dedicado.
+  - Evidencia: brackets/core/category_management_controller.py, brackets/main.py, brackets/tests/test_core_category_management_controller.py, brackets/tests/test_suite.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -72,7 +74,8 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de controller de configuración.
 - Ultimo objetivo tecnico incremental: extraccion de tools controller.
 - Ultimo objetivo tecnico incremental: extraccion de file-management/list/analyze controller.
-- Siguiente bloque recomendado: extraer category-management y/o sync-yaml orchestration a controllers dedicados para seguir adelgazando BitacoraManager.
+- Ultimo objetivo tecnico incremental: extraccion de category-management controller.
+- Siguiente bloque recomendado: extraer sync-yaml orchestration a controlador dedicado para seguir adelgazando BitacoraManager.
 
 ## Vision objetivo del usuario
 
