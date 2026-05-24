@@ -30,6 +30,7 @@ from brackets.managers.file_rename_manager import FileRenameManager
 # Importar consolidadores desde nueva arquitectura
 from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
+from brackets.core.menu_engine import MenuEngine
 
 
 def clear_screen():
@@ -56,8 +57,55 @@ class BitacoraManager:
         self.month_consolidator = MonthConsolidator(self.notes_root)
         self.year_consolidator = YearConsolidator(self.notes_root)
         self.finder = FileFinder(self.notes_root)
+        self.menu_engine = MenuEngine(self.vault_root)
+        self.menu_key_conflicts = self.menu_engine.all_key_conflicts(self._menu_context())
+        self._menu_conflicts_reported = False
         self.category_manager = None  # Lazy load cuando se necesite
         self.file_rename_manager = None  # Lazy load cuando se necesite
+
+    def _menu_context(self) -> Dict[str, bool]:
+        """Expone contexto dinámico consumido por MenuEngine."""
+        return {
+            "bitacoras_enabled": bool(self.bitacoras_enabled),
+            "bitacoras_disabled": not bool(self.bitacoras_enabled),
+            "active_vault": bool(self.vault_name),
+        }
+
+    def _execute_menu_command(self, command: Optional[str]) -> bool:
+        """Ejecuta comandos del menú principal. Devuelve False para salir."""
+        if command == "open_generation":
+            self.handle_generation_menu()
+        elif command == "open_consolidation":
+            self.handle_consolidation_menu()
+        elif command == "open_file_management":
+            self.handle_file_management_menu()
+        elif command == "open_tools":
+            self.handle_tools_menu()
+        elif command == "open_settings":
+            self.handle_configuration()
+        elif command == "open_help":
+            self.show_help()
+        elif command == "quick_new_weekly":
+            if self.bitacoras_enabled:
+                clear_screen()
+                self.handle_weekly_creation()
+            else:
+                self._show_bitacoras_disabled_message()
+        elif command == "quick_consolidate_month":
+            if self.bitacoras_enabled:
+                clear_screen()
+                self.handle_month_consolidation()
+            else:
+                self._show_bitacoras_disabled_message()
+        elif command == "exit":
+            clear_screen()
+            print("\n👋 ¡Hasta luego!")
+            return False
+        else:
+            print("❌ Opción inválida. Por favor, selecciona una opción del menú.")
+            input("Presiona Enter para continuar...")
+
+        return True
 
     def _load_vault_paths(self) -> Dict[str, str]:
         """Carga rutas configurables del vault desde data/config.yaml."""
@@ -143,77 +191,69 @@ class BitacoraManager:
         clear_screen()
         print(f"\n🗓️ GENERADOR DE BITÁCORAS - SISTEMA BRACKETS")
         print(f"📁 Vault: {self.vault_name}")
+
+        if self.menu_key_conflicts and not self._menu_conflicts_reported:
+            menu_count = len(self.menu_key_conflicts)
+            print(f"⚠️ Aviso: se detectaron conflictos de quick-keys en {menu_count} menú(s).")
+            self._menu_conflicts_reported = True
+
         print("=" * 50)
-        if self.bitacoras_enabled:
-            print("1. 📝 Generación de Bitácoras")
-            print("2. 📦 Consolidación de Archivos")
-        else:
-            print("1. 🚫 Generación de Bitácoras (desactivado)")
-            print("2. 🚫 Consolidación de Archivos (desactivado)")
-        print("3. 📂 Gestión de Archivos y Categorías")
-        print("4. 🔧 Herramientas y Utilidades")
-        print("5. ⚙️ Configuración")
-        print("6. ❓ Ayuda")
-        print("0. 🚪 Salir")
+        context = self._menu_context()
+        menu_title = self.menu_engine.menu_title("main", "M E N U  P R I N C I P A L")
+        print(f"{menu_title}")
         print("-" * 50)
+
+        for item in self.menu_engine.visible_items("main", context):
+            label = str(item.get("label", ""))
+            keys = item.get("keys", [])
+            primary_key = keys[0] if isinstance(keys, list) and keys else "?"
+            aliases = "/".join(str(key) for key in keys[1:]) if isinstance(keys, list) and len(keys) > 1 else ""
+            if aliases:
+                print(f"{primary_key}. {label} [{aliases}]")
+            else:
+                print(f"{primary_key}. {label}")
+        print("-" * 50)
+
+    def _show_configured_menu(self, menu_id: str, heading: str, width: int) -> None:
+        """Renderiza un menú con configuración YAML."""
+        clear_screen()
+        print(f"\n{heading} - {self.vault_name}")
+        print("=" * width)
+        menu_title = self.menu_engine.menu_title(menu_id, "")
+        if menu_title:
+            print(menu_title)
+            print("-" * width)
+
+        for item in self.menu_engine.visible_items(menu_id, self._menu_context()):
+            label = str(item.get("label", ""))
+            keys = item.get("keys", [])
+            primary_key = keys[0] if isinstance(keys, list) and keys else "?"
+            aliases = "/".join(str(key) for key in keys[1:]) if isinstance(keys, list) and len(keys) > 1 else ""
+            if aliases:
+                print(f"{primary_key}. {label} [{aliases}]")
+            else:
+                print(f"{primary_key}. {label}")
+        print("-" * width)
 
     def show_generation_menu(self) -> None:
         """Muestra el menú de generación."""
-        clear_screen()
-        print(f"\n📝 GENERACIÓN DE BITÁCORAS - {self.vault_name}")
-        print("=" * 50)
-        print("1. 📋 Crear bitácora semanal")
-        print("2. ✏️ Crear bitácora semanal manual")
-        print("3. 📋 Crear archivo mensual")
-        print("0. ↩️ Volver al menú principal")
-        print("-" * 40)
+        self._show_configured_menu("generation", "📝 GENERACIÓN DE BITÁCORAS", 50)
 
     def show_consolidation_menu(self) -> None:
         """Muestra el menú de consolidación."""
-        clear_screen()
-        print(f"\n📦 CONSOLIDACIÓN DE ARCHIVOS - {self.vault_name}")
-        print("=" * 50)
-        print("1. 📋 Consolidar mes completo")
-        print("2. 📋 Consolidar año completo")
-        print("0. ↩️ Volver al menú principal")
-        print("-" * 40)
+        self._show_configured_menu("consolidation", "📦 CONSOLIDACIÓN DE ARCHIVOS", 50)
 
     def show_file_management_menu(self) -> None:
         """Muestra el menú de gestión de archivos."""
-        clear_screen()
-        print(f"\n📂 GESTIÓN DE ARCHIVOS Y CATEGORÍAS - {self.vault_name}")
-        print("=" * 60)
-        print("1. 📋 Listar archivos recientes")
-        print("2. 📄 Analizar archivo específico")
-        print("3. 📚 Gestionar categorías y documentos")
-        print("4. 🔍 Búsqueda y reemplazo global")
-        print("5. 🔄 Sincronizar YAML con repositorio")
-        print("0. ↩️ Volver al menú principal")
-        print("-" * 50)
+        self._show_configured_menu("file_management", "📂 GESTIÓN DE ARCHIVOS Y CATEGORÍAS", 60)
 
     def show_tools_menu(self) -> None:
         """Muestra el menú de herramientas."""
-        clear_screen()
-        print(f"\n🔧 HERRAMIENTAS Y UTILIDADES - {self.vault_name}")
-        print("=" * 50)
-        print("1. 🔍 Analizar contenido de archivo")
-        print("2. 📁 Debug archivos en directorio")
-        print("3. 🌨 Probar patrón de emojis")
-        print("4. 📋 Calcular fechas de archivo")
-        print("5. ⏲️ Pomodoro Timer")
-        print("0. ↩️ Volver al menú principal")
-        print("-" * 40)
+        self._show_configured_menu("tools", "🔧 HERRAMIENTAS Y UTILIDADES", 50)
 
     def show_list_menu(self) -> None:
         """Muestra el menú de listado."""
-        clear_screen()
-        print(f"\n📋 LISTAR ARCHIVOS - {self.vault_name}")
-        print("=" * 40)
-        print("1. 📝 Bitácoras semanales")
-        print("2. 📋 Archivos mensuales")
-        print("3. 🔍 Debug - Todos los archivos")
-        print("0. ↩️ Volver")
-        print("-" * 25)
+        self._show_configured_menu("list", "📋 LISTAR ARCHIVOS", 40)
 
     def handle_generation_menu(self) -> None:
         """Maneja el submenú de generación."""
@@ -223,18 +263,24 @@ class BitacoraManager:
 
         while True:
             self.show_generation_menu()
-            choice = input("Selecciona una opción: ").strip()
+            choice = input("Selecciona una opción: ").strip().lower()
+            resolved = self.menu_engine.resolve_choice("generation", choice, self._menu_context())
+            if not resolved:
+                print("❌ Opción inválida")
+                input("\nPresiona Enter para continuar...")
+                continue
 
-            if choice == "1":
+            _, command = resolved
+            if command == "create_weekly":
                 clear_screen()
                 self.handle_weekly_creation()
-            elif choice == "2":
+            elif command == "create_weekly_manual":
                 clear_screen()
                 self.handle_manual_weekly_creation()
-            elif choice == "3":
+            elif command == "create_monthly":
                 clear_screen()
                 self.handle_monthly_creation()
-            elif choice == "0":
+            elif command == "back":
                 break
             else:
                 print("❌ Opción inválida")
@@ -248,15 +294,21 @@ class BitacoraManager:
 
         while True:
             self.show_consolidation_menu()
-            choice = input("Selecciona una opción: ").strip()
+            choice = input("Selecciona una opción: ").strip().lower()
+            resolved = self.menu_engine.resolve_choice("consolidation", choice, self._menu_context())
+            if not resolved:
+                print("❌ Opción inválida")
+                input("\nPresiona Enter para continuar...")
+                continue
 
-            if choice == "1":
+            _, command = resolved
+            if command == "consolidate_month":
                 clear_screen()
                 self.handle_month_consolidation()
-            elif choice == "2":
+            elif command == "consolidate_year":
                 clear_screen()
                 self.handle_year_consolidation()
-            elif choice == "0":
+            elif command == "back":
                 break
             else:
                 print("❌ Opción inválida")
@@ -266,24 +318,30 @@ class BitacoraManager:
         """Maneja el submenú de gestión de archivos."""
         while True:
             self.show_file_management_menu()
-            choice = input("Selecciona una opción: ").strip()
+            choice = input("Selecciona una opción: ").strip().lower()
+            resolved = self.menu_engine.resolve_choice("file_management", choice, self._menu_context())
+            if not resolved:
+                print("❌ Opción inválida")
+                input("\nPresiona Enter para continuar...")
+                continue
 
-            if choice == "1":
+            _, command = resolved
+            if command == "list_files":
                 clear_screen()
                 self.handle_list_files()
-            elif choice == "2":
+            elif command == "analyze_file":
                 clear_screen()
                 self.handle_analyze_file()
-            elif choice == "3":
+            elif command == "manage_categories":
                 clear_screen()
                 self.handle_category_management()
-            elif choice == "4":
+            elif command == "global_replace":
                 clear_screen()
                 self.handle_file_rename()
-            elif choice == "5":
+            elif command == "sync_yaml":
                 clear_screen()
                 self.handle_sync_yaml()
-            elif choice == "0":
+            elif command == "back":
                 break
             else:
                 print("❌ Opción inválida")
@@ -293,9 +351,16 @@ class BitacoraManager:
         """Maneja el submenú de herramientas."""
         while True:
             self.show_tools_menu()
-            choice = input("Selecciona una opción: ").strip()
+            choice = input("Selecciona una opción: ").strip().lower()
+            resolved = self.menu_engine.resolve_choice("tools", choice, self._menu_context())
+            if not resolved:
+                print("❌ Opción inválida")
+                input("\nPresiona Enter para continuar...")
+                continue
 
-            if choice == "1":
+            _, command = resolved
+
+            if command == "tool_analyze_content":
                 clear_screen()
                 filename = input("Nombre del archivo a analizar: ").strip()
                 filepath = filename if os.path.exists(filename) else os.path.join(self.directory, filename)
@@ -305,17 +370,17 @@ class BitacoraManager:
                     print("❌ Archivo no encontrado")
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "2":
+            elif command == "tool_debug_files":
                 clear_screen()
                 debug_files_in_directory(self.directory)
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "3":
+            elif command == "tool_emoji":
                 clear_screen()
                 test_emoji_pattern()
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "4":
+            elif command == "tool_calc_dates":
                 clear_screen()
                 filename = input("Nombre del archivo para calcular fechas: ").strip()
                 from brackets.utils.legacy_utils import safe_file_read
@@ -335,12 +400,12 @@ class BitacoraManager:
                     print("❌ Archivo no encontrado")
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "5":
+            elif command == "tool_pomodoro":
                 clear_screen()
                 from brackets.modules.pomodoro_timer import run_pomodoro_standalone
                 run_pomodoro_standalone(self.vault_root)
 
-            elif choice == "0":
+            elif command == "back":
                 break
 
             else:
@@ -549,30 +614,37 @@ class BitacoraManager:
         """Maneja el listado de archivos."""
         while True:
             self.show_list_menu()
-            choice = input("Selecciona una opción: ").strip()
+            choice = input("Selecciona una opción: ").strip().lower()
+            resolved = self.menu_engine.resolve_choice("list", choice, self._menu_context())
+            if not resolved:
+                print("❌ Opción inválida")
+                input("\nPresiona Enter para continuar...")
+                continue
 
-            if choice == "1":
+            _, command = resolved
+
+            if command == "list_weekly":
                 clear_screen()
                 print("\n📝 BITÁCORAS SEMANALES RECIENTES:")
                 print("=" * 40)
                 self.weekly_gen.list_recent_weeks(10)
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "2":
+            elif command == "list_monthly":
                 clear_screen()
                 print("\n📋 ARCHIVOS MENSUALES RECIENTES:")
                 print("=" * 40)
                 self.monthly_gen.list_recent_months(10)
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "3":
+            elif command == "list_debug":
                 clear_screen()
                 print("\n🔍 DEBUG - TODOS LOS ARCHIVOS:")
                 print("=" * 40)
                 debug_files_in_directory(self.directory)
                 input("\nPresiona Enter para continuar...")
 
-            elif choice == "0":
+            elif command == "back":
                 break
 
             else:
@@ -755,28 +827,26 @@ class BitacoraManager:
     def handle_configuration(self) -> None:
         """Maneja la configuración viva (horarios y calendario)."""
         while True:
-            clear_screen()
-            print(f"\n⚙️ CONFIGURACIÓN - {self.vault_name}")
-            print("=" * 50)
-            print("1. 👁️ Ver configuración actual")
-            print("2. 🏢 Ajustar patrón de trabajo")
-            print("3. 🎉 Gestionar festivos")
-            print("4. 🏖️ Gestionar vacaciones")
-            print("0. ↩️ Volver al menú principal")
-            print("-" * 50)
+            self._show_configured_menu("configuration", "⚙️ CONFIGURACIÓN", 50)
+            choice = input("Opción: ").strip().lower()
+            resolved = self.menu_engine.resolve_choice("configuration", choice, self._menu_context())
+            if not resolved:
+                print("❌ Opción inválida")
+                input("\nPresiona Enter para continuar...")
+                continue
 
-            choice = input("Opción: ").strip()
+            _, command = resolved
 
-            if choice == "1":
+            if command == "config_view":
                 self._show_configuration_overview()
                 input("\nPresiona Enter para continuar...")
-            elif choice == "2":
+            elif command == "config_work_pattern":
                 self._configure_work_pattern()
-            elif choice == "3":
+            elif command == "config_holidays":
                 self._configure_holidays()
-            elif choice == "4":
+            elif command == "config_vacations":
                 self._configure_vacations()
-            elif choice == "0":
+            elif command == "back":
                 break
             else:
                 print("❌ Opción inválida")
@@ -1017,34 +1087,21 @@ class BitacoraManager:
         while True:
             try:
                 self.show_main_menu()
-                choice = input("Selecciona una opción: ").strip()
+                choice = input("Selecciona una opción: ").strip().lower()
+                resolved = self.menu_engine.resolve_choice("main", choice, self._menu_context())
 
-                if choice == "1":
-                    self.handle_generation_menu()
-
-                elif choice == "2":
-                    self.handle_consolidation_menu()
-
-                elif choice == "3":
-                    self.handle_file_management_menu()
-
-                elif choice == "4":
-                    self.handle_tools_menu()
-
-                elif choice == "5":
-                    self.handle_configuration()
-
-                elif choice == "6":
-                    self.show_help()
-
-                elif choice == "0":
-                    clear_screen()
-                    print("\n👋 ¡Hasta luego!")
-                    break
-
-                else:
+                if not resolved:
                     print("❌ Opción inválida. Por favor, selecciona una opción del menú.")
                     input("Presiona Enter para continuar...")
+                    continue
+
+                action, command = resolved
+                if action == "noop":
+                    self._show_bitacoras_disabled_message()
+                    continue
+
+                if action == "exec" and not self._execute_menu_command(command):
+                    break
 
             except KeyboardInterrupt:
                 print("\n\n👋 ¡Hasta luego!")

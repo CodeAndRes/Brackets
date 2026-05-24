@@ -1,0 +1,237 @@
+menus:
+  main:
+    title: "M E N U  P R I N C I P A L"
+    items:
+      - id: generation
+        label: "Generacion de Bitacoras"
+        keys: ["1", "b"]
+        action: exec
+        command: open_generation
+        context_tag: bitacoras_enabled
+
+      - id: generation_disabled
+        label: "Generacion de Bitacoras (desactivado)"
+        keys: ["1", "b"]
+        action: noop
+        context_tag: bitacoras_disabled
+
+      - id: consolidation
+        label: "Consolidacion de Archivos"
+        keys: ["2", "c"]
+        action: exec
+        command: open_consolidation
+        context_tag: bitacoras_enabled
+
+      - id: consolidation_disabled
+        label: "Consolidacion de Archivos (desactivado)"
+        keys: ["2", "c"]
+        action: noop
+        context_tag: bitacoras_disabled
+
+      - id: files
+        label: "Gestion de Archivos y Categorias"
+        keys: ["3", "f"]
+        action: exec
+        command: open_file_management
+
+      - id: tools
+        label: "Herramientas y Utilidades"
+        keys: ["4", "t"]
+        action: exec
+        command: open_tools
+
+      - id: settings
+        label: "Configuracion"
+        keys: ["5", "s"]
+        action: exec
+        command: open_settings
+
+      - id: help
+        label: "Ayuda"
+        keys: ["6", "h"]
+        action: exec
+        command: open_help
+
+      - id: quick_new_weekly
+        label: "Nueva bitacora semanal (atajo)"
+        keys: ["n"]
+        action: exec
+        command: quick_new_weekly
+        context_tag: active_vault
+
+      - id: quick_consolidate_month
+        label: "Consolidar mes (atajo)"
+        keys: ["m"]
+        action: exec
+        command: quick_consolidate_month
+        context_tag: active_vault
+
+      - id: exit
+        label: "Salir"
+        keys: ["0", "q", "x"]
+        action: exec
+        command: exit
+
+  generation:
+    title: "G E N E R A C I O N  D E  B I T A C O R A S"
+    items:
+      - id: weekly_auto
+        label: "Crear bitacora semanal"
+        keys: ["1", "w"]
+        action: exec
+        command: create_weekly
+      - id: weekly_manual
+        label: "Crear bitacora semanal manual"
+        keys: ["2", "a"]
+        action: exec
+        command: create_weekly_manual
+      - id: monthly
+        label: "Crear archivo mensual"
+        keys: ["3", "m"]
+        action: exec
+        command: create_monthly
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v"]
+        action: exec
+        command: back
+
+  consolidation:
+    title: "C O N S O L I D A C I O N  D E  A R C H I V O S"
+    items:
+      - id: consolidate_month
+        label: "Consolidar mes completo"
+        keys: ["1", "m"]
+        action: exec
+        command: consolidate_month
+      - id: consolidate_year
+        label: "Consolidar anio completo"
+        keys: ["2", "y"]
+        action: exec
+        command: consolidate_year
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v"]
+        action: exec
+        command: back
+
+  file_management:
+    title: "G E S T I O N  D E  A R C H I V O S  Y  C A T E G O R I A S"
+    items:
+      - id: list
+        label: "Listar archivos recientes"
+        keys: ["1", "l"]
+        action: exec
+        command: list_files
+      - id: analyze
+        label: "Analizar archivo especifico"
+        keys: ["2", "a"]
+        action: exec
+        command: analyze_file
+      - id: categories
+        label: "Gestionar categorias y documentos"
+        keys: ["3", "g"]
+        action: exec
+        command: manage_categories
+      - id: replace
+        label: "Busqueda y reemplazo global"
+        keys: ["4", "r"]
+        action: exec
+        command: global_replace
+      - id: sync_yaml
+        label: "Sincronizar YAML con repositorio"
+        keys: ["5", "s"]
+        action: exec
+        command: sync_yaml
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v"]
+        action: exec
+        command: back
+
+  tools:
+    title: "H E R R A M I E N T A S  Y  U T I L I D A D E S"
+    items:
+      - id: analyze_content
+        label: "Analizar contenido de archivo"
+        keys: ["1", "a"]
+        action: exec
+        command: tool_analyze_content
+      - id: debug_files
+        label: "Debug archivos en directorio"
+        keys: ["2", "d"]
+        action: exec
+        command: tool_debug_files
+      - id: emoji_pattern
+        label: "Probar patron de emojis"
+        keys: ["3", "e"]
+        action: exec
+        command: tool_emoji
+      - id: calc_dates
+        label: "Calcular fechas de archivo"
+        keys: ["4", "f"]
+        action: exec
+        command: tool_calc_dates
+      - id: pomodoro
+        label: "Pomodoro Timer"
+        keys: ["5", "p"]
+        action: exec
+        command: tool_pomodoro
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v"]
+        action: exec
+        command: back
+
+  list:
+    title: "L I S T A R  A R C H I V O S"
+    items:
+      - id: list_weekly
+        label: "Bitacoras semanales"
+        keys: ["1", "w"]
+        action: exec
+        command: list_weekly
+      - id: list_monthly
+        label: "Archivos mensuales"
+        keys: ["2", "m"]
+        action: exec
+        command: list_monthly
+      - id: list_debug
+        label: "Debug - Todos los archivos"
+        keys: ["3", "d"]
+        action: exec
+        command: list_debug
+      - id: back
+        label: "Volver"
+        keys: ["0", "v"]
+        action: exec
+        command: back
+
+  configuration:
+    title: "C O N F I G U R A C I O N"
+    items:
+      - id: view
+        label: "Ver configuracion actual"
+        keys: ["1", "v"]
+        action: exec
+        command: config_view
+      - id: work_pattern
+        label: "Ajustar patron de trabajo"
+        keys: ["2", "p"]
+        action: exec
+        command: config_work_pattern
+      - id: holidays
+        label: "Gestionar festivos"
+        keys: ["3", "f"]
+        action: exec
+        command: config_holidays
+      - id: vacations
+        label: "Gestionar vacaciones"
+        keys: ["4", "a"]
+        action: exec
+        command: config_vacations
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "b"]
+        action: exec
+        command: back
