@@ -47,6 +47,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/cli_actions.py, brackets/main.py, brackets/tests/test_core_cli_actions.py.
 - Bloque incremental: extraccion del flujo de seleccion de vault a orquestador core.
   - Evidencia: brackets/core/vault_selection.py, brackets/main.py, brackets/tests/test_core_vault_selection.py.
+- Bloque incremental: extraccion del builder de argparse a modulo core.
+  - Evidencia: brackets/core/cli_parser.py, brackets/main.py, brackets/tests/test_core_cli_parser.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -57,7 +59,8 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de resolve_workspace_context fuera de main.py.
 - Ultimo objetivo tecnico incremental: extraccion de dispatcher CLI (has_action_flags/dispatch_cli_action).
 - Ultimo objetivo tecnico incremental: extraccion de seleccion de vault (selector global/create/cancel/local).
-- Siguiente bloque recomendado: extraer inicializacion de argparse (builder de parser) a modulo dedicado para reducir complejidad ciclomática de main.py.
+- Ultimo objetivo tecnico incremental: extraccion de parser CLI (build_cli_parser).
+- Siguiente bloque recomendado: extraer orquestacion de arranque (parse -> select_vault -> dispatch -> run) a un bootstrap module testeable para terminar de adelgazar main.py.
 
 ## Vision objetivo del usuario
 
