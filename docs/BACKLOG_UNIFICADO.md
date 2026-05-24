@@ -31,7 +31,7 @@ Bloque activo (WIP principal):
 
 Cola inmediata priorizada:
 - [Verificado] Restringir visibilidad de vaults: desde `run_brackets.py` local mostrar solo el vault local; el root mantiene vista global.
-- [Priorizado] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
+- [Verificado] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
 
 ## Implementado
 
@@ -51,7 +51,7 @@ Cola inmediata priorizada:
 - [x] Corregir traspaso de tareas entre semanas para no migrar tareas tachadas `[x]` y respetar jerarquias (incluye no migrar subtareas de padre completado).
 - [x] Si no hay bitacoras previas, que la opcion "Crear bitacora semanal" redirija automaticamente al flujo manual.
 - [ ] Corregir formato del titulo de `MonthTopics` (ejemplo esperado: `# July Topics ☀️`).
-- [ ] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
+- [x] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
 - [x] Restringir visibilidad de vaults: desde `run_brackets.py` local mostrar solo el vault local; el root mantiene vista global.
 
 ## Prioridad media
@@ -135,7 +135,7 @@ Ultima auditoria: 2026-05-24
 - ✅ Traspaso de tareas entre semanas: resuelto y validado en parser/tests (no migra `[x]` ni subtareas de padre completado).
 - ✅ Fallback automatico a flujo manual sin bitacoras previas: resuelto en `WeeklyGenerator.create_next_or_manual_weekly_bitacora` + `BitacoraManager.handle_weekly_creation`, validado con `brackets/tests/test_generators_weekly.py`.
 - ⏳ Titulo `MonthTopics`: sigue pendiente (actualmente `# {emoji} Topics - Mes {MM}` en `ContentGenerator.create_monthly_topics`).
-- ⏳ Politica unica de versionado: sigue pendiente (`setup.py` en 3.0.0 y modulos internos en 2.0.0).
+- ✅ Politica unica de versionado: resuelto con fuente unica en `brackets/version.py`, integrada en `setup.py`, `brackets.__version__` y `config.VERSION`; validado con `brackets/tests/test_version_policy.py`.
 - ✅ Visibilidad de vault local vs root: resuelto en `resolve_workspace_context` y flujo de `main`, con tests en `brackets/tests/test_cli_vault_scope.py`.
 
 Regla para marcar una tarea como resuelta:
