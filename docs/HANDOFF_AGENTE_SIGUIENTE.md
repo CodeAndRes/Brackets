@@ -45,6 +45,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/workspace_context.py, brackets/main.py, brackets/tests/test_cli_vault_scope.py.
 - Bloque incremental: extraccion de dispatcher de flags CLI fuera de main.py.
   - Evidencia: brackets/core/cli_actions.py, brackets/main.py, brackets/tests/test_core_cli_actions.py.
+- Bloque incremental: extraccion del flujo de seleccion de vault a orquestador core.
+  - Evidencia: brackets/core/vault_selection.py, brackets/main.py, brackets/tests/test_core_vault_selection.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -54,7 +56,8 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo funcional cerrado: normalizacion de titulo MonthTopics.
 - Ultimo objetivo tecnico incremental: extraccion de resolve_workspace_context fuera de main.py.
 - Ultimo objetivo tecnico incremental: extraccion de dispatcher CLI (has_action_flags/dispatch_cli_action).
-- Siguiente bloque recomendado: extraer flujo de seleccion de vault (VaultManager/create_new_vault) desde main.py a un orquestador core testeable.
+- Ultimo objetivo tecnico incremental: extraccion de seleccion de vault (selector global/create/cancel/local).
+- Siguiente bloque recomendado: extraer inicializacion de argparse (builder de parser) a modulo dedicado para reducir complejidad ciclomática de main.py.
 
 ## Vision objetivo del usuario
 
