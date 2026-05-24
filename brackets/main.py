@@ -38,6 +38,78 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
+KEY_UP = "__UP__"
+KEY_DOWN = "__DOWN__"
+KEY_ENTER = "__ENTER__"
+
+
+def read_single_key(prompt: str = "Selecciona una opción: ") -> str:
+    """Lee una sola tecla para navegación rápida de menús (sin Enter)."""
+    print(prompt, end="", flush=True)
+
+    try:
+        if os.name == "nt":
+            import msvcrt
+
+            key = msvcrt.getwch()
+            if key in ("\x00", "\xe0"):
+                # Teclas especiales (flechas/F-keys).
+                extended = msvcrt.getwch().lower()
+                print()
+                if extended == "h":
+                    return KEY_UP
+                if extended == "p":
+                    return KEY_DOWN
+                return ""
+        else:
+            import termios
+            import tty
+
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(fd)
+                key = sys.stdin.read(1)
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+        if key in ("\x03",):
+            raise KeyboardInterrupt
+        if key in ("\r", "\n"):
+            print()
+            return KEY_ENTER
+
+        if key == "\x1b":
+            # Secuencias ANSI para flechas en terminals POSIX.
+            try:
+                import termios
+                import tty
+
+                fd = sys.stdin.fileno()
+                old_settings = termios.tcgetattr(fd)
+                try:
+                    tty.setraw(fd)
+                    second = sys.stdin.read(1)
+                    third = sys.stdin.read(1)
+                finally:
+                    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+                print()
+                if second == "[" and third == "A":
+                    return KEY_UP
+                if second == "[" and third == "B":
+                    return KEY_DOWN
+            except Exception:
+                pass
+            return ""
+
+        print(key)
+        return key.strip().lower()
+
+    except Exception:
+        # Fallback seguro para terminales no compatibles.
+        return input(prompt).strip().lower()
+
+
 class BitacoraManager:
     """Clase principal para gestionar las bitácoras."""
 
@@ -186,7 +258,54 @@ class BitacoraManager:
         print("   Activa 'feature_flags.bitacoras_enabled: true' para usar esta opción.")
         input("\nPresiona Enter para continuar...")
 
-    def show_main_menu(self) -> None:
+    def _render_menu_items(self, menu_id: str, selected_index: int = 0) -> None:
+        """Renderiza items del menú con selección visible para navegación por flechas."""
+        items = self.menu_engine.visible_items(menu_id, self._menu_context())
+        if not items:
+            print("(sin opciones disponibles)")
+            return
+
+        bounded_index = max(0, min(selected_index, len(items) - 1))
+        for i, item in enumerate(items):
+            label = str(item.get("label", ""))
+            keys = item.get("keys", [])
+            primary_key = keys[0] if isinstance(keys, list) and keys else "?"
+            aliases = "/".join(str(key) for key in keys[1:]) if isinstance(keys, list) and len(keys) > 1 else ""
+            pointer = ">" if i == bounded_index else " "
+            if aliases:
+                print(f"{pointer} {primary_key}. {label} [{aliases}]")
+            else:
+                print(f"{pointer} {primary_key}. {label}")
+
+    def _resolve_menu_command(
+        self, menu_id: str, choice: str, selected_index: int
+    ) -> tuple[Optional[str], int, bool]:
+        """Resuelve comando de menú a partir de tecla rápida o selección con flechas."""
+        items = self.menu_engine.visible_items(menu_id, self._menu_context())
+        if not items:
+            return None, selected_index, False
+
+        if choice == KEY_UP:
+            return None, (selected_index - 1) % len(items), True
+        if choice == KEY_DOWN:
+            return None, (selected_index + 1) % len(items), True
+        if choice == KEY_ENTER:
+            action = str(items[selected_index].get("action", "exec"))
+            if action == "noop":
+                return "__NOOP__", selected_index, True
+            command = items[selected_index].get("command")
+            return str(command) if command is not None else None, selected_index, True
+
+        resolved = self.menu_engine.resolve_choice(menu_id, choice, self._menu_context())
+        if not resolved:
+            return None, selected_index, False
+
+        action, command = resolved
+        if action == "noop":
+            return "__NOOP__", selected_index, True
+        return command, selected_index, True
+
+    def show_main_menu(self, selected_index: int = 0) -> None:
         """Muestra el menú principal."""
         clear_screen()
         print(f"\n🗓️ GENERADOR DE BITÁCORAS - SISTEMA BRACKETS")
@@ -201,20 +320,12 @@ class BitacoraManager:
         context = self._menu_context()
         menu_title = self.menu_engine.menu_title("main", "M E N U  P R I N C I P A L")
         print(f"{menu_title}")
+        print("Usa flechas ↑/↓ y Enter, o quick-keys.")
+        print("-" * 50)
+        self._render_menu_items("main", selected_index)
         print("-" * 50)
 
-        for item in self.menu_engine.visible_items("main", context):
-            label = str(item.get("label", ""))
-            keys = item.get("keys", [])
-            primary_key = keys[0] if isinstance(keys, list) and keys else "?"
-            aliases = "/".join(str(key) for key in keys[1:]) if isinstance(keys, list) and len(keys) > 1 else ""
-            if aliases:
-                print(f"{primary_key}. {label} [{aliases}]")
-            else:
-                print(f"{primary_key}. {label}")
-        print("-" * 50)
-
-    def _show_configured_menu(self, menu_id: str, heading: str, width: int) -> None:
+    def _show_configured_menu(self, menu_id: str, heading: str, width: int, selected_index: int = 0) -> None:
         """Renderiza un menú con configuración YAML."""
         clear_screen()
         print(f"\n{heading} - {self.vault_name}")
@@ -222,38 +333,30 @@ class BitacoraManager:
         menu_title = self.menu_engine.menu_title(menu_id, "")
         if menu_title:
             print(menu_title)
+            print("Usa flechas ↑/↓ y Enter, o quick-keys.")
             print("-" * width)
-
-        for item in self.menu_engine.visible_items(menu_id, self._menu_context()):
-            label = str(item.get("label", ""))
-            keys = item.get("keys", [])
-            primary_key = keys[0] if isinstance(keys, list) and keys else "?"
-            aliases = "/".join(str(key) for key in keys[1:]) if isinstance(keys, list) and len(keys) > 1 else ""
-            if aliases:
-                print(f"{primary_key}. {label} [{aliases}]")
-            else:
-                print(f"{primary_key}. {label}")
+        self._render_menu_items(menu_id, selected_index)
         print("-" * width)
 
-    def show_generation_menu(self) -> None:
+    def show_generation_menu(self, selected_index: int = 0) -> None:
         """Muestra el menú de generación."""
-        self._show_configured_menu("generation", "📝 GENERACIÓN DE BITÁCORAS", 50)
+        self._show_configured_menu("generation", "📝 GENERACIÓN DE BITÁCORAS", 50, selected_index)
 
-    def show_consolidation_menu(self) -> None:
+    def show_consolidation_menu(self, selected_index: int = 0) -> None:
         """Muestra el menú de consolidación."""
-        self._show_configured_menu("consolidation", "📦 CONSOLIDACIÓN DE ARCHIVOS", 50)
+        self._show_configured_menu("consolidation", "📦 CONSOLIDACIÓN DE ARCHIVOS", 50, selected_index)
 
-    def show_file_management_menu(self) -> None:
+    def show_file_management_menu(self, selected_index: int = 0) -> None:
         """Muestra el menú de gestión de archivos."""
-        self._show_configured_menu("file_management", "📂 GESTIÓN DE ARCHIVOS Y CATEGORÍAS", 60)
+        self._show_configured_menu("file_management", "📂 GESTIÓN DE ARCHIVOS Y CATEGORÍAS", 60, selected_index)
 
-    def show_tools_menu(self) -> None:
+    def show_tools_menu(self, selected_index: int = 0) -> None:
         """Muestra el menú de herramientas."""
-        self._show_configured_menu("tools", "🔧 HERRAMIENTAS Y UTILIDADES", 50)
+        self._show_configured_menu("tools", "🔧 HERRAMIENTAS Y UTILIDADES", 50, selected_index)
 
-    def show_list_menu(self) -> None:
+    def show_list_menu(self, selected_index: int = 0) -> None:
         """Muestra el menú de listado."""
-        self._show_configured_menu("list", "📋 LISTAR ARCHIVOS", 40)
+        self._show_configured_menu("list", "📋 LISTAR ARCHIVOS", 40, selected_index)
 
     def handle_generation_menu(self) -> None:
         """Maneja el submenú de generación."""
@@ -261,16 +364,17 @@ class BitacoraManager:
             self._show_bitacoras_disabled_message()
             return
 
+        selected_index = 0
         while True:
-            self.show_generation_menu()
-            choice = input("Selecciona una opción: ").strip().lower()
-            resolved = self.menu_engine.resolve_choice("generation", choice, self._menu_context())
-            if not resolved:
+            self.show_generation_menu(selected_index)
+            choice = read_single_key("Selecciona una opción: ")
+            command, selected_index, valid = self._resolve_menu_command("generation", choice, selected_index)
+            if not valid:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
                 continue
-
-            _, command = resolved
+            if command is None:
+                continue
             if command == "create_weekly":
                 clear_screen()
                 self.handle_weekly_creation()
@@ -292,16 +396,17 @@ class BitacoraManager:
             self._show_bitacoras_disabled_message()
             return
 
+        selected_index = 0
         while True:
-            self.show_consolidation_menu()
-            choice = input("Selecciona una opción: ").strip().lower()
-            resolved = self.menu_engine.resolve_choice("consolidation", choice, self._menu_context())
-            if not resolved:
+            self.show_consolidation_menu(selected_index)
+            choice = read_single_key("Selecciona una opción: ")
+            command, selected_index, valid = self._resolve_menu_command("consolidation", choice, selected_index)
+            if not valid:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
                 continue
-
-            _, command = resolved
+            if command is None:
+                continue
             if command == "consolidate_month":
                 clear_screen()
                 self.handle_month_consolidation()
@@ -316,16 +421,17 @@ class BitacoraManager:
 
     def handle_file_management_menu(self) -> None:
         """Maneja el submenú de gestión de archivos."""
+        selected_index = 0
         while True:
-            self.show_file_management_menu()
-            choice = input("Selecciona una opción: ").strip().lower()
-            resolved = self.menu_engine.resolve_choice("file_management", choice, self._menu_context())
-            if not resolved:
+            self.show_file_management_menu(selected_index)
+            choice = read_single_key("Selecciona una opción: ")
+            command, selected_index, valid = self._resolve_menu_command("file_management", choice, selected_index)
+            if not valid:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
                 continue
-
-            _, command = resolved
+            if command is None:
+                continue
             if command == "list_files":
                 clear_screen()
                 self.handle_list_files()
@@ -349,16 +455,17 @@ class BitacoraManager:
 
     def handle_tools_menu(self) -> None:
         """Maneja el submenú de herramientas."""
+        selected_index = 0
         while True:
-            self.show_tools_menu()
-            choice = input("Selecciona una opción: ").strip().lower()
-            resolved = self.menu_engine.resolve_choice("tools", choice, self._menu_context())
-            if not resolved:
+            self.show_tools_menu(selected_index)
+            choice = read_single_key("Selecciona una opción: ")
+            command, selected_index, valid = self._resolve_menu_command("tools", choice, selected_index)
+            if not valid:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
                 continue
-
-            _, command = resolved
+            if command is None:
+                continue
 
             if command == "tool_analyze_content":
                 clear_screen()
@@ -612,16 +719,17 @@ class BitacoraManager:
 
     def handle_list_files(self) -> None:
         """Maneja el listado de archivos."""
+        selected_index = 0
         while True:
-            self.show_list_menu()
-            choice = input("Selecciona una opción: ").strip().lower()
-            resolved = self.menu_engine.resolve_choice("list", choice, self._menu_context())
-            if not resolved:
+            self.show_list_menu(selected_index)
+            choice = read_single_key("Selecciona una opción: ")
+            command, selected_index, valid = self._resolve_menu_command("list", choice, selected_index)
+            if not valid:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
                 continue
-
-            _, command = resolved
+            if command is None:
+                continue
 
             if command == "list_weekly":
                 clear_screen()
@@ -826,16 +934,17 @@ class BitacoraManager:
 
     def handle_configuration(self) -> None:
         """Maneja la configuración viva (horarios y calendario)."""
+        selected_index = 0
         while True:
-            self._show_configured_menu("configuration", "⚙️ CONFIGURACIÓN", 50)
-            choice = input("Opción: ").strip().lower()
-            resolved = self.menu_engine.resolve_choice("configuration", choice, self._menu_context())
-            if not resolved:
+            self._show_configured_menu("configuration", "⚙️ CONFIGURACIÓN", 50, selected_index)
+            choice = read_single_key("Opción: ")
+            command, selected_index, valid = self._resolve_menu_command("configuration", choice, selected_index)
+            if not valid:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
                 continue
-
-            _, command = resolved
+            if command is None:
+                continue
 
             if command == "config_view":
                 self._show_configuration_overview()
@@ -1084,18 +1193,32 @@ class BitacoraManager:
 
     def run(self) -> None:
         """Ejecuta el menú principal."""
+        selected_index = 0
         while True:
             try:
-                self.show_main_menu()
-                choice = input("Selecciona una opción: ").strip().lower()
-                resolved = self.menu_engine.resolve_choice("main", choice, self._menu_context())
+                self.show_main_menu(selected_index)
+                choice = read_single_key("Selecciona una opción: ")
+                command, selected_index, valid = self._resolve_menu_command("main", choice, selected_index)
 
-                if not resolved:
+                if not valid:
                     print("❌ Opción inválida. Por favor, selecciona una opción del menú.")
                     input("Presiona Enter para continuar...")
                     continue
 
-                action, command = resolved
+                if command is None:
+                    continue
+
+                if command == "__NOOP__":
+                    self._show_bitacoras_disabled_message()
+                    continue
+
+                resolved = self.menu_engine.resolve_choice("main", command, self._menu_context())
+                if not resolved:
+                    # Cuando viene de Enter, command ya es nombre de comando y no una key.
+                    action = "exec"
+                else:
+                    action, _ = resolved
+
                 if action == "noop":
                     self._show_bitacoras_disabled_message()
                     continue

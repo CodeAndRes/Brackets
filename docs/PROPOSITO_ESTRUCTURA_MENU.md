@@ -56,7 +56,7 @@ Para reducir la fatiga de navegación, implementaremos un mapeo de accesos direc
 Para asegurar que los inputs sean rápidos y tolerantes (Mecanismo Quick-Key):
 
 1. **Unicidad por Nivel:** Ninguna tecla se repite dentro del mismo menú.
-2. **Mnémicos Consistentes:** 
+2. **Mnémicos Consistentes:**
    - `b` siempre para Bitácoras.
    - `c` siempre para Consolidar/Configurar.
    - `q` o `x` siempre para Salir.
@@ -67,11 +67,11 @@ Para asegurar que los inputs sean rápidos y tolerantes (Mecanismo Quick-Key):
 
 ## 4. Comparativa de Clics (Navegación)
 
-| Acción | Flujo Actual (main.py hardcoded) | Flujo Propuesto (Aplanamiento) | Mejora |
-| :--- | :--- | :--- | :--- |
-| Nueva Bitácora | `1` (Log) -> `1` (New) -> `Enter` | `n` (Directo si hay vault) | **-2 clics** |
-| Consolidar | `2` (Proc) -> `3` (Cons) -> `Enter` | `c` (Contextual) | **-2 clics** |
-| Cambiar Vault | `4` (Set) -> `2` (Path) -> `Input` | `v` (Vanguardia de estado) | **Agilidad** |
+| Acción         | Flujo Actual (main.py hardcoded)    | Flujo Propuesto (Aplanamiento) | Mejora       |
+| :------------- | :---------------------------------- | :----------------------------- | :----------- |
+| Nueva Bitácora | `1` (Log) -> `1` (New) -> `Enter`   | `n` (Directo si hay vault)     | **-2 clics** |
+| Consolidar     | `2` (Proc) -> `3` (Cons) -> `Enter` | `c` (Contextual)               | **-2 clics** |
+| Cambiar Vault  | `4` (Set) -> `2` (Path) -> `Input`  | `v` (Vanguardia de estado)     | **Agilidad** |
 
 ---
 
@@ -79,3 +79,13 @@ Para asegurar que los inputs sean rápidos y tolerantes (Mecanismo Quick-Key):
 1. **Extracción:** Mover la lógica de `if/elif` de `main.py` hacia un `MenuEngine`.
 2. **Implementación de Contexto:** Crear un decorador o check de estado que valide los `context_tag`.
 3. **Carga Lazy:** Cargar el YAML solo al inicio o bajo demanda para mantener la velocidad.
+
+---
+
+## Estado de Implementación (2026-05-24)
+
+- ✅ Se creó el motor desacoplado de menú: `brackets/core/menu_engine.py`.
+- ✅ Se creó y extendió la configuración YAML: `data/menu_config.yaml`.
+- ✅ Se desacoplaron menú principal y submenús (generación, consolidación, archivos, herramientas, listado y configuración).
+- ✅ Se activó resolución de quick-keys por YAML con validación de conflictos de teclas visibles.
+- ✅ Se implementó navegación de menú por tecla única (sin Enter) para reducir fricción diaria.
