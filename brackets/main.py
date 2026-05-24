@@ -30,6 +30,7 @@ from brackets.managers.file_rename_manager import FileRenameManager
 # Importar consolidadores desde nueva arquitectura
 from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
+from brackets.core.configuration_controller import ConfigurationController
 from brackets.core.cli_parser import build_cli_parser
 from brackets.core.menu_engine import MenuEngine
 from brackets.core.startup import run_startup_flow
@@ -137,6 +138,7 @@ class BitacoraManager:
         self._menu_conflicts_reported = False
         self.category_manager = None  # Lazy load cuando se necesite
         self.file_rename_manager = None  # Lazy load cuando se necesite
+        self.configuration_controller = None  # Lazy load cuando se necesite
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -937,223 +939,18 @@ class BitacoraManager:
 
     def handle_configuration(self) -> None:
         """Maneja la configuración viva (horarios y calendario)."""
-        selected_index = 0
-        while True:
-            self._show_configured_menu("configuration", "⚙️ CONFIGURACIÓN", 50, selected_index)
-            choice = read_single_key("Opción: ")
-            command, selected_index, valid = self._resolve_menu_command("configuration", choice, selected_index)
-            if not valid:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
-                continue
-            if command is None:
-                continue
-
-            if command == "config_view":
-                self._show_configuration_overview()
-                input("\nPresiona Enter para continuar...")
-            elif command == "config_work_pattern":
-                self._configure_work_pattern()
-            elif command == "config_holidays":
-                self._configure_holidays()
-            elif command == "config_vacations":
-                self._configure_vacations()
-            elif command == "back":
-                break
-            else:
-                print("❌ Opción inválida")
-
-    def _show_configuration_overview(self) -> None:
-        clear_screen()
-        print(f"\n👁️ CONFIGURACIÓN ACTUAL - {self.vault_name}")
-        print("=" * 55)
-        print(self.settings.describe_work_pattern())
-
-        holidays = self.settings.list_holidays()
-        if holidays:
-            print("\nFestivos configurados:")
-            for i, item in enumerate(holidays, 1):
-                print(f" {i}. {item.get('date')} - {item.get('name', '')}")
-        else:
-            print("\nFestivos configurados: ninguno")
-
-        vacations = self.settings.list_vacations()
-        if vacations:
-            print("\nVacaciones configuradas:")
-            for i, item in enumerate(vacations, 1):
-                print(f" {i}. {item.get('start')} → {item.get('end')} - {item.get('name', '')}")
-        else:
-            print("\nVacaciones configuradas: ninguna")
-
-    def _configure_work_pattern(self) -> None:
-        day_map = {
-            "1": "monday",
-            "2": "tuesday",
-            "3": "wednesday",
-            "4": "thursday",
-            "5": "friday",
-        }
-        while True:
-            clear_screen()
-            print(f"\n🏢 PATRÓN DE TRABAJO - {self.vault_name}")
-            print("-" * 50)
-            print(self.settings.describe_work_pattern())
-            print("\n1. Cambiar día específico")
-            print("2. Configurar día alterno par/impar")
-            print("3. Restaurar valores por defecto")
-            print("0. Volver")
-            choice = input("Opción: ").strip()
-
-            if choice == "1":
-                day_choice = input("Selecciona día (1=L, 2=M, 3=X, 4=J, 5=V): ").strip()
-                day_key = day_map.get(day_choice)
-                if not day_key:
-                    print("❌ Día inválido")
-                    continue
-                location = self._prompt_location("Ubicación para el día")
-                if not location:
-                    continue
-                if location == "alternating":
-                    even_loc = self._prompt_location("Ubicación semana par")
-                    odd_loc = self._prompt_location("Ubicación semana impar")
-                    if even_loc and odd_loc:
-                        self.settings.set_alternating(day_key, even_loc, odd_loc)
-                        print("✅ Día alterno actualizado")
-                else:
-                    try:
-                        self.settings.set_day_location(day_key, location)
-                        print("✅ Día actualizado")
-                    except Exception as e:
-                        print(f"❌ {e}")
-            elif choice == "2":
-                day_choice = input("Día alterno (1=L,2=M,3=X,4=J,5=V): ").strip()
-                day_key = day_map.get(day_choice)
-                if not day_key:
-                    print("❌ Día inválido")
-                    continue
-                even_loc = self._prompt_location("Ubicación semana par")
-                odd_loc = self._prompt_location("Ubicación semana impar")
-                if even_loc and odd_loc:
-                    try:
-                        self.settings.set_alternating(day_key, even_loc, odd_loc)
-                        print("✅ Alternancia actualizada")
-                    except Exception as e:
-                        print(f"❌ {e}")
-            elif choice == "3":
-                self.settings.reset_defaults()
-                print("✅ Patrón restaurado a valores por defecto")
-            elif choice == "0":
-                break
-            else:
-                print("❌ Opción inválida")
-
-    def _configure_holidays(self) -> None:
-        while True:
-            holidays = self.settings.list_holidays()
-            clear_screen()
-            print(f"\n🎉 FESTIVOS - {self.vault_name}")
-            print("-" * 50)
-            if holidays:
-                for i, item in enumerate(holidays, 1):
-                    print(f" {i}. {item.get('date')} - {item.get('name', '')}")
-            else:
-                print(" No hay festivos configurados")
-
-            choice = input("(A)ñadir/actualizar, (E)ditar nombre, (D)elete, 0 volver: ").strip().lower()
-            if choice == "0":
-                break
-            if choice == "a":
-                date_str = input("Fecha (YYYY-MM-DD): ").strip()
-                name = input("Nombre: ").strip() or "Festivo"
-                try:
-                    self.settings.add_or_update_holiday(date_str, name)
-                    print("✅ Festivo guardado")
-                except Exception as e:
-                    print(f"❌ {e}")
-            elif choice == "e":
-                index = input("Número a editar: ").strip()
-                try:
-                    idx = int(index) - 1
-                    if 0 <= idx < len(holidays):
-                        name = input("Nuevo nombre: ").strip() or holidays[idx].get('name', 'Festivo')
-                        self.settings.add_or_update_holiday(holidays[idx].get('date'), name)
-                        print("✅ Festivo actualizado")
-                    else:
-                        print("❌ Índice inválido")
-                except ValueError:
-                    print("❌ Índice inválido")
-            elif choice == "d":
-                index = input("Número a eliminar: ").strip()
-                try:
-                    idx = int(index) - 1
-                    self.settings.delete_holiday(idx)
-                    print("✅ Festivo eliminado")
-                except ValueError:
-                    print("❌ Índice inválido")
-            else:
-                print("❌ Opción inválida")
-
-    def _configure_vacations(self) -> None:
-        while True:
-            vacations = self.settings.list_vacations()
-            clear_screen()
-            print(f"\n🏖️ VACACIONES - {self.vault_name}")
-            print("-" * 50)
-            if vacations:
-                for i, item in enumerate(vacations, 1):
-                    print(f" {i}. {item.get('start')} → {item.get('end')} - {item.get('name', '')}")
-            else:
-                print(" No hay vacaciones configuradas")
-
-            choice = input("(A)ñadir/actualizar, (E)ditar nombre, (D)elete, 0 volver: ").strip().lower()
-            if choice == "0":
-                break
-            if choice == "a":
-                start = input("Inicio (YYYY-MM-DD): ").strip()
-                end = input("Fin (YYYY-MM-DD): ").strip()
-                name = input("Nombre: ").strip() or "Vacaciones"
-                try:
-                    self.settings.add_or_update_vacation(start, end, name)
-                    print("✅ Vacaciones guardadas")
-                except Exception as e:
-                    print(f"❌ {e}")
-            elif choice == "e":
-                index = input("Número a editar: ").strip()
-                try:
-                    idx = int(index) - 1
-                    if 0 <= idx < len(vacations):
-                        vac = vacations[idx]
-                        name = input("Nuevo nombre: ").strip() or vac.get('name', 'Vacaciones')
-                        self.settings.add_or_update_vacation(vac.get('start'), vac.get('end'), name)
-                        print("✅ Vacaciones actualizadas")
-                    else:
-                        print("❌ Índice inválido")
-                except ValueError:
-                    print("❌ Índice inválido")
-            elif choice == "d":
-                index = input("Número a eliminar: ").strip()
-                try:
-                    idx = int(index) - 1
-                    self.settings.delete_vacation(idx)
-                    print("✅ Vacaciones eliminadas")
-                except ValueError:
-                    print("❌ Índice inválido")
-            else:
-                print("❌ Opción inválida")
-
-    def _prompt_location(self, label: str) -> Optional[str]:
-        print(f"{label}: 1=🏠 Casa, 2=🚗 Oficina, 3=💻 Remoto, 4=Alterna par/impar")
-        value = input("Elige opción: ").strip()
-        mapping = {
-            "1": "home",
-            "2": "office",
-            "3": "remote",
-            "4": "alternating",
-        }
-        if value not in mapping:
-            print("❌ Opción inválida")
-            return None
-        return mapping[value]
+        if self.configuration_controller is None:
+            self.configuration_controller = ConfigurationController(
+                settings=self.settings,
+                vault_name=self.vault_name,
+                show_configured_menu_fn=self._show_configured_menu,
+                resolve_menu_command_fn=self._resolve_menu_command,
+                clear_screen_fn=clear_screen,
+                read_single_key_fn=read_single_key,
+                input_fn=input,
+                print_fn=print,
+            )
+        self.configuration_controller.run()
 
     def show_help(self) -> None:
         """Muestra información de ayuda."""
