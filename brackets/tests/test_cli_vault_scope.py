@@ -8,7 +8,7 @@ import tempfile
 # Agregar el directorio raíz al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from brackets.main import resolve_workspace_context
+from brackets.core.workspace_context import resolve_workspace_context
 
 
 class TestCliVaultScope:

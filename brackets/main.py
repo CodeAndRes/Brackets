@@ -31,6 +31,7 @@ from brackets.managers.file_rename_manager import FileRenameManager
 from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
 from brackets.core.menu_engine import MenuEngine
+from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 
 
 def clear_screen():
@@ -1240,35 +1241,8 @@ class BitacoraManager:
 
 
 def resolve_workspace_context(current_dir: str) -> tuple[str, bool]:
-    """Resuelve el contexto de ejecución para selector de vaults.
-
-    Returns:
-        tuple(workspace_root, local_only)
-        - workspace_root: raíz del workspace o vault detectado.
-        - local_only: True cuando se detecta ejecución desde un vault local
-          (debe evitar mostrar listado global de vaults).
-    """
-    cursor = os.path.abspath(current_dir)
-    visited = set()
-
-    while cursor not in visited:
-        visited.add(cursor)
-
-        is_workspace_root = os.path.exists(os.path.join(cursor, "brackets", "brackets"))
-        is_vault_root = os.path.exists(os.path.join(cursor, "data", "config.yaml"))
-
-        if is_vault_root and not is_workspace_root:
-            return cursor, True
-
-        if is_workspace_root:
-            return cursor, False
-
-        parent = os.path.abspath(os.path.join(cursor, ".."))
-        if parent == cursor:
-            break
-        cursor = parent
-
-    return os.path.abspath(current_dir), False
+    """Compat wrapper kept for existing imports/tests."""
+    return _resolve_workspace_context(current_dir)
 
 
 def main():
