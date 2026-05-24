@@ -30,6 +30,7 @@ from brackets.managers.file_rename_manager import FileRenameManager
 # Importar consolidadores desde nueva arquitectura
 from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
+from brackets.core.cli_actions import has_action_flags, dispatch_cli_action
 from brackets.core.menu_engine import MenuEngine
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 
@@ -1333,12 +1334,9 @@ Ejemplos de uso:
     vault_directory = args.directory
 
     # Si no se pasó --directory y no hay flags de acción, mostrar VaultManager
-    has_action_flags = any([
-        args.weekly, args.monthly, args.timer, args.consolidate, args.consolidate_year,
-        args.list, args.debug, args.test_emoji, args.analyze
-    ])
+    has_flags = has_action_flags(args)
 
-    if vault_directory is None and not has_action_flags:
+    if vault_directory is None and not has_flags:
         # Modo gestor de vaults
         from brackets.managers.vault_manager import VaultManager
         from brackets.utils.vault_creator import create_new_vault
@@ -1383,88 +1381,12 @@ Ejemplos de uso:
     manager = BitacoraManager(vault_directory)
 
     # Manejar argumentos de línea de comandos
-    if args.weekly:
-        if not manager.bitacoras_enabled:
-            print("❌ Bitácoras desactivadas por configuración (feature_flags.bitacoras_enabled=false)")
-            sys.exit(1)
-        print("🗓️ Creando bitácora semanal...")
-        success = manager.weekly_gen.create_next_or_manual_weekly_bitacora()
-        sys.exit(0 if success else 1)
+    exit_code = dispatch_cli_action(args, manager, vault_directory)
+    if exit_code is not None:
+        sys.exit(exit_code)
 
-    elif args.monthly:
-        if not manager.bitacoras_enabled:
-            print("❌ Bitácoras desactivadas por configuración (feature_flags.bitacoras_enabled=false)")
-            sys.exit(1)
-        print("📋 Creando archivo mensual...")
-        success = manager.monthly_gen.create_next_monthly_topics()
-        sys.exit(0 if success else 1)
-
-    elif args.timer:
-        from brackets.modules.pomodoro_timer import run_pomodoro_standalone
-        run_pomodoro_standalone(vault_directory)
-        sys.exit(0)
-
-    elif args.consolidate:
-        if not manager.bitacoras_enabled:
-            print("❌ Bitácoras desactivadas por configuración (feature_flags.bitacoras_enabled=false)")
-            sys.exit(1)
-        print(f"📦 Consolidando mes {args.consolidate}...")
-        import re
-        match = re.match(r'(\d{4})-(\d{2})', args.consolidate)
-        if match:
-            year = int(match.group(1))
-            month = int(match.group(2))
-            success = manager.month_consolidator.consolidate_month(year, month)
-            sys.exit(0 if success else 1)
-        else:
-            print("❌ Formato inválido. Use YYYY-MM (ejemplo: 2025-07)")
-            sys.exit(1)
-
-    elif args.consolidate_year:
-        if not manager.bitacoras_enabled:
-            print("❌ Bitácoras desactivadas por configuración (feature_flags.bitacoras_enabled=false)")
-            sys.exit(1)
-        print(f"📅 Consolidando año {args.consolidate_year}...")
-        try:
-            year = int(args.consolidate_year)
-            success = manager.year_consolidator.consolidate_year(year)
-            sys.exit(0 if success else 1)
-        except ValueError:
-            print("❌ Formato inválido. Use YYYY (ejemplo: 2025)")
-            sys.exit(1)
-
-    elif args.list:
-        print("📊 Archivos recientes:")
-        print("\n📝 Bitácoras semanales:")
-        manager.weekly_gen.list_recent_weeks(10)
-        print("\n📋 Archivos mensuales:")
-        manager.monthly_gen.list_recent_months(5)
-        sys.exit(0)
-
-    elif args.debug:
-        debug_files_in_directory(vault_directory)
-        sys.exit(0)
-
-    elif args.test_emoji:
-        test_emoji_pattern()
-        sys.exit(0)
-
-    elif args.analyze:
-        import os
-        filepath = args.analyze
-        if not os.path.exists(filepath):
-            filepath = os.path.join(vault_directory, args.analyze)
-
-        if os.path.exists(filepath):
-            debug_content_parsing(filepath)
-        else:
-            print(f"❌ Archivo no encontrado: {args.analyze}")
-            sys.exit(1)
-        sys.exit(0)
-
-    else:
-        # Modo interactivo por defecto
-        manager.run()
+    # Modo interactivo por defecto
+    manager.run()
 
 
 if __name__ == "__main__":
