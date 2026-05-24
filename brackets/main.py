@@ -32,6 +32,7 @@ from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
 from brackets.core.cli_actions import has_action_flags, dispatch_cli_action
 from brackets.core.menu_engine import MenuEngine
+from brackets.core.vault_selection import select_vault_directory
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 
 
@@ -1331,50 +1332,20 @@ Ejemplos de uso:
     args = parser.parse_args()
 
     # Determinar directorio del vault
-    vault_directory = args.directory
-
-    # Si no se pasó --directory y no hay flags de acción, mostrar VaultManager
     has_flags = has_action_flags(args)
+    vault_directory, early_exit_code = select_vault_directory(
+        directory_arg=args.directory,
+        has_flags=has_flags,
+        current_dir=os.getcwd(),
+    )
 
-    if vault_directory is None and not has_flags:
-        # Modo gestor de vaults
-        from brackets.managers.vault_manager import VaultManager
-        from brackets.utils.vault_creator import create_new_vault
+    if early_exit_code is not None:
+        if early_exit_code == 0:
+            print("\n👋 ¡Hasta luego!")
+        sys.exit(early_exit_code)
 
-        scope_root, local_only = resolve_workspace_context(os.getcwd())
-
-        # Desde vault local: entrar directo al vault actual (sin selector global).
-        if local_only:
-            vault_directory = scope_root
-        else:
-            workspace_root = scope_root
-            vault_mgr = VaultManager(workspace_root)
-
-            while True:
-                selected = vault_mgr.show_vault_menu()
-
-                if selected is None:
-                    # Usuario salió
-                    print("\n👋 ¡Hasta luego!")
-                    sys.exit(0)
-
-                elif selected == 'CREATE_NEW':
-                    # Crear nuevo vault
-                    new_vault_path = create_new_vault(workspace_root)
-                    if new_vault_path:
-                        vault_mgr.refresh_vaults()
-                        vault_directory = new_vault_path
-                        break
-                    # Si cancela, vuelve al menú
-                    continue
-
-                else:
-                    # Vault seleccionado
-                    vault_directory = selected
-                    break
-
-    elif vault_directory is None:
-        # Si hay flags de acción pero no --directory, usar directorio actual
+    if vault_directory is None:
+        # Salvaguarda: por flujo normal no debería llegar aquí.
         vault_directory = "."
 
     # Crear manager con el vault seleccionado
