@@ -35,6 +35,7 @@ from brackets.core.configuration_controller import ConfigurationController
 from brackets.core.cli_parser import build_cli_parser
 from brackets.core.file_management_controller import FileManagementController
 from brackets.core.menu_engine import MenuEngine
+from brackets.core.sync_yaml_controller import SyncYamlController
 from brackets.core.startup import run_startup_flow
 from brackets.core.tools_controller import ToolsController
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
@@ -145,6 +146,7 @@ class BitacoraManager:
         self.tools_controller = None  # Lazy load cuando se necesite
         self.file_management_controller = None  # Lazy load cuando se necesite
         self.category_management_controller = None  # Lazy load cuando se necesite
+        self.sync_yaml_controller = None  # Lazy load cuando se necesite
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -466,6 +468,17 @@ class BitacoraManager:
             )
         return self.category_management_controller
 
+    def _get_sync_yaml_controller(self) -> SyncYamlController:
+        if self.sync_yaml_controller is None:
+            self.sync_yaml_controller = SyncYamlController(
+                data_dir=self.data_dir,
+                vault_root=self.vault_root,
+                notes_root=self.notes_root,
+                input_fn=input,
+                print_fn=print,
+            )
+        return self.sync_yaml_controller
+
     def handle_file_management_menu(self) -> None:
         """Maneja el submenú de gestión de archivos."""
         self._get_file_management_controller().run_menu(
@@ -491,156 +504,7 @@ class BitacoraManager:
 
     def handle_sync_yaml(self) -> None:
         """Maneja la sincronización del YAML con el repositorio."""
-        print("\n🔄 SINCRONIZAR YAML CON REPOSITORIO")
-        print("=" * 50)
-
-        try:
-            # Importar las funciones necesarias
-            import shutil
-            from pathlib import Path
-
-            from brackets.tools.sync_yaml_with_repo import (
-                parse_file_structure,
-                build_categories_from_repo,
-                from_yaml_file,
-                merge_categories,
-                to_yaml_string,
-                get_sync_scan_config,
-                check_nomenclature_issues,
-                handle_nomenclature_issues,
-                apply_name_mappings,
-                get_empty_descriptions,
-                add_descriptions_to_yaml,
-                compare_structures
-            )
-
-            # 1. Cargar YAML existente
-            yaml_path = os.path.join(self.data_dir, "categories.yaml")
-            try:
-                existing_categories = from_yaml_file(yaml_path)
-                print("  ✓ YAML cargado")
-            except FileNotFoundError:
-                print(f"  ⚠ No se encontró {yaml_path}, creando desde cero...")
-                from brackets.models.yaml_models import CategoriesYAML
-                existing_categories = CategoriesYAML(version="1.0.0")
-
-            # 2. Escanear repositorio
-            print("  ⏳ Escaneando repositorio...")
-            scan_config = get_sync_scan_config(self.vault_root)
-            structure = parse_file_structure(
-                base_dir=self.notes_root,
-                include_extensions=scan_config.get("include_extensions", (".md", ".sql")),
-                excluded_prefixes=scan_config.get("excluded_prefixes", ("[2025]", "[2026]", "[🖼️ASSETS]", "[.crossnote]"))
-            )
-            repo_categories = build_categories_from_repo(structure)
-            print("  ✓ Repositorio escaneado")
-
-            # 3. Verificar nomenclatura
-            print("  ⏳ Verificando nomenclatura...")
-            nomenclature_issues = check_nomenclature_issues(repo_categories)
-
-            if nomenclature_issues:
-                print()
-                name_mapping = handle_nomenclature_issues(nomenclature_issues)
-
-                if name_mapping is None:
-                    print("\n❌ Sincronización cancelada por el usuario")
-                    input("\nPresiona Enter para continuar...")
-                    return
-
-                if name_mapping:
-                    apply_name_mappings(repo_categories, name_mapping)
-                    apply_name_mappings(existing_categories, name_mapping)
-                    print("  ✓ Nombres aplicados")
-            else:
-                print("  ✓ Nomenclatura OK")
-
-            # 4. Comparar y fusionar
-            print("  ⏳ Comparando estructuras...")
-            compare_structures(existing_categories, repo_categories)
-
-            print("  ⏳ Haciendo merge...")
-            merged_categories = merge_categories(existing_categories, repo_categories)
-
-            # Detectar descripciones vacías DESPUÉS del merge
-            empty_descs = get_empty_descriptions(merged_categories)
-            if empty_descs:
-                print(f"\n  ⚠ {len(empty_descs)} elementos sin descripción")
-                for item in empty_descs[:5]:  # Mostrar primeros 5
-                    print(f"    • {item['path']}")
-                if len(empty_descs) > 5:
-                    print(f"    ... y {len(empty_descs) - 5} más")
-
-                # Permitir al usuario añadir descripciones
-                print()
-                add_descriptions_to_yaml(merged_categories, empty_descs)
-
-            # 5. Generar YAML
-            print("\n  ⏳ Generando YAML...")
-            yaml_content = to_yaml_string(merged_categories, indent=2, include_metadata=True)
-
-            output_file = scan_config.get("output_file", "categories_SYNCED.yaml")
-            output_path = output_file if os.path.isabs(output_file) else os.path.join(self.vault_root, output_file)
-            output_path = os.path.normpath(output_path)
-
-            # Comparar con el original para detectar cambios
-            has_changes = True
-            try:
-                with open(yaml_path, "r", encoding="utf-8") as f:
-                    original_content = f.read()
-                has_changes = yaml_content.strip() != original_content.strip()
-            except FileNotFoundError:
-                has_changes = True  # Si no existe, es un "cambio"
-
-            if not has_changes:
-                # Sin cambios - no hay nada que hacer
-                print("  ✓ Sin cambios - nada que sincronizar")
-                # Borrar archivo temporal si existe
-                if os.path.exists(output_path):
-                    os.remove(output_path)
-            else:
-                # Hay cambios - guardar y preguntar
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                with open(output_path, "w", encoding="utf-8") as f:
-                    f.write(yaml_content)
-
-                print(f"  ✓ Archivo temporal creado: {output_path}")
-
-                # 6. Preguntar si reemplazar el archivo definitivo
-                print("\n¿Reemplazar 'data/categories.yaml' con la versión sincronizada? (s/n): ", end="")
-                while True:
-                    choice = input().strip().lower()
-                    if choice in ['s', 'n', 'si', 'no']:
-                        break
-                    print("Por favor, ingresa 's' o 'n': ", end="")
-
-                if choice in ['s', 'si']:
-                    # Crear respaldo
-                    backup_path = yaml_path + ".backup"
-                    if os.path.exists(yaml_path):
-                        shutil.copy2(yaml_path, backup_path)
-                        print(f"  ✓ Respaldo creado: {backup_path}")
-
-                    # Reemplazar
-                    shutil.copy(output_path, yaml_path)
-                    print("  ✓ 'data/categories.yaml' actualizado")
-                    # Borrar archivo temporal
-                    os.remove(output_path)
-                else:
-                    print(f"  ℹ Sin cambios en 'data/categories.yaml'")
-                    print(f"  ℹ El archivo temporal está en: {output_path}")
-
-            print("\n✅ Sincronización completada")
-
-        except ImportError as e:
-            print(f"\n❌ Error de importación: {e}")
-            print("   Asegúrate de que sync_yaml_with_repo.py y yaml_models.py estén disponibles")
-        except Exception as e:
-            print(f"\n❌ Error durante la sincronización: {e}")
-            import traceback
-            traceback.print_exc()
-
-        input("\nPresiona Enter para continuar...")
+        self._get_sync_yaml_controller().run()
 
     def handle_weekly_creation(self) -> None:
         """Maneja la creación de bitácora semanal."""
