@@ -51,6 +51,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/cli_parser.py, brackets/main.py, brackets/tests/test_core_cli_parser.py.
 - Bloque incremental: extraccion de la orquestacion de arranque CLI a modulo core.
   - Evidencia: brackets/core/startup.py, brackets/main.py, brackets/tests/test_core_startup.py.
+- Bloque incremental: extraccion del flujo de configuración a controlador dedicado.
+  - Evidencia: brackets/core/configuration_controller.py, brackets/main.py, brackets/tests/test_core_configuration_controller.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -63,7 +65,8 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de seleccion de vault (selector global/create/cancel/local).
 - Ultimo objetivo tecnico incremental: extraccion de parser CLI (build_cli_parser).
 - Ultimo objetivo tecnico incremental: extraccion de startup flow (run_startup_flow).
-- Siguiente bloque recomendado: modularizar BitacoraManager por subcomponentes (menu handlers/configuración) para reducir tamaño y responsabilidad única de main.py.
+- Ultimo objetivo tecnico incremental: extraccion de controller de configuración.
+- Siguiente bloque recomendado: extraer handlers de herramientas/debug a un tools controller para seguir reduciendo tamaño de BitacoraManager.
 
 ## Vision objetivo del usuario
 
