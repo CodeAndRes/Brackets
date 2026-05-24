@@ -140,6 +140,7 @@ class TestContentGenerator:
             # Verificar que es una cadena y contiene contenido
             assert isinstance(content, str), "Debería retornar string"
             assert len(content) > 0, "El contenido no debería estar vacío"
+            assert "# January Topics ❄️" in content, "Formato de título mensual no coincide"
             # Las tareas completadas [x] deberían haber sido removidas
             assert "[x]" not in content, "Tareas completadas deberían removerse"
             assert "[ ]" in content, "Tareas pendientes deberían mantenerse"

@@ -3,6 +3,7 @@
 Módulo para generar contenido de archivos de bitácora.
 """
 
+import calendar
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -125,13 +126,15 @@ class ContentGenerator:
         
         # Agregar emoji de estación al título
         season_emoji = get_season_emoji(month)
+        month_name = calendar.month_name[month]
+        title = f"# {month_name} Topics {season_emoji}"
         
         if not cleaned_content.startswith('#'):
-            cleaned_content = f"# {season_emoji} Topics - Mes {month:02d}\n\n" + cleaned_content
+            cleaned_content = f"{title}\n\n" + cleaned_content
         else:
             # Reemplazar el título existente
             lines = cleaned_content.split('\n')
-            lines[0] = f"# {season_emoji} Topics - Mes {month:02d}"
+            lines[0] = title
             cleaned_content = '\n'.join(lines)
         
         return cleaned_content
@@ -228,8 +231,9 @@ class TemplateGenerator:
     def create_empty_monthly_template(month: int, year: int) -> str:
         """Crea una plantilla vacía para un archivo mensual."""
         season_emoji = get_season_emoji(month)
+        month_name = calendar.month_name[month]
         
-        template = f"""# {season_emoji} Topics - Mes {month:02d}
+        template = f"""# {month_name} Topics {season_emoji}
 
 ## 🎯 Objetivos del Mes
   - [ ] 
