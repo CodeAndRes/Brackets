@@ -25,6 +25,7 @@ from brackets.tests.test_utils_file_finder import TestFileFinder
 from brackets.tests.test_generators_weekly import TestWeeklyGenerator
 from brackets.tests.test_cli_vault_scope import TestCliVaultScope
 from brackets.tests.test_core_cli_actions import TestCoreCliActions
+from brackets.tests.test_core_category_management_controller import TestCoreCategoryManagementController
 from brackets.tests.test_core_configuration_controller import TestCoreConfigurationController
 from brackets.tests.test_core_cli_parser import TestCoreCliParser
 from brackets.tests.test_core_file_management_controller import TestCoreFileManagementController
@@ -119,6 +120,12 @@ def run_all_tests():
     # Tests de dispatcher de acciones CLI
     tester = TestCoreCliActions()
     cli_actions_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de controlador de categorías
+    tester = TestCoreCategoryManagementController()
+    category_controller_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 

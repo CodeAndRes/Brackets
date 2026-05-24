@@ -30,6 +30,7 @@ from brackets.managers.file_rename_manager import FileRenameManager
 # Importar consolidadores desde nueva arquitectura
 from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
+from brackets.core.category_management_controller import CategoryManagementController
 from brackets.core.configuration_controller import ConfigurationController
 from brackets.core.cli_parser import build_cli_parser
 from brackets.core.file_management_controller import FileManagementController
@@ -143,6 +144,7 @@ class BitacoraManager:
         self.configuration_controller = None  # Lazy load cuando se necesite
         self.tools_controller = None  # Lazy load cuando se necesite
         self.file_management_controller = None  # Lazy load cuando se necesite
+        self.category_management_controller = None  # Lazy load cuando se necesite
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -445,6 +447,25 @@ class BitacoraManager:
             )
         return self.file_management_controller
 
+    def _get_category_manager(self):
+        # Lazy import de CategoryManager
+        from brackets.managers.category_manager import CategoryManager
+
+        if self.category_manager is None:
+            self.category_manager = CategoryManager(self.data_dir)
+        return self.category_manager
+
+    def _get_category_management_controller(self) -> CategoryManagementController:
+        if self.category_management_controller is None:
+            self.category_management_controller = CategoryManagementController(
+                vault_name=self.vault_name,
+                get_category_manager_fn=self._get_category_manager,
+                clear_screen_fn=clear_screen,
+                input_fn=input,
+                print_fn=print,
+            )
+        return self.category_management_controller
+
     def handle_file_management_menu(self) -> None:
         """Maneja el submenú de gestión de archivos."""
         self._get_file_management_controller().run_menu(
@@ -726,48 +747,7 @@ class BitacoraManager:
 
     def handle_category_management(self) -> None:
         """Maneja la gestión de categorías y documentos."""
-        # Lazy import de CategoryManager
-        from brackets.managers.category_manager import CategoryManager
-
-        if self.category_manager is None:
-            self.category_manager = CategoryManager(self.data_dir)
-
-        while True:
-            clear_screen()
-            print(f"\n📂 GESTIONAR CATEGORÍAS Y DOCUMENTOS - {self.vault_name}")
-            print("=" * 60)
-            print("1. 📄 Crear nuevo documento")
-            print("2. 📚 Ver todas las categorías")
-            print("3. 🔍 Explorar categorías")
-            print("0. ↩️ Volver al menú principal")
-            print("-" * 60)
-
-            choice = input("Opción: ").strip()
-
-            if choice == "1":
-                if self.category_manager.interactive_create_document():
-                    print("\n✅ Documento creado exitosamente")
-                else:
-                    print("\n❌ No se pudo crear el documento")
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "2":
-                self.category_manager.list_all_categories()
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "3":
-                category = self.category_manager.select_category()
-                if category:
-                    subcategory = self.category_manager.select_subcategory(category)
-                    if subcategory:
-                        print(f"\n✅ Seleccionado: {category.get('name')} → {subcategory.get('name')}")
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "0":
-                break
-
-            else:
-                print("❌ Opción inválida")
+        self._get_category_management_controller().run()
 
     def handle_file_rename(self) -> None:
         """Maneja la búsqueda y reemplazo global de texto."""
