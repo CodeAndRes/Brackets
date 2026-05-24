@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 """Setup para Brackets - Sistema de Gestión de Bitácoras y Notas."""
 
+from pathlib import Path
 from setuptools import setup, find_packages
+
+
+def read_version() -> str:
+    metadata = {}
+    version_file = Path(__file__).parent / "brackets" / "version.py"
+    exec(version_file.read_text(encoding="utf-8"), metadata)
+    return str(metadata["VERSION"])
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -11,7 +19,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="brackets",
-    version="3.0.0",
+    version=read_version(),
     author="CodeAndRes",
     description="Sistema modular de gestión de bitácoras semanales y notas organizadas",
     long_description=long_description,

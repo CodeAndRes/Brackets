@@ -24,6 +24,7 @@ from brackets.tests.test_utils_content_generator import TestContentGenerator
 from brackets.tests.test_utils_file_finder import TestFileFinder
 from brackets.tests.test_generators_weekly import TestWeeklyGenerator
 from brackets.tests.test_cli_vault_scope import TestCliVaultScope
+from brackets.tests.test_version_policy import TestVersionPolicy
 
 
 def run_all_tests():
@@ -31,15 +32,15 @@ def run_all_tests():
     print("\n" + "=" * 60)
     print("🚀 EJECUTANDO SUITE COMPLETA DE TESTS UNITARIOS")
     print("=" * 60)
-    
+
     total_passed = 0
     total_failed = 0
-    
+
     # Tests de consolidadores (existentes)
     print("\n" + "=" * 60)
     print("🧪 MÓDULO: Consolidadores")
     print("=" * 60)
-    
+
     consolidator_tests = [
         ("Importaciones", test_imports),
         ("MonthConsolidator init", test_month_consolidator_init),
@@ -48,7 +49,7 @@ def run_all_tests():
         ("List available months", test_list_available_months),
         ("List available years", test_list_available_years),
     ]
-    
+
     for test_name, test_func in consolidator_tests:
         try:
             result = test_func()
@@ -59,37 +60,37 @@ def run_all_tests():
         except Exception as e:
             print(f"❌ {test_name}: {e}")
             total_failed += 1
-    
+
     # Tests de helpers
     tester = TestHelpers()
     helpers_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
-    
+
     # Tests de markdown
     tester = TestMarkdown()
     markdown_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
-    
+
     # Tests de legacy_utils
     tester = TestLegacyUtils()
     legacy_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
-    
+
     # Tests de content_parser
     tester = TestContentParser()
     parser_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
-    
+
     # Tests de content_generator
     tester = TestContentGenerator()
     generator_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
-    
+
     # Tests de file_finder
     tester = TestFileFinder()
     finder_passed = tester.run_all()
@@ -107,7 +108,13 @@ def run_all_tests():
     scope_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
-    
+
+    # Tests de política de versionado
+    tester = TestVersionPolicy()
+    version_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
     # Mostrar resumen final
     print("\n" + "=" * 60)
     print("📊 RESUMEN FINAL DE TESTS")
@@ -115,18 +122,18 @@ def run_all_tests():
     print(f"✅ Tests pasados: {total_passed}")
     print(f"❌ Tests fallidos: {total_failed}")
     print(f"📈 Total: {total_passed + total_failed}")
-    
+
     if total_failed == 0:
         percentage = 100
         status = "🎉 TODOS LOS TESTS PASARON"
     else:
         percentage = (total_passed / (total_passed + total_failed)) * 100
         status = f"⚠️  {percentage:.1f}% de tests pasaron"
-    
+
     print(f"📊 Cobertura: {percentage:.1f}%")
     print(status)
     print("=" * 60 + "\n")
-    
+
     return total_failed == 0
 
 

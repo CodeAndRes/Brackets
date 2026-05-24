@@ -6,6 +6,7 @@ Constantes, emojis, patrones y mensajes centralizados.
 
 import os
 from typing import Dict, Tuple
+from brackets.version import VERSION, VERSION_NAME
 
 # =============================================================================
 # DIRECTORIOS
@@ -17,13 +18,6 @@ WORKING_DIRECTORY = os.environ.get('BRACKETS_WORKING_DIR', '.')
 
 # Directorio raíz del sistema Brackets (donde está el código)
 BRACKETS_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# =============================================================================
-# VERSIÓN
-# =============================================================================
-
-VERSION = "2.0.0"
-VERSION_NAME = "Refactorización Arquitectónica"
 
 # =============================================================================
 # NOMBRES DE MESES
