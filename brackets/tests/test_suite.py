@@ -26,6 +26,7 @@ from brackets.tests.test_generators_weekly import TestWeeklyGenerator
 from brackets.tests.test_cli_vault_scope import TestCliVaultScope
 from brackets.tests.test_core_cli_actions import TestCoreCliActions
 from brackets.tests.test_core_cli_parser import TestCoreCliParser
+from brackets.tests.test_core_startup import TestCoreStartup
 from brackets.tests.test_core_vault_selection import TestCoreVaultSelection
 from brackets.tests.test_version_policy import TestVersionPolicy
 
@@ -121,6 +122,12 @@ def run_all_tests():
     # Tests de parser CLI
     tester = TestCoreCliParser()
     cli_parser_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de orquestación de arranque
+    tester = TestCoreStartup()
+    startup_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 

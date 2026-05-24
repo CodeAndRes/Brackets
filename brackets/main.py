@@ -30,10 +30,9 @@ from brackets.managers.file_rename_manager import FileRenameManager
 # Importar consolidadores desde nueva arquitectura
 from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
-from brackets.core.cli_actions import has_action_flags, dispatch_cli_action
 from brackets.core.cli_parser import build_cli_parser
 from brackets.core.menu_engine import MenuEngine
-from brackets.core.vault_selection import select_vault_directory
+from brackets.core.startup import run_startup_flow
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 
 
@@ -1256,33 +1255,13 @@ def main():
 
     args = parser.parse_args()
 
-    # Determinar directorio del vault
-    has_flags = has_action_flags(args)
-    vault_directory, early_exit_code = select_vault_directory(
-        directory_arg=args.directory,
-        has_flags=has_flags,
+    exit_code = run_startup_flow(
+        args=args,
         current_dir=os.getcwd(),
+        manager_factory=BitacoraManager,
     )
-
-    if early_exit_code is not None:
-        if early_exit_code == 0:
-            print("\n👋 ¡Hasta luego!")
-        sys.exit(early_exit_code)
-
-    if vault_directory is None:
-        # Salvaguarda: por flujo normal no debería llegar aquí.
-        vault_directory = "."
-
-    # Crear manager con el vault seleccionado
-    manager = BitacoraManager(vault_directory)
-
-    # Manejar argumentos de línea de comandos
-    exit_code = dispatch_cli_action(args, manager, vault_directory)
     if exit_code is not None:
         sys.exit(exit_code)
-
-    # Modo interactivo por defecto
-    manager.run()
 
 
 if __name__ == "__main__":
