@@ -43,6 +43,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/utils/content_generator.py, brackets/tests/test_utils_content_generator.py.
 - Bloque incremental: modularizacion de main.py iniciada con extraccion de contexto de workspace.
   - Evidencia: brackets/core/workspace_context.py, brackets/main.py, brackets/tests/test_cli_vault_scope.py.
+- Bloque incremental: extraccion de dispatcher de flags CLI fuera de main.py.
+  - Evidencia: brackets/core/cli_actions.py, brackets/main.py, brackets/tests/test_core_cli_actions.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -51,7 +53,8 @@ Fecha de corte: 2026-05-24
 - Principio operativo vigente: WIP=1 bloque funcional por iteracion, commit modular tipo Lego.
 - Ultimo objetivo funcional cerrado: normalizacion de titulo MonthTopics.
 - Ultimo objetivo tecnico incremental: extraccion de resolve_workspace_context fuera de main.py.
-- Siguiente bloque recomendado: dividir responsabilidades de brackets/main.py empezando por extraccion de handlers CLI puros.
+- Ultimo objetivo tecnico incremental: extraccion de dispatcher CLI (has_action_flags/dispatch_cli_action).
+- Siguiente bloque recomendado: extraer flujo de seleccion de vault (VaultManager/create_new_vault) desde main.py a un orquestador core testeable.
 
 ## Vision objetivo del usuario
 
