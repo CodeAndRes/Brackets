@@ -41,6 +41,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/version.py, brackets/config.py, brackets/__init__.py, setup.py, brackets/tests/test_version_policy.py.
 - Bloque resuelto: formato de titulo MonthTopics.
   - Evidencia: brackets/utils/content_generator.py, brackets/tests/test_utils_content_generator.py.
+- Bloque incremental: modularizacion de main.py iniciada con extraccion de contexto de workspace.
+  - Evidencia: brackets/core/workspace_context.py, brackets/main.py, brackets/tests/test_cli_vault_scope.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -48,6 +50,7 @@ Fecha de corte: 2026-05-24
 - Backlog canonico: docs/BACKLOG_UNIFICADO.md.
 - Principio operativo vigente: WIP=1 bloque funcional por iteracion, commit modular tipo Lego.
 - Ultimo objetivo funcional cerrado: normalizacion de titulo MonthTopics.
+- Ultimo objetivo tecnico incremental: extraccion de resolve_workspace_context fuera de main.py.
 - Siguiente bloque recomendado: dividir responsabilidades de brackets/main.py empezando por extraccion de handlers CLI puros.
 
 ## Vision objetivo del usuario
