@@ -32,6 +32,7 @@ from brackets.consolidators.month import MonthConsolidator
 from brackets.consolidators.year import YearConsolidator
 from brackets.core.configuration_controller import ConfigurationController
 from brackets.core.cli_parser import build_cli_parser
+from brackets.core.file_management_controller import FileManagementController
 from brackets.core.menu_engine import MenuEngine
 from brackets.core.startup import run_startup_flow
 from brackets.core.tools_controller import ToolsController
@@ -141,6 +142,7 @@ class BitacoraManager:
         self.file_rename_manager = None  # Lazy load cuando se necesite
         self.configuration_controller = None  # Lazy load cuando se necesite
         self.tools_controller = None  # Lazy load cuando se necesite
+        self.file_management_controller = None  # Lazy load cuando se necesite
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -426,39 +428,30 @@ class BitacoraManager:
                 print("❌ Opción inválida")
                 input("\nPresiona Enter para continuar...")
 
+    def _get_file_management_controller(self) -> FileManagementController:
+        if self.file_management_controller is None:
+            self.file_management_controller = FileManagementController(
+                directory=self.directory,
+                show_file_management_menu_fn=self.show_file_management_menu,
+                show_list_menu_fn=self.show_list_menu,
+                resolve_menu_command_fn=self._resolve_menu_command,
+                clear_screen_fn=clear_screen,
+                read_single_key_fn=read_single_key,
+                weekly_gen=self.weekly_gen,
+                monthly_gen=self.monthly_gen,
+                finder=self.finder,
+                input_fn=input,
+                print_fn=print,
+            )
+        return self.file_management_controller
+
     def handle_file_management_menu(self) -> None:
         """Maneja el submenú de gestión de archivos."""
-        selected_index = 0
-        while True:
-            self.show_file_management_menu(selected_index)
-            choice = read_single_key("Selecciona una opción: ")
-            command, selected_index, valid = self._resolve_menu_command("file_management", choice, selected_index)
-            if not valid:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
-                continue
-            if command is None:
-                continue
-            if command == "list_files":
-                clear_screen()
-                self.handle_list_files()
-            elif command == "analyze_file":
-                clear_screen()
-                self.handle_analyze_file()
-            elif command == "manage_categories":
-                clear_screen()
-                self.handle_category_management()
-            elif command == "global_replace":
-                clear_screen()
-                self.handle_file_rename()
-            elif command == "sync_yaml":
-                clear_screen()
-                self.handle_sync_yaml()
-            elif command == "back":
-                break
-            else:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
+        self._get_file_management_controller().run_menu(
+            on_manage_categories=self.handle_category_management,
+            on_global_replace=self.handle_file_rename,
+            on_sync_yaml=self.handle_sync_yaml,
+        )
 
     def handle_tools_menu(self) -> None:
         """Maneja el submenú de herramientas."""
@@ -675,91 +668,11 @@ class BitacoraManager:
 
     def handle_list_files(self) -> None:
         """Maneja el listado de archivos."""
-        selected_index = 0
-        while True:
-            self.show_list_menu(selected_index)
-            choice = read_single_key("Selecciona una opción: ")
-            command, selected_index, valid = self._resolve_menu_command("list", choice, selected_index)
-            if not valid:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
-                continue
-            if command is None:
-                continue
-
-            if command == "list_weekly":
-                clear_screen()
-                print("\n📝 BITÁCORAS SEMANALES RECIENTES:")
-                print("=" * 40)
-                self.weekly_gen.list_recent_weeks(10)
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "list_monthly":
-                clear_screen()
-                print("\n📋 ARCHIVOS MENSUALES RECIENTES:")
-                print("=" * 40)
-                self.monthly_gen.list_recent_months(10)
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "list_debug":
-                clear_screen()
-                print("\n🔍 DEBUG - TODOS LOS ARCHIVOS:")
-                print("=" * 40)
-                debug_files_in_directory(self.directory)
-                input("\nPresiona Enter para continuar...")
-
-            elif command == "back":
-                break
-
-            else:
-                print("❌ Opción inválida")
-                input("\nPresiona Enter para continuar...")
+        self._get_file_management_controller().run_list_menu()
 
     def handle_analyze_file(self) -> None:
         """Maneja el análisis de archivo específico."""
-        print("\n🔍 ANALIZAR ARCHIVO ESPECÍFICO")
-        print("=" * 35)
-
-        # Mostrar archivos disponibles
-        print("Archivos semanales recientes:")
-        weekly_files = self.finder.list_weekly_files()
-        for i, (filepath, year, month, week) in enumerate(weekly_files[-5:], 1):
-            filename = filepath.split('/')[-1] if '/' in filepath else filepath.split('\\')[-1]
-            print(f"  {i}. {filename}")
-
-        print("\nArchivos mensuales recientes:")
-        monthly_files = self.finder.list_monthly_files()
-        for i, (filepath, year, month) in enumerate(monthly_files[-3:], 6):
-            filename = filepath.split('/')[-1] if '/' in filepath else filepath.split('\\')[-1]
-            print(f"  {i}. {filename}")
-
-        print("\nO escribe el nombre completo del archivo:")
-
-        choice = input("Selecciona archivo (número o nombre): ").strip()
-
-        filepath = None
-
-        # Intentar obtener por número
-        try:
-            choice_num = int(choice)
-            if 1 <= choice_num <= 5 and choice_num <= len(weekly_files):
-                filepath = weekly_files[choice_num - 1][0]
-            elif 6 <= choice_num <= 8 and (choice_num - 6) < len(monthly_files):
-                filepath = monthly_files[choice_num - 6][0]
-        except ValueError:
-            # Intentar como nombre de archivo
-            import os
-            if os.path.exists(choice):
-                filepath = choice
-            elif os.path.exists(os.path.join(self.directory, choice)):
-                filepath = os.path.join(self.directory, choice)
-
-        if filepath:
-            debug_content_parsing(filepath)
-        else:
-            print("❌ Archivo no encontrado")
-
-        input("\nPresiona Enter para continuar...")
+        self._get_file_management_controller().run_analyze_file()
 
     def handle_debug_tools(self) -> None:
         """Maneja las herramientas de debug."""
