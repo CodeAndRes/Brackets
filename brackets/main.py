@@ -677,7 +677,7 @@ class BitacoraManager:
         print("\n📝 CREAR BITÁCORA SEMANAL")
         print("=" * 30)
 
-        success = self.weekly_gen.create_next_weekly_bitacora()
+        success = self.weekly_gen.create_next_or_manual_weekly_bitacora()
         if success:
             print("\n✅ ¡Bitácora semanal creada exitosamente!")
         else:
@@ -1239,6 +1239,38 @@ class BitacoraManager:
                 input("Presiona Enter para continuar...")
 
 
+def resolve_workspace_context(current_dir: str) -> tuple[str, bool]:
+    """Resuelve el contexto de ejecución para selector de vaults.
+
+    Returns:
+        tuple(workspace_root, local_only)
+        - workspace_root: raíz del workspace o vault detectado.
+        - local_only: True cuando se detecta ejecución desde un vault local
+          (debe evitar mostrar listado global de vaults).
+    """
+    cursor = os.path.abspath(current_dir)
+    visited = set()
+
+    while cursor not in visited:
+        visited.add(cursor)
+
+        is_workspace_root = os.path.exists(os.path.join(cursor, "brackets", "brackets"))
+        is_vault_root = os.path.exists(os.path.join(cursor, "data", "config.yaml"))
+
+        if is_vault_root and not is_workspace_root:
+            return cursor, True
+
+        if is_workspace_root:
+            return cursor, False
+
+        parent = os.path.abspath(os.path.join(cursor, ".."))
+        if parent == cursor:
+            break
+        cursor = parent
+
+    return os.path.abspath(current_dir), False
+
+
 def main():
     """Función principal del script."""
     import argparse
@@ -1337,39 +1369,37 @@ Ejemplos de uso:
         from brackets.managers.vault_manager import VaultManager
         from brackets.utils.vault_creator import create_new_vault
 
-        # Buscar workspace root (directorio padre del directorio actual si contiene brackets/)
-        workspace_root = os.getcwd()
-        if os.path.exists(os.path.join(workspace_root, "brackets", "brackets")):
-            # Estamos en workspace root
-            pass
-        elif os.path.exists(os.path.join(workspace_root, "..", "brackets", "brackets")):
-            # Estamos en un vault dentro del workspace
-            workspace_root = os.path.abspath(os.path.join(workspace_root, ".."))
+        scope_root, local_only = resolve_workspace_context(os.getcwd())
 
-        vault_mgr = VaultManager(workspace_root)
+        # Desde vault local: entrar directo al vault actual (sin selector global).
+        if local_only:
+            vault_directory = scope_root
+        else:
+            workspace_root = scope_root
+            vault_mgr = VaultManager(workspace_root)
 
-        while True:
-            selected = vault_mgr.show_vault_menu()
+            while True:
+                selected = vault_mgr.show_vault_menu()
 
-            if selected is None:
-                # Usuario salió
-                print("\n👋 ¡Hasta luego!")
-                sys.exit(0)
+                if selected is None:
+                    # Usuario salió
+                    print("\n👋 ¡Hasta luego!")
+                    sys.exit(0)
 
-            elif selected == 'CREATE_NEW':
-                # Crear nuevo vault
-                new_vault_path = create_new_vault(workspace_root)
-                if new_vault_path:
-                    vault_mgr.refresh_vaults()
-                    vault_directory = new_vault_path
+                elif selected == 'CREATE_NEW':
+                    # Crear nuevo vault
+                    new_vault_path = create_new_vault(workspace_root)
+                    if new_vault_path:
+                        vault_mgr.refresh_vaults()
+                        vault_directory = new_vault_path
+                        break
+                    # Si cancela, vuelve al menú
+                    continue
+
+                else:
+                    # Vault seleccionado
+                    vault_directory = selected
                     break
-                # Si cancela, vuelve al menú
-                continue
-
-            else:
-                # Vault seleccionado
-                vault_directory = selected
-                break
 
     elif vault_directory is None:
         # Si hay flags de acción pero no --directory, usar directorio actual
@@ -1384,7 +1414,7 @@ Ejemplos de uso:
             print("❌ Bitácoras desactivadas por configuración (feature_flags.bitacoras_enabled=false)")
             sys.exit(1)
         print("🗓️ Creando bitácora semanal...")
-        success = manager.weekly_gen.create_next_weekly_bitacora()
+        success = manager.weekly_gen.create_next_or_manual_weekly_bitacora()
         sys.exit(0 if success else 1)
 
     elif args.monthly:

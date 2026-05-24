@@ -50,6 +50,50 @@ class TestWeeklyGenerator:
             print(f"❌ Test lunes-viernes falló: {e}")
             self.failed += 1
 
+    def test_create_next_or_manual_fallback_when_no_recent_weekly(self):
+        """Si no hay bitácora previa, debe usar flujo manual automáticamente."""
+        try:
+            self.generator.finder.get_most_recent_weekly = lambda: None
+            self.generator.create_manual_weekly_bitacora = lambda: True
+
+            result = self.generator.create_next_or_manual_weekly_bitacora()
+            assert result is True, "Debería retornar éxito al completar flujo manual"
+
+            print("✅ Test: fallback a manual cuando no hay bitácora previa")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test fallback manual falló: {e}")
+            self.failed += 1
+
+    def test_create_next_or_manual_prefers_automatic_when_recent_exists(self):
+        """Si hay bitácora previa, debe ejecutar el flujo automático."""
+        try:
+            calls = {"auto": 0, "manual": 0}
+
+            self.generator.finder.get_most_recent_weekly = lambda: "fake_weekly.md"
+
+            def fake_auto(ask_for_weight: bool = True):
+                calls["auto"] += 1
+                return True
+
+            def fake_manual():
+                calls["manual"] += 1
+                return True
+
+            self.generator.create_next_weekly_bitacora = fake_auto
+            self.generator.create_manual_weekly_bitacora = fake_manual
+
+            result = self.generator.create_next_or_manual_weekly_bitacora()
+            assert result is True, "Debería retornar éxito en flujo automático"
+            assert calls["auto"] == 1, f"Flujo automático esperado 1 vez, obtuvo {calls['auto']}"
+            assert calls["manual"] == 0, f"Flujo manual no debería ejecutarse, obtuvo {calls['manual']}"
+
+            print("✅ Test: flujo automático preferido cuando hay base previa")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test preferencia automática falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         """Ejecutar todos los tests."""
         print("\n🧪 TESTS: generators/weekly.py")
@@ -57,6 +101,8 @@ class TestWeeklyGenerator:
 
         self.test_iso_next_week_dates_real_case_week12_2026()
         self.test_iso_next_week_always_monday_to_friday()
+        self.test_create_next_or_manual_fallback_when_no_recent_weekly()
+        self.test_create_next_or_manual_prefers_automatic_when_recent_exists()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0

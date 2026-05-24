@@ -18,6 +18,21 @@ Este backlog centraliza funcionalidades de producto detectadas en:
 - docs/HANDOFF_AGENTE_SIGUIENTE.md
 - docs/PLAN_YAML_RELACIONAL.md
 
+## Kanban continuo (activo desde 2026-05-24)
+
+Modelo operativo:
+- Fuente unica: este backlog.
+- Estados: `Ideas` -> `Priorizado` -> `En ejecucion` -> `Verificado`.
+- Limite WIP: 1 bloque principal simultaneo.
+- Checkpoint: revisar y reordenar cada 3-4 movimientos de estado.
+
+Bloque activo (WIP principal):
+- [Verificado] Fallback automatico a flujo manual cuando no existen bitacoras previas.
+
+Cola inmediata priorizada:
+- [Verificado] Restringir visibilidad de vaults: desde `run_brackets.py` local mostrar solo el vault local; el root mantiene vista global.
+- [Priorizado] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
+
 ## Implementado
 
 - [x] Desacoplamiento de menu principal y submenus a configuracion YAML.
@@ -34,10 +49,10 @@ Este backlog centraliza funcionalidades de producto detectadas en:
 ## Alta prioridad
 
 - [x] Corregir traspaso de tareas entre semanas para no migrar tareas tachadas `[x]` y respetar jerarquias (incluye no migrar subtareas de padre completado).
-- [ ] Si no hay bitacoras previas, que la opcion "Crear bitacora semanal" redirija automaticamente al flujo manual.
+- [x] Si no hay bitacoras previas, que la opcion "Crear bitacora semanal" redirija automaticamente al flujo manual.
 - [ ] Corregir formato del titulo de `MonthTopics` (ejemplo esperado: `# July Topics ☀️`).
 - [ ] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
-- [ ] Restringir visibilidad de vaults: desde `run_brackets.py` local mostrar solo el vault local; el root mantiene vista global.
+- [x] Restringir visibilidad de vaults: desde `run_brackets.py` local mostrar solo el vault local; el root mantiene vista global.
 
 ## Prioridad media
 
@@ -118,10 +133,10 @@ Este backlog centraliza funcionalidades de producto detectadas en:
 Ultima auditoria: 2026-05-24
 
 - ✅ Traspaso de tareas entre semanas: resuelto y validado en parser/tests (no migra `[x]` ni subtareas de padre completado).
-- ⏳ Fallback automatico a flujo manual sin bitacoras previas: sigue pendiente (`WeeklyGenerator.create_next_weekly_bitacora` devuelve `False` si no hay archivo previo).
+- ✅ Fallback automatico a flujo manual sin bitacoras previas: resuelto en `WeeklyGenerator.create_next_or_manual_weekly_bitacora` + `BitacoraManager.handle_weekly_creation`, validado con `brackets/tests/test_generators_weekly.py`.
 - ⏳ Titulo `MonthTopics`: sigue pendiente (actualmente `# {emoji} Topics - Mes {MM}` en `ContentGenerator.create_monthly_topics`).
 - ⏳ Politica unica de versionado: sigue pendiente (`setup.py` en 3.0.0 y modulos internos en 2.0.0).
-- ⏳ Visibilidad de vault local vs root: sigue pendiente (desde vault local se detecta workspace padre y se listan vaults globales).
+- ✅ Visibilidad de vault local vs root: resuelto en `resolve_workspace_context` y flujo de `main`, con tests en `brackets/tests/test_cli_vault_scope.py`.
 
 Regla para marcar una tarea como resuelta:
 
