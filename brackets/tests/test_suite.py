@@ -29,6 +29,7 @@ from brackets.tests.test_core_category_management_controller import TestCoreCate
 from brackets.tests.test_core_configuration_controller import TestCoreConfigurationController
 from brackets.tests.test_core_cli_parser import TestCoreCliParser
 from brackets.tests.test_core_file_management_controller import TestCoreFileManagementController
+from brackets.tests.test_core_file_rename_controller import TestCoreFileRenameController
 from brackets.tests.test_core_sync_yaml_controller import TestCoreSyncYamlController
 from brackets.tests.test_core_startup import TestCoreStartup
 from brackets.tests.test_core_tools_controller import TestCoreToolsController
@@ -145,6 +146,12 @@ def run_all_tests():
     # Tests de controlador de gestión de archivos
     tester = TestCoreFileManagementController()
     file_management_controller_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de controlador de rename/reemplazo
+    tester = TestCoreFileRenameController()
+    file_rename_controller_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 

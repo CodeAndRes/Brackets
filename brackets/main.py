@@ -34,6 +34,7 @@ from brackets.core.category_management_controller import CategoryManagementContr
 from brackets.core.configuration_controller import ConfigurationController
 from brackets.core.cli_parser import build_cli_parser
 from brackets.core.file_management_controller import FileManagementController
+from brackets.core.file_rename_controller import FileRenameController
 from brackets.core.menu_engine import MenuEngine
 from brackets.core.sync_yaml_controller import SyncYamlController
 from brackets.core.startup import run_startup_flow
@@ -147,6 +148,7 @@ class BitacoraManager:
         self.file_management_controller = None  # Lazy load cuando se necesite
         self.category_management_controller = None  # Lazy load cuando se necesite
         self.sync_yaml_controller = None  # Lazy load cuando se necesite
+        self.file_rename_controller = None  # Lazy load cuando se necesite
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -479,6 +481,22 @@ class BitacoraManager:
             )
         return self.sync_yaml_controller
 
+    def _get_file_rename_manager(self):
+        if self.file_rename_manager is None:
+            self.file_rename_manager = FileRenameManager(self.notes_root)
+        return self.file_rename_manager
+
+    def _get_file_rename_controller(self) -> FileRenameController:
+        if self.file_rename_controller is None:
+            self.file_rename_controller = FileRenameController(
+                vault_name=self.vault_name,
+                get_file_rename_manager_fn=self._get_file_rename_manager,
+                clear_screen_fn=clear_screen,
+                input_fn=input,
+                print_fn=print,
+            )
+        return self.file_rename_controller
+
     def handle_file_management_menu(self) -> None:
         """Maneja el submenú de gestión de archivos."""
         self._get_file_management_controller().run_menu(
@@ -615,35 +633,7 @@ class BitacoraManager:
 
     def handle_file_rename(self) -> None:
         """Maneja la búsqueda y reemplazo global de texto."""
-        if self.file_rename_manager is None:
-            self.file_rename_manager = FileRenameManager(self.notes_root)
-
-        # Mostrar menú de opciones
-        while True:
-            clear_screen()
-            print(f"\n🔍 BÚSQUEDA Y REEMPLAZO - {self.vault_name}")
-            print("=" * 60)
-            print("1. 🔍 Búsqueda y reemplazo global")
-            print("   (Busca y reemplaza texto en nombres y contenido)")
-            print("2. 📁 Renombrar archivo específico")
-            print("   (Renombra archivo y actualiza referencias)")
-            print("0. ↩️ Volver al menú principal")
-            print("-" * 60)
-
-            choice = input("Opción: ").strip()
-
-            if choice == "1":
-                self.file_rename_manager.interactive_global_replace()
-                input("\nPresiona Enter para continuar...")
-                break
-            elif choice == "2":
-                self.file_rename_manager.interactive_rename()
-                input("\nPresiona Enter para continuar...")
-                break
-            elif choice == "0":
-                break
-            else:
-                print("❌ Opción inválida")
+        self._get_file_rename_controller().run()
 
     def handle_configuration(self) -> None:
         """Maneja la configuración viva (horarios y calendario)."""
