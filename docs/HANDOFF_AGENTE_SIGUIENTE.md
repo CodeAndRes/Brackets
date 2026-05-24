@@ -53,6 +53,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/startup.py, brackets/main.py, brackets/tests/test_core_startup.py.
 - Bloque incremental: extraccion del flujo de configuración a controlador dedicado.
   - Evidencia: brackets/core/configuration_controller.py, brackets/main.py, brackets/tests/test_core_configuration_controller.py.
+- Bloque incremental: extraccion del flujo de herramientas/debug a controlador dedicado.
+  - Evidencia: brackets/core/tools_controller.py, brackets/main.py, brackets/tests/test_core_tools_controller.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -66,7 +68,8 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de parser CLI (build_cli_parser).
 - Ultimo objetivo tecnico incremental: extraccion de startup flow (run_startup_flow).
 - Ultimo objetivo tecnico incremental: extraccion de controller de configuración.
-- Siguiente bloque recomendado: extraer handlers de herramientas/debug a un tools controller para seguir reduciendo tamaño de BitacoraManager.
+- Ultimo objetivo tecnico incremental: extraccion de tools controller.
+- Siguiente bloque recomendado: extraer file-management/list/analyze flows a controllers dedicados para terminar de adelgazar BitacoraManager.
 
 ## Vision objetivo del usuario
 
