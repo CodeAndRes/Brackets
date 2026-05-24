@@ -17,13 +17,38 @@ Objetivo: permitir continuidad total en chat nuevo sin perder contexto tecnico n
 - Script rapido de arranque en C:/Projects/brackets_quickstart.ps1.
 - Pomodoro v1 funcional con pausa/resume y resumen de sesiones.
 - Traspaso de tareas corregido para no migrar [x] y no migrar subtareas bajo padre completado.
+- Fallback automatico semanal: si no hay bitacora previa, redirige a flujo manual.
+- Visibilidad de vaults por contexto: local muestra solo su vault; root mantiene selector global.
+- Politica de versionado unificada: fuente unica en brackets/version.py para runtime y packaging.
+- Formato MonthTopics alineado a objetivo: # {MonthName} Topics {emoji}.
 
 ## Pendientes tecnicos criticos (confirmados)
 
-- Fallback automatico a flujo manual cuando no existen bitacoras previas.
-- Formato de titulo mensual esperado (objetivo: '# July Topics ☀️').
-- Unificar versionado (setup.py vs modulos internos).
-- Politica de visibilidad de vaults (local vs root).
+- Modularizar aun mas brackets/main.py por responsabilidades.
+- Definir menu por tipo de vault (work/personal) con reglas de visibilidad mas finas.
+- Añadir smoke test unico para validar vault nuevo en un comando.
+- Modernizar empaquetado a pyproject.toml.
+
+## Registro de avances recientes (bitacora de ejecucion)
+
+Fecha de corte: 2026-05-24
+
+- Bloque resuelto: fallback automatico semanal (auto -> manual sin base previa).
+  - Evidencia: brackets/generators/weekly.py, brackets/main.py, brackets/tests/test_generators_weekly.py.
+- Bloque resuelto: alcance de vault por contexto de ejecucion (local/root).
+  - Evidencia: brackets/main.py (resolve_workspace_context), brackets/tests/test_cli_vault_scope.py.
+- Bloque resuelto: versionado unico runtime + setup.
+  - Evidencia: brackets/version.py, brackets/config.py, brackets/__init__.py, setup.py, brackets/tests/test_version_policy.py.
+- Bloque resuelto: formato de titulo MonthTopics.
+  - Evidencia: brackets/utils/content_generator.py, brackets/tests/test_utils_content_generator.py.
+
+## Estado exacto para retomar (sin releer todo el repo)
+
+- Rama de trabajo activa esperada: feature/evolution-lead-kanban.
+- Backlog canonico: docs/BACKLOG_UNIFICADO.md.
+- Principio operativo vigente: WIP=1 bloque funcional por iteracion, commit modular tipo Lego.
+- Ultimo objetivo funcional cerrado: normalizacion de titulo MonthTopics.
+- Siguiente bloque recomendado: dividir responsabilidades de brackets/main.py empezando por extraccion de handlers CLI puros.
 
 ## Vision objetivo del usuario
 
@@ -55,4 +80,4 @@ Ver detalle en docs/PLAN_YAML_RELACIONAL.md.
 
 ## Prompt sugerido para iniciar un nuevo chat
 
-"Lee docs/HANDOFF_AGENTE_SIGUIENTE.md, docs/BACKLOG_UNIFICADO.md y docs/PLAN_YAML_RELACIONAL.md. Necesito que ejecutes el siguiente bloque del MVP de base de datos YAML para tareas/proyectos y dejes pruebas minimas."
+"Lee docs/HANDOFF_AGENTE_SIGUIENTE.md, docs/BACKLOG_UNIFICADO.md y docs/PLAN_YAML_RELACIONAL.md. Retoma desde el siguiente bloque WIP (modularizar main.py en piezas testeables), manteniendo commits pequenos y actualizando este handoff tras cada bloque cerrado con evidencia de test."

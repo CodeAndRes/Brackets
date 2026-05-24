@@ -50,7 +50,7 @@ Cola inmediata priorizada:
 
 - [x] Corregir traspaso de tareas entre semanas para no migrar tareas tachadas `[x]` y respetar jerarquias (incluye no migrar subtareas de padre completado).
 - [x] Si no hay bitacoras previas, que la opcion "Crear bitacora semanal" redirija automaticamente al flujo manual.
-- [ ] Corregir formato del titulo de `MonthTopics` (ejemplo esperado: `# July Topics ☀️`).
+- [x] Corregir formato del titulo de `MonthTopics` (ejemplo esperado: `# July Topics ☀️`).
 - [x] Definir y aplicar una politica unica de versionado (README/setup/modulos internos).
 - [x] Restringir visibilidad de vaults: desde `run_brackets.py` local mostrar solo el vault local; el root mantiene vista global.
 
@@ -134,7 +134,7 @@ Ultima auditoria: 2026-05-24
 
 - ✅ Traspaso de tareas entre semanas: resuelto y validado en parser/tests (no migra `[x]` ni subtareas de padre completado).
 - ✅ Fallback automatico a flujo manual sin bitacoras previas: resuelto en `WeeklyGenerator.create_next_or_manual_weekly_bitacora` + `BitacoraManager.handle_weekly_creation`, validado con `brackets/tests/test_generators_weekly.py`.
-- ⏳ Titulo `MonthTopics`: sigue pendiente (actualmente `# {emoji} Topics - Mes {MM}` en `ContentGenerator.create_monthly_topics`).
+- ✅ Titulo `MonthTopics`: resuelto con formato `# {MonthName} Topics {emoji}` en `ContentGenerator.create_monthly_topics`; validado con `brackets/tests/test_utils_content_generator.py`.
 - ✅ Politica unica de versionado: resuelto con fuente unica en `brackets/version.py`, integrada en `setup.py`, `brackets.__version__` y `config.VERSION`; validado con `brackets/tests/test_version_policy.py`.
 - ✅ Visibilidad de vault local vs root: resuelto en `resolve_workspace_context` y flujo de `main`, con tests en `brackets/tests/test_cli_vault_scope.py`.
 
