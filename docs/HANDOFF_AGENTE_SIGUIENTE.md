@@ -63,7 +63,7 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/sync_yaml_controller.py, brackets/main.py, brackets/tests/test_core_sync_yaml_controller.py, brackets/tests/test_suite.py.
 - Bloque incremental: extraccion del flujo de file-rename/global-replace a controlador dedicado.
   - Evidencia: brackets/core/file_rename_controller.py, brackets/main.py, brackets/tests/test_core_file_rename_controller.py, brackets/tests/test_suite.py.
-- Bloque correctivo: guardrail para flags CLI sin --directory fuera de vault local (evita generar bitacoras en ruta incorrecta).
+- Bloque correctivo: guardrail para contexto CLI (flags requieren vault local o --directory, y --directory debe apuntar a vault con data/config.yaml).
   - Evidencia: brackets/core/vault_selection.py, brackets/tests/test_core_vault_selection.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
@@ -83,7 +83,7 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de category-management controller.
 - Ultimo objetivo tecnico incremental: extraccion de sync-yaml controller.
 - Ultimo objetivo tecnico incremental: extraccion de file-rename/global-replace controller.
-- Ultimo objetivo tecnico incremental: guardrail de contexto para flags CLI (requiere vault local o --directory).
+- Ultimo objetivo tecnico incremental: guardrail de contexto CLI y validacion estricta de --directory como vault root.
 - Siguiente bloque recomendado: extraer debug-tools legacy flow a controlador dedicado para seguir adelgazando BitacoraManager.
 
 ## Vision objetivo del usuario
