@@ -94,7 +94,12 @@ class WeeklyGenerator:
         )
 
         # Crear archivo
-        new_filename = generate_filename(next_year, next_month, next_week)
+        new_filename = generate_filename(
+            year=next_year,
+            month=next_month,
+            week=next_week,
+            directory=self.directory,
+        )
 
         if not confirm_overwrite(new_filename):
             print(MESSAGES['operation_cancelled'])

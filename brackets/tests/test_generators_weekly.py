@@ -5,9 +5,12 @@ Tests unitarios para WeeklyGenerator en generators/weekly.py
 
 import sys
 import os
+import tempfile
+from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+import brackets.generators.weekly as weekly_module
 from brackets.generators.weekly import WeeklyGenerator
 
 
@@ -94,6 +97,43 @@ class TestWeeklyGenerator:
             print(f"❌ Test preferencia automática falló: {e}")
             self.failed += 1
 
+    def test_create_next_weekly_uses_generator_directory(self):
+        """Valida que la creación automática escriba dentro del directorio del vault."""
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                generator = WeeklyGenerator(directory=tmp)
+
+                # Asegura que FileFinder busque dentro del vault temporal.
+                generator.finder = weekly_module.FileFinder(tmp)
+
+                recent_file = os.path.join(tmp, "[2026][05]Week21.md")
+                with open(recent_file, "w", encoding="utf-8") as f:
+                    f.write("# Semana 21\n")
+
+                generator.generator.create_weekly_bitacora = lambda **_kwargs: "new-content"
+                generator.generator.create_week_summary = lambda **_kwargs: ""
+                generator._calculate_next_week_dates_iso = lambda _y, _w: [
+                    datetime(2026, 5, 25),
+                    datetime(2026, 5, 26),
+                    datetime(2026, 5, 27),
+                    datetime(2026, 5, 28),
+                    datetime(2026, 5, 29),
+                ]
+
+                result = generator.create_next_weekly_bitacora(ask_for_weight=False)
+
+                expected = os.path.join(tmp, "[2026][05]Week22.md")
+                assert result is True, "La creación automática debería completar con éxito"
+                assert os.path.exists(expected), (
+                    f"Debe crear el archivo dentro del vault seleccionado. No existe: {expected}"
+                )
+
+            print("✅ Test: creación automática escribe en directorio del vault")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test create_next_weekly_uses_generator_directory falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         """Ejecutar todos los tests."""
         print("\n🧪 TESTS: generators/weekly.py")
@@ -103,6 +143,7 @@ class TestWeeklyGenerator:
         self.test_iso_next_week_always_monday_to_friday()
         self.test_create_next_or_manual_fallback_when_no_recent_weekly()
         self.test_create_next_or_manual_prefers_automatic_when_recent_exists()
+        self.test_create_next_weekly_uses_generator_directory()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0
