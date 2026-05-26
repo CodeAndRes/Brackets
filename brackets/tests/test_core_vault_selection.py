@@ -48,19 +48,38 @@ class TestCoreVaultSelection:
             print(f"❌ Test directory_arg_passthrough falló: {e}")
             self.failed += 1
 
-    def test_flags_without_directory_use_dot(self):
+    def test_flags_in_local_context_use_local_vault(self):
         try:
             vault, code = select_vault_directory(
                 directory_arg=None,
                 has_flags=True,
+                current_dir="/tmp/local-vault",
+                resolve_workspace_context_fn=lambda _cwd: ("/tmp/local-vault", True),
             )
-            self._assert(vault == ".", "Con flags debe usar directorio actual")
+            self._assert(vault == "/tmp/local-vault", "Con flags en contexto local debe usar vault local")
             self._assert(code is None, "No debe salir temprano")
 
-            print("✅ Test: con flags usa '.'")
+            print("✅ Test: con flags usa vault local")
             self.passed += 1
         except Exception as e:
-            print(f"❌ Test flags_without_directory_use_dot falló: {e}")
+            print(f"❌ Test flags_in_local_context_use_local_vault falló: {e}")
+            self.failed += 1
+
+    def test_flags_in_non_local_context_require_directory(self):
+        try:
+            vault, code = select_vault_directory(
+                directory_arg=None,
+                has_flags=True,
+                current_dir="/ws",
+                resolve_workspace_context_fn=lambda _cwd: ("/ws", False),
+            )
+            self._assert(vault is None, "Sin --directory fuera de vault local no debe continuar")
+            self._assert(code == 2, "Debe devolver código de error de uso")
+
+            print("✅ Test: con flags fuera de vault local exige --directory")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test flags_in_non_local_context_require_directory falló: {e}")
             self.failed += 1
 
     def test_local_context_short_circuit(self):
@@ -147,7 +166,8 @@ class TestCoreVaultSelection:
         print("=" * 50)
 
         self.test_directory_arg_passthrough()
-        self.test_flags_without_directory_use_dot()
+        self.test_flags_in_local_context_use_local_vault()
+        self.test_flags_in_non_local_context_require_directory()
         self.test_local_context_short_circuit()
         self.test_global_selector_exit()
         self.test_global_selector_create_new_success()

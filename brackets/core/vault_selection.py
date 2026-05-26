@@ -26,7 +26,12 @@ def select_vault_directory(
         return directory_arg, None
 
     if has_flags:
-        return ".", None
+        scope_root, local_only = resolve_workspace_context_fn(current_dir or os.getcwd())
+        if local_only:
+            return scope_root, None
+
+        print("❌ Para usar flags de acción debes ejecutar dentro de un vault local o indicar --directory.")
+        return None, 2
 
     scope_root, local_only = resolve_workspace_context_fn(current_dir or os.getcwd())
     if local_only:
