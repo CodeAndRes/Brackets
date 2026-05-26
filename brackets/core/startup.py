@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Startup orchestration for Brackets CLI."""
 
+import os
 from typing import Callable, Optional
 
 from brackets.core.cli_actions import dispatch_cli_action, has_action_flags
@@ -34,6 +35,13 @@ def run_startup_flow(
 
     if vault_directory is None:
         vault_directory = "."
+
+    resolved_vault_dir = vault_directory if os.path.isabs(vault_directory) else os.path.abspath(
+        os.path.join(current_dir, vault_directory)
+    )
+    if not os.path.exists(os.path.join(resolved_vault_dir, "data", "config.yaml")):
+        print("❌ Directorio de vault inválido: falta data/config.yaml")
+        return 2
 
     manager = manager_factory(vault_directory)
 

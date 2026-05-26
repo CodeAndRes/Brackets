@@ -3,6 +3,7 @@
 
 import os
 import sys
+import tempfile
 from types import SimpleNamespace
 
 # Agregar el directorio raíz al path
@@ -33,6 +34,13 @@ class TestCoreStartup:
 
     def _args(self, directory=None):
         return SimpleNamespace(directory=directory)
+
+    def _make_vault_dir(self, base_dir: str, name: str = "vault") -> str:
+        vault_dir = os.path.join(base_dir, name)
+        os.makedirs(os.path.join(vault_dir, "data"), exist_ok=True)
+        with open(os.path.join(vault_dir, "data", "config.yaml"), "w", encoding="utf-8") as f:
+            f.write("vault_name: test\n")
+        return vault_dir
 
     def test_early_exit_code(self):
         try:
@@ -77,17 +85,19 @@ class TestCoreStartup:
                 state["run"] = manager.run_called
                 return 1
 
-            exit_code = run_startup_flow(
-                args=self._args(),
-                current_dir=".",
-                manager_factory=_manager_factory,
-                has_action_flags_fn=lambda _a: True,
-                select_vault_directory_fn=lambda **_kwargs: (".", None),
-                dispatch_cli_action_fn=_dispatch,
-            )
+            with tempfile.TemporaryDirectory() as tmp:
+                vault_dir = self._make_vault_dir(tmp)
+                exit_code = run_startup_flow(
+                    args=self._args(),
+                    current_dir=tmp,
+                    manager_factory=_manager_factory,
+                    has_action_flags_fn=lambda _a: True,
+                    select_vault_directory_fn=lambda **_kwargs: (vault_dir, None),
+                    dispatch_cli_action_fn=_dispatch,
+                )
 
             self._assert(exit_code == 1, "Debe propagar código del dispatcher")
-            self._assert(state["vault"] == ".", "Debe crear manager con vault resuelto")
+            self._assert(state["vault"] == vault_dir, "Debe crear manager con vault resuelto")
             self._assert(state["run"] is False, "No debe ejecutar modo interactivo si dispatch devuelve código")
 
             print("✅ Test: dispatch con exit code evita run()")
@@ -105,14 +115,16 @@ class TestCoreStartup:
                 holder["manager"] = manager
                 return manager
 
-            exit_code = run_startup_flow(
-                args=self._args(),
-                current_dir=".",
-                manager_factory=_manager_factory,
-                has_action_flags_fn=lambda _a: False,
-                select_vault_directory_fn=lambda **_kwargs: ("vault-path", None),
-                dispatch_cli_action_fn=lambda _args, _manager, _vault: None,
-            )
+            with tempfile.TemporaryDirectory() as tmp:
+                vault_dir = self._make_vault_dir(tmp)
+                exit_code = run_startup_flow(
+                    args=self._args(),
+                    current_dir=tmp,
+                    manager_factory=_manager_factory,
+                    has_action_flags_fn=lambda _a: False,
+                    select_vault_directory_fn=lambda **_kwargs: (vault_dir, None),
+                    dispatch_cli_action_fn=lambda _args, _manager, _vault: None,
+                )
 
             self._assert(exit_code is None, "Modo interactivo debe devolver None")
             self._assert(holder["manager"] is not None, "Debe crear manager")
@@ -124,6 +136,32 @@ class TestCoreStartup:
             print(f"❌ Test interactive_run_when_no_dispatch_code falló: {e}")
             self.failed += 1
 
+    def test_invalid_vault_directory_stops_before_manager(self):
+        try:
+            called = {"manager": False}
+
+            with tempfile.TemporaryDirectory() as tmp:
+                invalid_dir = os.path.join(tmp, "invalid-vault")
+                os.makedirs(invalid_dir, exist_ok=True)
+
+                exit_code = run_startup_flow(
+                    args=self._args(),
+                    current_dir=tmp,
+                    manager_factory=lambda _vault: called.__setitem__("manager", True) or _FakeManager(_vault),
+                    has_action_flags_fn=lambda _a: False,
+                    select_vault_directory_fn=lambda **_kwargs: (invalid_dir, None),
+                    dispatch_cli_action_fn=lambda _args, _manager, _vault: None,
+                )
+
+            self._assert(exit_code == 2, "Debe devolver código 2 para vault inválido")
+            self._assert(called["manager"] is False, "No debe crear manager para vault inválido")
+
+            print("✅ Test: vault inválido corta flujo antes de manager")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test invalid_vault_directory_stops_before_manager falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         print("\n🧪 TESTS: core/startup.py")
         print("=" * 50)
@@ -131,6 +169,7 @@ class TestCoreStartup:
         self.test_early_exit_code()
         self.test_dispatch_exit_code()
         self.test_interactive_run_when_no_dispatch_code()
+        self.test_invalid_vault_directory_stops_before_manager()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0
