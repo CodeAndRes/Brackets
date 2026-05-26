@@ -3,6 +3,7 @@
 
 import os
 import sys
+import tempfile
 
 # Agregar el directorio raíz al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -35,17 +36,38 @@ class TestCoreVaultSelection:
 
     def test_directory_arg_passthrough(self):
         try:
-            vault, code = select_vault_directory(
-                directory_arg="C:/vault",
-                has_flags=False,
-            )
-            self._assert(vault == "C:/vault", "Debe respetar --directory")
+            with tempfile.TemporaryDirectory() as tmp:
+                os.makedirs(os.path.join(tmp, "data"), exist_ok=True)
+                with open(os.path.join(tmp, "data", "config.yaml"), "w", encoding="utf-8") as f:
+                    f.write("vault_name: test\n")
+
+                vault, code = select_vault_directory(
+                    directory_arg=tmp,
+                    has_flags=False,
+                )
+            self._assert(vault is not None, "Debe aceptar --directory válido")
+            self._assert(os.path.abspath(vault) == os.path.abspath(tmp), "Debe respetar --directory")
             self._assert(code is None, "No debe salir temprano")
 
-            print("✅ Test: respeta directory_arg")
+            print("✅ Test: respeta directory_arg válido")
             self.passed += 1
         except Exception as e:
             print(f"❌ Test directory_arg_passthrough falló: {e}")
+            self.failed += 1
+
+    def test_directory_arg_invalid_requires_config(self):
+        try:
+            vault, code = select_vault_directory(
+                directory_arg="/tmp/not-a-vault",
+                has_flags=False,
+            )
+            self._assert(vault is None, "No debe aceptar --directory inválido")
+            self._assert(code == 2, "Debe devolver código de error de uso")
+
+            print("✅ Test: --directory inválido requiere data/config.yaml")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test directory_arg_invalid_requires_config falló: {e}")
             self.failed += 1
 
     def test_flags_in_local_context_use_local_vault(self):
@@ -166,6 +188,7 @@ class TestCoreVaultSelection:
         print("=" * 50)
 
         self.test_directory_arg_passthrough()
+        self.test_directory_arg_invalid_requires_config()
         self.test_flags_in_local_context_use_local_vault()
         self.test_flags_in_non_local_context_require_directory()
         self.test_local_context_short_circuit()

@@ -7,6 +7,19 @@ from typing import Callable, Optional, Tuple
 from brackets.core.workspace_context import resolve_workspace_context
 
 
+def _resolve_candidate_directory(directory_arg: str, current_dir: Optional[str]) -> str:
+    """Resolve directory arg to absolute path using current_dir as base for relatives."""
+    if os.path.isabs(directory_arg):
+        return os.path.abspath(directory_arg)
+    base = current_dir or os.getcwd()
+    return os.path.abspath(os.path.join(base, directory_arg))
+
+
+def _is_vault_root(path: str) -> bool:
+    """Return True when path has a vault config file."""
+    return os.path.exists(os.path.join(path, "data", "config.yaml"))
+
+
 def select_vault_directory(
     directory_arg: Optional[str],
     has_flags: bool,
@@ -23,6 +36,10 @@ def select_vault_directory(
         - early_exit_code: exit code when startup should end early.
     """
     if directory_arg is not None:
+        resolved_dir = _resolve_candidate_directory(directory_arg, current_dir)
+        if not _is_vault_root(resolved_dir):
+            print("❌ --directory debe apuntar a un vault válido (falta data/config.yaml).")
+            return None, 2
         return directory_arg, None
 
     if has_flags:
