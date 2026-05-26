@@ -65,6 +65,8 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/file_rename_controller.py, brackets/main.py, brackets/tests/test_core_file_rename_controller.py, brackets/tests/test_suite.py.
 - Bloque correctivo: guardrail para contexto CLI (flags requieren vault local o --directory, y --directory debe apuntar a vault con data/config.yaml).
   - Evidencia: brackets/core/vault_selection.py, brackets/tests/test_core_vault_selection.py.
+- Bloque correctivo: validacion final en startup para impedir crear manager sobre directorios no-vault (corta antes de run/dispatch).
+  - Evidencia: brackets/core/startup.py, brackets/tests/test_core_startup.py.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -84,6 +86,7 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de sync-yaml controller.
 - Ultimo objetivo tecnico incremental: extraccion de file-rename/global-replace controller.
 - Ultimo objetivo tecnico incremental: guardrail de contexto CLI y validacion estricta de --directory como vault root.
+- Ultimo objetivo tecnico incremental: validacion de vault root tambien en startup (defensa en profundidad).
 - Siguiente bloque recomendado: extraer debug-tools legacy flow a controlador dedicado para seguir adelgazando BitacoraManager.
 
 ## Vision objetivo del usuario
