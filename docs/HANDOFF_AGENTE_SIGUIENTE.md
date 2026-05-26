@@ -67,6 +67,10 @@ Fecha de corte: 2026-05-24
   - Evidencia: brackets/core/vault_selection.py, brackets/tests/test_core_vault_selection.py.
 - Bloque correctivo: validacion final en startup para impedir crear manager sobre directorios no-vault (corta antes de run/dispatch).
   - Evidencia: brackets/core/startup.py, brackets/tests/test_core_startup.py.
+- Bloque correctivo critico: fix de ruta en creacion semanal automatica (evita escribir en cwd/workspace root).
+  - Causa raiz: `create_next_weekly_bitacora` generaba filename sin `directory`, cayendo a directorio de ejecucion.
+  - Evidencia: brackets/generators/weekly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_weekly.py.
+  - Validacion: suite completa `77/77` OK + prueba E2E real desde `C:/Projects` con `./brackets_quickstart.ps1` (selector `MyJobNotes`, quick-key `n`) creando `C:/Projects/brackets-workspace/MyJobNotes/[2026][06]Week23.md`.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
@@ -87,6 +91,7 @@ Fecha de corte: 2026-05-24
 - Ultimo objetivo tecnico incremental: extraccion de file-rename/global-replace controller.
 - Ultimo objetivo tecnico incremental: guardrail de contexto CLI y validacion estricta de --directory como vault root.
 - Ultimo objetivo tecnico incremental: validacion de vault root tambien en startup (defensa en profundidad).
+- Ultimo objetivo tecnico incremental: fix definitivo de escritura semanal automatica dentro del vault seleccionado (no en workspace root/cwd).
 - Siguiente bloque recomendado: extraer debug-tools legacy flow a controlador dedicado para seguir adelgazando BitacoraManager.
 
 ## Vision objetivo del usuario
