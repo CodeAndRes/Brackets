@@ -3,7 +3,9 @@ Sistema Brackets - Generador de Bitácoras y Gestión de Proyectos
 Version 2.0 - Arquitectura Refactorizada
 """
 
-__version__ = "2.0.0"
+from brackets.version import VERSION
+
+__version__ = VERSION
 __author__ = "Usuario"
 
 # Exponer clases principales para importación fácil

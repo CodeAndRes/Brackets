@@ -5,9 +5,12 @@ Tests unitarios para WeeklyGenerator en generators/weekly.py
 
 import sys
 import os
+import tempfile
+from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+import brackets.generators.weekly as weekly_module
 from brackets.generators.weekly import WeeklyGenerator
 
 
@@ -50,6 +53,104 @@ class TestWeeklyGenerator:
             print(f"❌ Test lunes-viernes falló: {e}")
             self.failed += 1
 
+    def test_create_next_or_manual_fallback_when_no_recent_weekly(self):
+        """Si no hay bitácora previa, debe usar flujo manual automáticamente."""
+        try:
+            self.generator.finder.get_most_recent_weekly = lambda: None
+            self.generator.create_manual_weekly_bitacora = lambda: True
+
+            result = self.generator.create_next_or_manual_weekly_bitacora()
+            assert result is True, "Debería retornar éxito al completar flujo manual"
+
+            print("✅ Test: fallback a manual cuando no hay bitácora previa")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test fallback manual falló: {e}")
+            self.failed += 1
+
+    def test_create_next_or_manual_prefers_automatic_when_recent_exists(self):
+        """Si hay bitácora previa, debe ejecutar el flujo automático."""
+        try:
+            calls = {"auto": 0, "manual": 0}
+
+            self.generator.finder.get_most_recent_weekly = lambda: "fake_weekly.md"
+
+            def fake_auto(ask_for_weight: bool = True):
+                calls["auto"] += 1
+                return True
+
+            def fake_manual():
+                calls["manual"] += 1
+                return True
+
+            self.generator.create_next_weekly_bitacora = fake_auto
+            self.generator.create_manual_weekly_bitacora = fake_manual
+
+            result = self.generator.create_next_or_manual_weekly_bitacora()
+            assert result is True, "Debería retornar éxito en flujo automático"
+            assert calls["auto"] == 1, f"Flujo automático esperado 1 vez, obtuvo {calls['auto']}"
+            assert calls["manual"] == 0, f"Flujo manual no debería ejecutarse, obtuvo {calls['manual']}"
+
+            print("✅ Test: flujo automático preferido cuando hay base previa")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test preferencia automática falló: {e}")
+            self.failed += 1
+
+    def test_create_next_weekly_uses_generator_directory(self):
+        """Valida que la creación automática escriba dentro del directorio del vault."""
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                generator = WeeklyGenerator(directory=tmp)
+
+                # Asegura que FileFinder busque dentro del vault temporal.
+                generator.finder = weekly_module.FileFinder(tmp)
+
+                recent_file = os.path.join(tmp, "[2026][05]Week21.md")
+                with open(recent_file, "w", encoding="utf-8") as f:
+                    f.write("# Semana 21\n")
+
+                generator.generator.create_weekly_bitacora = lambda **_kwargs: "new-content"
+                generator.generator.create_week_summary = lambda **_kwargs: ""
+                generator._calculate_next_week_dates_iso = lambda _y, _w: [
+                    datetime(2026, 5, 25),
+                    datetime(2026, 5, 26),
+                    datetime(2026, 5, 27),
+                    datetime(2026, 5, 28),
+                    datetime(2026, 5, 29),
+                ]
+
+                result = generator.create_next_weekly_bitacora(ask_for_weight=False)
+
+                expected = os.path.join(tmp, "[2026][05]Week22.md")
+                assert result is True, "La creación automática debería completar con éxito"
+                assert os.path.exists(expected), (
+                    f"Debe crear el archivo dentro del vault seleccionado. No existe: {expected}"
+                )
+
+            print("✅ Test: creación automática escribe en directorio del vault")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test create_next_weekly_uses_generator_directory falló: {e}")
+            self.failed += 1
+
+    def test_create_weekly_from_template_not_implemented(self):
+        """Valida que la ruta template semanal está deshabilitada explícitamente."""
+        try:
+            try:
+                self.generator.create_weekly_from_template(week_num=10, year=2026, month=5)
+                raise AssertionError("Debe lanzar NotImplementedError")
+            except NotImplementedError as e:
+                assert "create_weekly_from_template" in str(e), (
+                    "El mensaje debe indicar claramente la operación no soportada"
+                )
+
+            print("✅ Test: template semanal deshabilitado explícitamente")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test create_weekly_from_template_not_implemented falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         """Ejecutar todos los tests."""
         print("\n🧪 TESTS: generators/weekly.py")
@@ -57,6 +158,10 @@ class TestWeeklyGenerator:
 
         self.test_iso_next_week_dates_real_case_week12_2026()
         self.test_iso_next_week_always_monday_to_friday()
+        self.test_create_next_or_manual_fallback_when_no_recent_weekly()
+        self.test_create_next_or_manual_prefers_automatic_when_recent_exists()
+        self.test_create_next_weekly_uses_generator_directory()
+        self.test_create_weekly_from_template_not_implemented()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0

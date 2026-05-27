@@ -143,6 +143,11 @@ menus:
         keys: ["5", "s"]
         action: exec
         command: sync_yaml
+      - id: add_task
+        label: "Anadir tarea rapida"
+        keys: ["6", "t"]
+        action: exec
+        command: add_task
       - id: back
         label: "Volver al menu principal"
         keys: ["0", "v"]
@@ -177,6 +182,7 @@ menus:
         keys: ["5", "p"]
         action: exec
         command: tool_pomodoro
+        context_tag: vault_type_work
       - id: back
         label: "Volver al menu principal"
         keys: ["0", "v"]
