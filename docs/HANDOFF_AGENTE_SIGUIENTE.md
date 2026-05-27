@@ -83,6 +83,11 @@ Fecha de corte: 2026-05-26
   - Objetivo: reducir duplicidad de rutas y evitar drift entre menús legacy y YAML.
   - Evidencia: limpieza en brackets/main.py (imports legacy removidos + método legacy eliminado), comportamiento mantenido vía brackets/core/tools_controller.py.
   - Validacion: `python -m brackets.tests.test_core_tools_controller` + suite completa `82/82` OK.
+- Bloque funcional: visibilidad por tipo de vault (work/personal) con reglas finas en menú.
+  - Objetivo: habilitar reglas de visibilidad sin duplicar menús por vault.
+  - Evidencia: `BitacoraManager` expone `vault_type` y contexto `vault_type_work`/`vault_type_personal`; `data/menu_config.yaml` aplica `context_tag: vault_type_work` a `tool_pomodoro`.
+  - Tests: nuevo `brackets/tests/test_core_vault_type_menu_visibility.py` + integración en `brackets/tests/test_suite.py`.
+  - Validacion: suite completa `85/85` OK.
 - Bloque correctivo preventivo: fix espejo de ruta en creacion mensual automatica (mismo patron de riesgo que semanal).
   - Causa raiz: `create_next_monthly_topics` generaba filename sin `directory`, potencialmente escribiendo en cwd.
   - Evidencia: brackets/generators/monthly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_monthly.py.

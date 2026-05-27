@@ -35,6 +35,7 @@ from brackets.tests.test_core_file_rename_controller import TestCoreFileRenameCo
 from brackets.tests.test_core_sync_yaml_controller import TestCoreSyncYamlController
 from brackets.tests.test_core_startup import TestCoreStartup
 from brackets.tests.test_core_tools_controller import TestCoreToolsController
+from brackets.tests.test_core_vault_type_menu_visibility import TestCoreVaultTypeMenuVisibility
 from brackets.tests.test_core_vault_selection import TestCoreVaultSelection
 from brackets.tests.test_version_policy import TestVersionPolicy
 
@@ -190,6 +191,12 @@ def run_all_tests():
     # Tests de selección de vault en arranque
     tester = TestCoreVaultSelection()
     vault_selection_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de contexto de menú por tipo de vault
+    tester = TestCoreVaultTypeMenuVisibility()
+    vault_type_menu_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 

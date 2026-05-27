@@ -129,6 +129,7 @@ class BitacoraManager:
         self.feature_flags = self._load_feature_flags()
         self.bitacoras_enabled = bool(self.feature_flags.get("bitacoras_enabled", True))
         self.vault_name = self._get_vault_name()
+        self.vault_type = self._get_vault_type()
         self.settings = SettingsManager(directory)
         set_global_settings_manager(self.settings)
         self.weekly_gen = WeeklyGenerator(self.notes_root, self.settings)
@@ -154,7 +155,44 @@ class BitacoraManager:
             "bitacoras_enabled": bool(self.bitacoras_enabled),
             "bitacoras_disabled": not bool(self.bitacoras_enabled),
             "active_vault": bool(self.vault_name),
+            "vault_type_work": self.vault_type == "work",
+            "vault_type_personal": self.vault_type == "personal",
         }
+
+    def _get_vault_type(self) -> str:
+        """Determina tipo de vault para reglas de visibilidad del menú.
+
+        Prioridad:
+        1) `vault_type` en data/config.yaml (work|personal)
+        2) Heurística por `description`/`vault_name`
+        3) Fallback seguro: `work`
+        """
+        config_path = os.path.join(self.vault_root, "data", "config.yaml")
+        description = ""
+        vault_name = ""
+
+        if os.path.exists(config_path):
+            try:
+                import yaml
+
+                with open(config_path, "r", encoding="utf-8") as f:
+                    config_data = yaml.safe_load(f) or {}
+
+                vault_type = str(config_data.get("vault_type", "")).strip().lower()
+                if vault_type in ("work", "personal"):
+                    return vault_type
+
+                description = str(config_data.get("description", "")).strip().lower()
+                vault_name = str(config_data.get("vault_name", "")).strip().lower()
+            except Exception:
+                pass
+
+        if "personal" in description or "personal" in vault_name:
+            return "personal"
+        if "personal" in os.path.basename(self.vault_root).lower():
+            return "personal"
+
+        return "work"
 
     def _execute_menu_command(self, command: Optional[str]) -> bool:
         """Ejecuta comandos del menú principal. Devuelve False para salir."""

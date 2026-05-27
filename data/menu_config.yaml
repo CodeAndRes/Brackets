@@ -177,6 +177,7 @@ menus:
         keys: ["5", "p"]
         action: exec
         command: tool_pomodoro
+        context_tag: vault_type_work
       - id: back
         label: "Volver al menu principal"
         keys: ["0", "v"]
