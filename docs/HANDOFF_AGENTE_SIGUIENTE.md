@@ -88,6 +88,14 @@ Fecha de corte: 2026-05-26
   - Evidencia: `BitacoraManager` expone `vault_type` y contexto `vault_type_work`/`vault_type_personal`; `data/menu_config.yaml` aplica `context_tag: vault_type_work` a `tool_pomodoro`.
   - Tests: nuevo `brackets/tests/test_core_vault_type_menu_visibility.py` + integración en `brackets/tests/test_suite.py`.
   - Validacion: suite completa `85/85` OK.
+- Bloque funcional: creación de tareas desde terminal (CLI directo).
+  - Objetivo: permitir alta rápida de tarea sin entrar al menú interactivo.
+  - Comandos nuevos:
+    - `python -m brackets.main --add-task "Texto de tarea"`
+    - `python -m brackets.main --add-task "Texto de tarea" --task-target monthly`
+  - Comportamiento: inserta `- [ ] ...` en la sección `## ✅Topics` del último archivo weekly/monthly del vault.
+  - Evidencia: `brackets/core/cli_parser.py`, `brackets/core/cli_actions.py`, tests en `brackets/tests/test_core_cli_parser.py` y `brackets/tests/test_core_cli_actions.py`.
+  - Validacion: suite completa `88/88` OK.
 - Bloque correctivo preventivo: fix espejo de ruta en creacion mensual automatica (mismo patron de riesgo que semanal).
   - Causa raiz: `create_next_monthly_topics` generaba filename sin `directory`, potencialmente escribiendo en cwd.
   - Evidencia: brackets/generators/monthly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_monthly.py.

@@ -43,6 +43,10 @@ class TestCoreCliParser:
             args = parser.parse_args([
                 "--directory",
                 "vault",
+                "--add-task",
+                "Preparar release",
+                "--task-target",
+                "monthly",
                 "--consolidate",
                 "2026-05",
                 "--consolidate-year",
@@ -54,6 +58,8 @@ class TestCoreCliParser:
             ])
 
             self._assert(args.directory == "vault", "Debe parsear --directory")
+            self._assert(args.add_task == "Preparar release", "Debe parsear --add-task")
+            self._assert(args.task_target == "monthly", "Debe parsear --task-target")
             self._assert(args.consolidate == "2026-05", "Debe parsear --consolidate")
             self._assert(args.consolidate_year == "2026", "Debe parsear --consolidate-year")
             self._assert(args.debug is True, "Debe parsear --debug")
@@ -74,6 +80,8 @@ class TestCoreCliParser:
             self._assert(args.directory is None, "directory por defecto debe ser None")
             self._assert(args.weekly is False, "weekly por defecto debe ser False")
             self._assert(args.monthly is False, "monthly por defecto debe ser False")
+            self._assert(args.add_task is None, "add_task por defecto debe ser None")
+            self._assert(args.task_target == "weekly", "task_target por defecto debe ser weekly")
             self._assert(args.timer is False, "timer por defecto debe ser False")
             self._assert(args.list is False, "list por defecto debe ser False")
             self._assert(args.debug is False, "debug por defecto debe ser False")

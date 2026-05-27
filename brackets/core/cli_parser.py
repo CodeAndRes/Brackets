@@ -15,6 +15,8 @@ Ejemplos de uso:
   python main.py -d .                        # Modo interactivo (vault actual)
   python main.py --weekly                   # Crear bitácora semanal directamente
   python main.py --monthly                  # Crear archivo mensual directamente
+    python main.py --add-task "Preparar release"          # Añadir tarea al último weekly
+    python main.py --add-task "Cerrar retrospectiva" --task-target monthly
     python main.py --timer                    # Abrir Pomodoro Timer
   python main.py --consolidate 2025-07      # Consolidar mes específico
   python main.py --consolidate-year 2025    # Consolidar año completo
@@ -42,6 +44,19 @@ Ejemplos de uso:
         "-m",
         action="store_true",
         help="Crear archivo mensual directamente",
+    )
+
+    parser.add_argument(
+        "--add-task",
+        metavar="TEXTO",
+        help="Añadir una tarea al último archivo weekly/monthly",
+    )
+
+    parser.add_argument(
+        "--task-target",
+        choices=["weekly", "monthly"],
+        default="weekly",
+        help="Destino de --add-task (default: weekly)",
     )
 
     parser.add_argument(

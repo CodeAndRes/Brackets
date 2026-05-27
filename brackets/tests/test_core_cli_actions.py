@@ -71,6 +71,8 @@ class TestCoreCliActions:
         defaults = {
             "weekly": False,
             "monthly": False,
+            "add_task": None,
+            "task_target": "weekly",
             "timer": False,
             "consolidate": None,
             "consolidate_year": None,
@@ -86,6 +88,7 @@ class TestCoreCliActions:
         try:
             self._assert(has_action_flags(self._args()) is False, "No debe detectar flags en vacío")
             self._assert(has_action_flags(self._args(weekly=True)) is True, "Debe detectar --weekly")
+            self._assert(has_action_flags(self._args(add_task="Nueva tarea")) is True, "Debe detectar --add-task")
             self._assert(has_action_flags(self._args(analyze="file.md")) is True, "Debe detectar --analyze")
 
             print("✅ Test: has_action_flags detecta acciones")
@@ -151,6 +154,74 @@ class TestCoreCliActions:
             print(f"❌ Test dispatch_analyze_missing_file falló: {e}")
             self.failed += 1
 
+    def test_dispatch_add_task_weekly_success(self):
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                weekly_file = os.path.join(tmp, "[2026][05]Week22.md")
+                with open(weekly_file, "w", encoding="utf-8") as f:
+                    f.write("# 🗓️Week 22\n\n## ✅Topics\n  - [ ] Base\n\n## 📝Notes\n")
+
+                manager = _FakeManager(bitacoras_enabled=True)
+                exit_code = dispatch_cli_action(
+                    self._args(add_task="Nueva tarea semanal", task_target="weekly"),
+                    manager,
+                    tmp,
+                )
+
+                self._assert(exit_code == 0, "--add-task weekly debe devolver 0")
+                with open(weekly_file, "r", encoding="utf-8") as f:
+                    updated = f.read()
+                self._assert("- [ ] Nueva tarea semanal" in updated, "Debe insertar la tarea en Topics")
+
+            print("✅ Test: add-task weekly inserta tarea en último weekly")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test dispatch_add_task_weekly_success falló: {e}")
+            self.failed += 1
+
+    def test_dispatch_add_task_monthly_success(self):
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                monthly_file = os.path.join(tmp, "[2026][05]MonthTopics.md")
+                with open(monthly_file, "w", encoding="utf-8") as f:
+                    f.write("# May Topics ☀️\n\n## ✅Topics\n  - [ ] Base mensual\n")
+
+                manager = _FakeManager(bitacoras_enabled=True)
+                exit_code = dispatch_cli_action(
+                    self._args(add_task="Nueva tarea mensual", task_target="monthly"),
+                    manager,
+                    tmp,
+                )
+
+                self._assert(exit_code == 0, "--add-task monthly debe devolver 0")
+                with open(monthly_file, "r", encoding="utf-8") as f:
+                    updated = f.read()
+                self._assert("- [ ] Nueva tarea mensual" in updated, "Debe insertar la tarea en Topics mensual")
+
+            print("✅ Test: add-task monthly inserta tarea en último monthly")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test dispatch_add_task_monthly_success falló: {e}")
+            self.failed += 1
+
+    def test_dispatch_add_task_without_target_file(self):
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                manager = _FakeManager(bitacoras_enabled=True)
+                exit_code = dispatch_cli_action(
+                    self._args(add_task="Nueva tarea semanal", task_target="weekly"),
+                    manager,
+                    tmp,
+                )
+
+                self._assert(exit_code == 1, "Si no hay weekly, add-task debe devolver 1")
+
+            print("✅ Test: add-task falla si no existe archivo destino")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test dispatch_add_task_without_target_file falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         print("\n🧪 TESTS: core/cli_actions.py")
         print("=" * 50)
@@ -160,6 +231,9 @@ class TestCoreCliActions:
         self.test_dispatch_weekly_success()
         self.test_dispatch_consolidate_format_validation()
         self.test_dispatch_analyze_missing_file()
+        self.test_dispatch_add_task_weekly_success()
+        self.test_dispatch_add_task_monthly_success()
+        self.test_dispatch_add_task_without_target_file()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0
