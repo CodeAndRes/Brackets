@@ -21,9 +21,7 @@ if sys.platform == 'win32':
 
 from brackets.generators.weekly import WeeklyGenerator
 from brackets.generators.monthly import MonthlyGenerator
-from brackets.utils.file_finder import FileFinder, debug_files_in_directory
-from brackets.utils.content_parser import debug_content_parsing
-from brackets.utils.legacy_utils import test_emoji_pattern
+from brackets.utils.file_finder import FileFinder
 from brackets.managers.settings_manager import SettingsManager, set_global_settings_manager
 from brackets.managers.file_rename_manager import FileRenameManager
 
@@ -576,56 +574,6 @@ class BitacoraManager:
     def handle_analyze_file(self) -> None:
         """Maneja el análisis de archivo específico."""
         self._get_file_management_controller().run_analyze_file()
-
-    def handle_debug_tools(self) -> None:
-        """Maneja las herramientas de debug."""
-        while True:
-            self.show_debug_menu()
-            choice = input("Selecciona una opción: ").strip()
-
-            if choice == "1":
-                filename = input("Nombre del archivo a analizar: ").strip()
-                import os
-                filepath = filename if os.path.exists(filename) else os.path.join(self.directory, filename)
-                if os.path.exists(filepath):
-                    debug_content_parsing(filepath)
-                else:
-                    print("❌ Archivo no encontrado")
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "2":
-                debug_files_in_directory(self.directory)
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "3":
-                test_emoji_pattern()
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "4":
-                filename = input("Nombre del archivo para calcular fechas: ").strip()
-                import os
-                from brackets.utils.legacy_utils import safe_file_read
-                from brackets.utils.content_parser import ContentParser
-
-                filepath = filename if os.path.exists(filename) else os.path.join(self.directory, filename)
-                if os.path.exists(filepath):
-                    content = safe_file_read(filepath)
-                    if content:
-                        parser = ContentParser(content)
-                        dates = parser.get_next_week_dates()
-                        print("📅 Próximas fechas calculadas:")
-                        from brackets.config import WEEKDAYS
-                        for i, date in enumerate(dates):
-                            print(f"  {WEEKDAYS[i]}: {date.strftime('%d/%m/%Y')}")
-                else:
-                    print("❌ Archivo no encontrado")
-                input("\nPresiona Enter para continuar...")
-
-            elif choice == "0":
-                break
-
-            else:
-                print("❌ Opción inválida")
 
     def handle_category_management(self) -> None:
         """Maneja la gestión de categorías y documentos."""

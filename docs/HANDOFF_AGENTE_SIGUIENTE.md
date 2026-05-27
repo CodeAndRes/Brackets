@@ -79,6 +79,10 @@ Fecha de corte: 2026-05-26
   - Objetivo: detectar regresiones de escritura en cwd/workspace root antes de llegar a usuario final.
   - Evidencia: brackets/tests/test_path_scope_smoke.py + integración en brackets/tests/test_suite.py.
   - Validacion: test dedicado `python -m brackets.tests.test_path_scope_smoke` + suite completa `82/82` OK.
+- Bloque de modularización: eliminación de flujo legacy `handle_debug_tools` en main para dejar `ToolsController` como única implementación de herramientas/debug.
+  - Objetivo: reducir duplicidad de rutas y evitar drift entre menús legacy y YAML.
+  - Evidencia: limpieza en brackets/main.py (imports legacy removidos + método legacy eliminado), comportamiento mantenido vía brackets/core/tools_controller.py.
+  - Validacion: `python -m brackets.tests.test_core_tools_controller` + suite completa `82/82` OK.
 - Bloque correctivo preventivo: fix espejo de ruta en creacion mensual automatica (mismo patron de riesgo que semanal).
   - Causa raiz: `create_next_monthly_topics` generaba filename sin `directory`, potencialmente escribiendo en cwd.
   - Evidencia: brackets/generators/monthly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_monthly.py.
