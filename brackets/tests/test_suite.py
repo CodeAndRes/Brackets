@@ -24,6 +24,7 @@ from brackets.tests.test_utils_content_generator import TestContentGenerator
 from brackets.tests.test_utils_file_finder import TestFileFinder
 from brackets.tests.test_generators_monthly import TestMonthlyGenerator
 from brackets.tests.test_generators_weekly import TestWeeklyGenerator
+from brackets.tests.test_path_scope_smoke import TestPathScopeSmoke
 from brackets.tests.test_cli_vault_scope import TestCliVaultScope
 from brackets.tests.test_core_cli_actions import TestCoreCliActions
 from brackets.tests.test_core_category_management_controller import TestCoreCategoryManagementController
@@ -117,6 +118,12 @@ def run_all_tests():
     # Tests de monthly generator
     tester = TestMonthlyGenerator()
     monthly_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Smoke tests de scope de rutas (root vs vault local)
+    tester = TestPathScopeSmoke()
+    path_scope_smoke_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 
