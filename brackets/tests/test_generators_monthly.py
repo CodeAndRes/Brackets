@@ -45,12 +45,32 @@ class TestMonthlyGenerator:
             print(f"❌ Test create_next_monthly_uses_generator_directory falló: {e}")
             self.failed += 1
 
+    def test_create_monthly_from_template_not_implemented(self):
+        """Valida que la ruta template mensual está deshabilitada explícitamente."""
+        try:
+            generator = MonthlyGenerator(directory='.')
+
+            try:
+                generator.create_monthly_from_template(month=6, year=2026)
+                raise AssertionError("Debe lanzar NotImplementedError")
+            except NotImplementedError as e:
+                assert "create_monthly_from_template" in str(e), (
+                    "El mensaje debe indicar claramente la operación no soportada"
+                )
+
+            print("✅ Test: template mensual deshabilitado explícitamente")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test create_monthly_from_template_not_implemented falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         """Ejecutar todos los tests."""
         print("\n🧪 TESTS: generators/monthly.py")
         print("=" * 50)
 
         self.test_create_next_monthly_uses_generator_directory()
+        self.test_create_monthly_from_template_not_implemented()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0

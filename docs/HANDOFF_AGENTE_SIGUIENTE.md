@@ -1,6 +1,6 @@
 # Handoff Maestro para Siguiente Agente
 
-Fecha: 2026-05-24
+Fecha: 2026-05-26
 Objetivo: permitir continuidad total en chat nuevo sin perder contexto tecnico ni prioridades.
 
 ## Lectura obligatoria (orden)
@@ -31,7 +31,7 @@ Objetivo: permitir continuidad total en chat nuevo sin perder contexto tecnico n
 
 ## Registro de avances recientes (bitacora de ejecucion)
 
-Fecha de corte: 2026-05-24
+Fecha de corte: 2026-05-26
 
 - Bloque resuelto: fallback automatico semanal (auto -> manual sin base previa).
   - Evidencia: brackets/generators/weekly.py, brackets/main.py, brackets/tests/test_generators_weekly.py.
@@ -71,6 +71,36 @@ Fecha de corte: 2026-05-24
   - Causa raiz: `create_next_weekly_bitacora` generaba filename sin `directory`, cayendo a directorio de ejecucion.
   - Evidencia: brackets/generators/weekly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_weekly.py.
   - Validacion: suite completa `77/77` OK + prueba E2E real desde `C:/Projects` con `./brackets_quickstart.ps1` (selector `MyJobNotes`, quick-key `n`) creando `C:/Projects/brackets-workspace/MyJobNotes/[2026][06]Week23.md`.
+- Bloque correctivo de seguridad: rutas de plantilla semanal/mensual deshabilitadas explícitamente con excepción controlada.
+  - Objetivo: evitar fallos ambiguos (`NameError`) o retornos silenciosos en flujos aún no soportados.
+  - Evidencia: brackets/generators/weekly.py (`create_weekly_from_template`), brackets/generators/monthly.py (`create_monthly_from_template`).
+  - Validacion: tests nuevos en brackets/tests/test_generators_weekly.py y brackets/tests/test_generators_monthly.py + suite completa `80/80` OK.
+- Bloque correctivo preventivo: fix espejo de ruta en creacion mensual automatica (mismo patron de riesgo que semanal).
+  - Causa raiz: `create_next_monthly_topics` generaba filename sin `directory`, potencialmente escribiendo en cwd.
+  - Evidencia: brackets/generators/monthly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_monthly.py.
+  - Validacion: test focal mensual OK + suite completa `78/78` OK.
+
+## Postmortem corto: por que costo tanto encontrar este bug
+
+- Sintoma observable engañoso: el menu mostraba vault correcto (`MyJobNotes`), pero la escritura real ocurria en el cwd por una llamada interna sin `directory`.
+- Señal tardia: se reforzaron capas de seleccion/startup antes de inspeccionar la capa final de IO (generacion de filename + write).
+- Cobertura incompleta inicial: habia tests de seleccion de vault y startup, pero faltaba test de integracion para ruta final de archivo en flujo automatico semanal.
+- Reproduccion parcial al inicio: validar por flags o tests unitarios no replico inmediatamente el flujo exacto del usuario (`PS C:/Projects > ./brackets_quickstart.ps1` + quick-key `n`).
+
+## Protocolo obligatorio para evitar repeticion
+
+1. Reproducir primero en flujo real del usuario antes de hipotetizar arquitectura.
+2. Trazar la ruta de destino extremo a extremo: seleccion de vault -> manager.directory -> generate_filename -> confirm_overwrite -> safe_file_write.
+3. Ante bug de ubicacion, inspeccionar primero la ultima capa de IO (path final) y luego subir de capa.
+4. No cerrar un fix sin prueba E2E en el entrypoint real y sin test automatizado de regresion en la capa donde ocurrio la fuga.
+5. Si la UI reporta una ruta logica y el filesystem no coincide, priorizar instrumentacion/validacion de path efectivo sobre cambios de guardrails adicionales.
+
+## Checklist anti-regresion (bugs de ruta)
+
+- [ ] Cada llamada a `generate_filename` explicita `directory`.
+- [ ] El test de regresion valida existencia fisica del archivo en el vault esperado (no solo mocks de flujo).
+- [ ] Se valida en ejecucion desde workspace root (`C:/Projects`) y desde vault local.
+- [ ] Se verifica que no aparezcan archivos espejo en root tras crear semanal.
 
 ## Estado exacto para retomar (sin releer todo el repo)
 

@@ -86,29 +86,15 @@ class MonthlyGenerator:
         return False
 
     def create_monthly_from_template(self, month: int, year: int) -> bool:
-        """Crea un archivo mensual desde una plantilla."""
-        # TODO: TemplateGenerator no existe aún en content_generator
-        # from brackets.utils.content_generator import TemplateGenerator
+        """Crea un archivo mensual desde una plantilla.
 
-        # Generar plantilla
-        # content = TemplateGenerator.create_empty_monthly_template(month, year)
-        return False  # Temporalmente deshabilitado hasta implementar TemplateGenerator
-
-        # Crear archivo
-        filename = generate_filename(year, month, is_monthly=True)
-
-        if not confirm_overwrite(filename):
-            print(MESSAGES['operation_cancelled'])
-            return False
-
-        if safe_file_write(filename, content):
-            print(MESSAGES['monthly_created'].format(filename=filename))
-
-            summary = self.generator.create_monthly_summary(month, year, filename)
-            print(summary)
-            return True
-
-        return False
+        Esta ruta está deshabilitada hasta completar la implementación formal
+        del flujo de plantillas en la capa de generadores.
+        """
+        raise NotImplementedError(
+            "create_monthly_from_template no está disponible todavía. "
+            "Usa create_next_monthly_topics."
+        )
 
     def _extract_month_info_from_file(self, filepath: str) -> tuple[Optional[int], Optional[int]]:
         """Extrae información de mes del nombre del archivo."""

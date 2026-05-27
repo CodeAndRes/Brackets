@@ -150,33 +150,15 @@ class WeeklyGenerator:
         return [next_monday + timedelta(days=i) for i in range(5)]
 
     def create_weekly_from_template(self, week_num: int, year: int, month: int) -> bool:
-        """Crea una bitácora semanal desde una plantilla."""
-        from datetime import datetime, timedelta
-        # TODO: TemplateGenerator no existe aún en content_generator
-        # from brackets.utils.content_generator import TemplateGenerator
+        """Crea una bitácora semanal desde una plantilla.
 
-        # Calcular fechas para la semana especificada
-        # Esto es simplificado - en una implementación real necesitarías
-        # un cálculo más preciso basado en el número de semana
-        today = datetime.now()
-        monday = today - timedelta(days=today.weekday())
-        dates = [monday + timedelta(days=i) for i in range(5)]
-
-        # Generar plantilla
-        content = TemplateGenerator.create_empty_weekly_template(week_num, dates)
-
-        # Crear archivo
-        filename = generate_filename(year, month, week_num)
-
-        if not confirm_overwrite(filename):
-            print(MESSAGES['operation_cancelled'])
-            return False
-
-        if safe_file_write(filename, content):
-            print(MESSAGES['file_created'].format(filename=filename))
-            return True
-
-        return False
+        Esta ruta está deshabilitada hasta completar la implementación formal
+        del flujo de plantillas en la capa de generadores.
+        """
+        raise NotImplementedError(
+            "create_weekly_from_template no está disponible todavía. "
+            "Usa create_next_weekly_bitacora o create_manual_weekly_bitacora."
+        )
 
     def create_manual_weekly_bitacora(self) -> bool:
         """Crea una bitácora semanal de forma manual sin necesidad de archivo previo."""
