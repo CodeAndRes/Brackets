@@ -37,6 +37,7 @@ from brackets.core.menu_engine import MenuEngine
 from brackets.core.sync_yaml_controller import SyncYamlController
 from brackets.core.startup import run_startup_flow
 from brackets.core.tools_controller import ToolsController
+from brackets.core.cli_actions import add_task_to_latest_file
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 
 
@@ -539,7 +540,26 @@ class BitacoraManager:
             on_manage_categories=self.handle_category_management,
             on_global_replace=self.handle_file_rename,
             on_sync_yaml=self.handle_sync_yaml,
+            on_add_task=self.handle_add_task,
         )
+
+    def handle_add_task(self) -> None:
+        """Maneja la creación rápida de tarea desde menú."""
+        print("\n➕ AÑADIR TAREA RÁPIDA")
+        print("=" * 30)
+        print("Destino:")
+        print("  1. Último weekly")
+        print("  2. Último monthly")
+
+        target_choice = input("Selecciona destino (1/2, Enter=1): ").strip()
+        target = "monthly" if target_choice == "2" else "weekly"
+
+        task_text = input("Texto de la tarea: ").strip()
+        success = add_task_to_latest_file(self.directory, task_text, target)
+        if not success:
+            print("❌ No se pudo añadir la tarea")
+
+        input("\nPresiona Enter para continuar...")
 
     def handle_tools_menu(self) -> None:
         """Maneja el submenú de herramientas."""

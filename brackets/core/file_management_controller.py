@@ -53,6 +53,7 @@ class FileManagementController:
         on_manage_categories: Callable[[], None],
         on_global_replace: Callable[[], None],
         on_sync_yaml: Callable[[], None],
+        on_add_task: Callable[[], None],
     ) -> None:
         """Run file-management submenu loop."""
         selected_index = 0
@@ -82,6 +83,9 @@ class FileManagementController:
             elif command == "sync_yaml":
                 self.clear_screen()
                 on_sync_yaml()
+            elif command == "add_task":
+                self.clear_screen()
+                on_add_task()
             elif command == "back":
                 break
             else:

@@ -77,6 +77,7 @@ class TestCoreFileManagementController:
                 on_manage_categories=lambda: events.append("manage_categories"),
                 on_global_replace=lambda: events.append("global_replace"),
                 on_sync_yaml=lambda: events.append("sync_yaml"),
+                on_add_task=lambda: events.append("add_task"),
             )
 
             self._assert("manage_categories" in events, "Debe invocar callback de categorías")
@@ -86,6 +87,46 @@ class TestCoreFileManagementController:
             self.passed += 1
         except Exception as e:
             print(f"❌ Test run_menu_dispatches_manage_categories falló: {e}")
+            self.failed += 1
+
+    def test_run_menu_dispatches_add_task(self):
+        try:
+            events = []
+            commands = iter(
+                [
+                    ("add_task", 0, True),
+                    ("back", 0, True),
+                ]
+            )
+
+            controller = FileManagementController(
+                directory=".",
+                show_file_management_menu_fn=lambda _idx: events.append("show_menu"),
+                show_list_menu_fn=lambda _idx: None,
+                resolve_menu_command_fn=lambda *_args: next(commands),
+                clear_screen_fn=lambda: events.append("clear"),
+                read_single_key_fn=lambda _prompt: "x",
+                weekly_gen=_FakeWeeklyGen(),
+                monthly_gen=_FakeMonthlyGen(),
+                finder=_FakeFinder(),
+                input_fn=lambda _prompt="": "",
+                print_fn=lambda *_args, **_kwargs: None,
+            )
+
+            controller.run_menu(
+                on_manage_categories=lambda: events.append("manage_categories"),
+                on_global_replace=lambda: events.append("global_replace"),
+                on_sync_yaml=lambda: events.append("sync_yaml"),
+                on_add_task=lambda: events.append("add_task"),
+            )
+
+            self._assert("add_task" in events, "Debe invocar callback de añadir tarea")
+            self._assert(events.count("show_menu") == 2, "Debe renderizar menú en cada iteración")
+
+            print("✅ Test: file management dispatch -> add_task + back")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test run_menu_dispatches_add_task falló: {e}")
             self.failed += 1
 
     def test_run_list_menu_dispatches_weekly(self):
@@ -130,6 +171,7 @@ class TestCoreFileManagementController:
         print("=" * 50)
 
         self.test_run_menu_dispatches_manage_categories()
+        self.test_run_menu_dispatches_add_task()
         self.test_run_list_menu_dispatches_weekly()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")

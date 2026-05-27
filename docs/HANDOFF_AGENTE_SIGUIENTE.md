@@ -96,6 +96,13 @@ Fecha de corte: 2026-05-26
   - Comportamiento: inserta `- [ ] ...` en la sección `## ✅Topics` del último archivo weekly/monthly del vault.
   - Evidencia: `brackets/core/cli_parser.py`, `brackets/core/cli_actions.py`, tests en `brackets/tests/test_core_cli_parser.py` y `brackets/tests/test_core_cli_actions.py`.
   - Validacion: suite completa `88/88` OK.
+- Bloque funcional: creación de tareas también desde menú interactivo.
+  - Objetivo: mismo flujo de alta rápida sin depender de flags CLI.
+  - UX: nueva opción `Anadir tarea rapida` en `Gestion de Archivos y Categorias` con destino `weekly/monthly` + texto.
+  - Evidencia: `data/menu_config.yaml`, `brackets/core/file_management_controller.py`, `brackets/main.py`.
+  - Reuso: delega en `add_task_to_latest_file(...)` para mantener una sola lógica de escritura.
+  - Tests: `brackets/tests/test_core_file_management_controller.py` actualizado.
+  - Validacion: suite completa `89/89` OK.
 - Bloque correctivo preventivo: fix espejo de ruta en creacion mensual automatica (mismo patron de riesgo que semanal).
   - Causa raiz: `create_next_monthly_topics` generaba filename sin `directory`, potencialmente escribiendo en cwd.
   - Evidencia: brackets/generators/monthly.py (usa `generate_filename(..., directory=self.directory)`), brackets/tests/test_generators_monthly.py.
