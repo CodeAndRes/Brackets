@@ -90,14 +90,14 @@ EMOJIS = {
     'warning': "⚠️",
     'info': "ℹ️",
     'question': "❓",
-    
+
     # Acciones
     'delete': "🗑️",
     'create': "📝",
     'update': "🔄",
     'search': "🔍",
     'list': "📋",
-    
+
     # Categorías
     'calendar': "📅",
     'week': "🗓️",
@@ -105,18 +105,18 @@ EMOJIS = {
     'year': "📊",
     'project': "📊",
     'learning': "🎓",
-    
+
     # Lugares
     'home': "🏠",
     'office': "🚗",
     'remote': "💻",
-    
+
     # Estaciones
     'winter': "❄️",
     'spring': "🌱",
     'summer': "☀️",
     'autumn': "🍂",
-    
+
     # Varios
     'task': "☐",
     'task_done': "☑",
@@ -133,29 +133,29 @@ MESSAGES = {
     # Confirmaciones
     'confirm_deletion': "⚠️  ¿Confirmar borrado?",
     'confirm_regenerate': "¿Regenerar el consolidado?",
-    
+
     # Respuestas
     'delete_cancelled': "↩️  Operación de borrado cancelada",
     'operation_cancelled': "↩️  Operación cancelada",
     'delete_success': "🗑️  {count} archivo(s) borrado(s)",
-    
+
     # Errores
     'error_reading': "❌ Error al leer archivo: {error}",
     'error_creating': "❌ Error al crear archivo: {error}",
     'error_deleting': "❌ Error al borrar archivo: {error}",
     'file_not_found': "❌ Archivo no encontrado: {filename}",
     'no_files_found': "❌ No se encontraron archivos",
-    
+
     # Éxitos
     'file_created': "✅ Archivo creado: {filename}",
     'file_deleted': "✅ Borrado: {filename}",
     'consolidation_success': "✅ Consolidación completada",
-    
+
     # Información
     'file_exists': "⚠️  El archivo {filename} ya existe. ¿Sobrescribir? (s/N): ",
     'files_found': "📁 Se encontraron {count} archivo(s)",
     'processing': "🔄 Procesando...",
-    
+
     # Mensajes legacy (compatibilidad)
     'no_files': "❌ No se encontraron archivos de bitácora en el directorio actual",
     'monthly_created': "✅ Nuevo archivo mensual creado: {filename}",
