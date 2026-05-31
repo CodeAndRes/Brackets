@@ -217,15 +217,22 @@ class PomodoroTimerEngine:
 class PomodoroConsoleApp:
     """Interfaz de consola para usar el timer."""
 
-    def __init__(self, base_dir: str = "."):
+    def __init__(self, base_dir: str = ".", event_log=None):
         self.config, self.config_path = load_timer_config(base_dir)
         self.engine = PomodoroTimerEngine(self.config)
         self.engine.set_session_completed_hook(self._register_session)
         self.session_log = []
+        self._event_log = event_log
 
     def _register_session(self, record: Dict) -> None:
-        # Hook de extensión para futura integración con notas/tasks.
         self.session_log.append(record)
+        if self._event_log:
+            self._event_log.append(
+                "pomodoro_complete",
+                sessions_today=self.engine.completed_focus_sessions,
+                focus_minutes=self.config.focus_minutes,
+                workday_progress=record.get("workday_progress"),
+            )
 
     def _progress_bar(self) -> str:
         width = max(8, self.config.progress_bar_width)
@@ -250,6 +257,8 @@ class PomodoroConsoleApp:
     def _run_phase(self, phase: str) -> Optional[str]:
         if phase == "focus":
             self.engine.start_focus()
+            if self._event_log:
+                self._event_log.append("pomodoro_start", focus_minutes=self.config.focus_minutes)
         else:
             self.engine.start_break()
 
@@ -356,9 +365,9 @@ class PomodoroConsoleApp:
                 print("❌ Opción inválida")
 
 
-def run_pomodoro_standalone(base_dir: str = ".") -> None:
+def run_pomodoro_standalone(base_dir: str = ".", event_log=None) -> None:
     """Punto de entrada reutilizable para menú Brackets y modo standalone."""
-    app = PomodoroConsoleApp(base_dir=base_dir)
+    app = PomodoroConsoleApp(base_dir=base_dir, event_log=event_log)
     app.run_menu()
 
 

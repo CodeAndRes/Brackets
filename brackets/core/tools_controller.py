@@ -116,6 +116,7 @@ class ToolsController:
         if self.run_pomodoro is None:
             from brackets.modules.pomodoro_timer import run_pomodoro_standalone
 
-            run_pomodoro_standalone(self.vault_root)
+            event_log = getattr(self, '_event_log', None)
+            run_pomodoro_standalone(self.vault_root, event_log=event_log)
             return
         self.run_pomodoro(self.vault_root)

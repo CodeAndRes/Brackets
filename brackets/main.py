@@ -618,6 +618,7 @@ class BitacoraManager:
                 input_fn=input,
                 print_fn=print,
             )
+            self.tools_controller._event_log = self.event_log
         self.tools_controller.run()
 
     def handle_sync_yaml(self) -> None:

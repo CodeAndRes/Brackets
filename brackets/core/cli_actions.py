@@ -64,7 +64,7 @@ def dispatch_cli_action(args, manager, vault_directory: str) -> Optional[int]:
     if args.timer:
         from brackets.modules.pomodoro_timer import run_pomodoro_standalone
 
-        run_pomodoro_standalone(vault_directory)
+        run_pomodoro_standalone(vault_directory, event_log=event_log)
         return 0
 
     if args.consolidate:
