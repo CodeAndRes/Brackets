@@ -117,39 +117,95 @@ def dispatch_cli_action(args, manager, vault_directory: str) -> Optional[int]:
     return None
 
 
-def add_task_to_latest_file(vault_directory: str, task_text: str, target: str = "weekly") -> bool:
-    """Append a pending task into Topics section of the latest weekly/monthly file."""
+def add_task_to_latest_file(vault_directory: str, task_text: str, target: str = "weekly", silent: bool = False) -> bool:
+    """Append a pending task into specific section of the latest weekly/monthly file."""
     task = (task_text or "").strip()
     if not task:
-        print("❌ El texto de la tarea no puede estar vacío")
+        if not silent:
+            print("❌ El texto de la tarea no puede estar vacío")
         return False
 
     finder = FileFinder(vault_directory)
+    is_today = target == "today"
+    
     if target == "monthly":
         filepath = finder.get_most_recent_monthly()
         label = "mensual"
+        section_type = "topics"
     else:
         filepath = finder.get_most_recent_weekly()
-        label = "semanal"
+        label = "hoy (semanal)" if is_today else "semanal"
+        section_type = "day" if is_today else "topics"
 
     if not filepath:
-        print(f"❌ No se encontró archivo {label} para añadir la tarea")
+        if not silent:
+            print(f"❌ No se encontró archivo {label} para añadir la tarea")
         return False
 
     content = safe_file_read(filepath)
     if not content:
         return False
 
-    updated = _insert_task_into_topics(content, task)
+    if section_type == "day":
+        from datetime import datetime
+        day_to_find = datetime.now().day
+        updated = _insert_task_into_day_section(content, task, day_to_find)
+        if updated == content:
+            if not silent:
+                print(f"⚠️ No se encontró la sección para el día {day_to_find} en {os.path.basename(filepath)}")
+                print("💡 Añadiendo a la sección Topics como fallback...")
+            updated = _insert_task_into_topics(content, task)
+    else:
+        updated = _insert_task_into_topics(content, task)
+
     if updated == content:
-        print("⚠️ No se realizaron cambios en el archivo")
+        if not silent:
+            print("⚠️ No se realizaron cambios en el archivo")
         return False
 
     if not safe_file_write(filepath, updated):
         return False
 
-    print(f"✅ Tarea añadida en {os.path.basename(filepath)}")
+    if not silent:
+        print(f"✅ Tarea añadida en {os.path.basename(filepath)}")
     return True
+
+
+def _insert_task_into_day_section(content: str, task: str, day: int) -> str:
+    """Insert task line in a specific day section (## ICONday)."""
+    task_line = f"  - [ ] {task}"
+    # Header format: ## ICONday (Note) or ## ICONday
+    # Matches: ## 🏠27, ## 🚗27 (Oficina), etc.
+    day_header_re = re.compile(rf"^##\s+.*{day}(?:\s|\(|$)", re.MULTILINE)
+    match = day_header_re.search(content)
+
+    if not match:
+        return content
+
+    # Find next heading to determine end of section
+    next_heading_re = re.compile(r"^##\s+", re.MULTILINE)
+    insert_pos = len(content)
+    for next_match in next_heading_re.finditer(content, match.end()):
+        insert_pos = next_match.start()
+        break
+
+    before = content[:insert_pos]
+    after = content[insert_pos:]
+
+    # Ensure clean insertion
+    if before and not before.endswith("\n"):
+        before += "\n"
+    
+    # Optional: Insert before separator --- if present in the section
+    section_part = before[match.end():]
+    if "---" in section_part:
+        sep_pos = match.end() + section_part.rfind("---")
+        before = content[:sep_pos]
+        after = content[sep_pos:]
+        if not before.endswith("\n"):
+            before += "\n"
+
+    return before + f"{task_line}\n" + after
 
 
 def _insert_task_into_topics(content: str, task: str) -> str:

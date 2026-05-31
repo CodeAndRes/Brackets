@@ -16,7 +16,7 @@ from brackets.utils.legacy_utils import (
     safe_file_write,
     confirm_overwrite,
     parse_float_input,
-    calculate_next_week_info,
+    calculate_next_week_info_from_dates,
     generate_filename
 )
 
@@ -102,22 +102,26 @@ class TestLegacyUtils:
             print(f"❌ Test parse_float_input falló: {e}")
             self.failed += 1
     
-    def test_calculate_next_week_info(self):
-        """Test que calculate_next_week_info calcula correctamente."""
+    def test_calculate_next_week_info_from_dates(self):
+        """Test que calculate_next_week_info_from_dates calcula correctamente."""
         try:
-            # Semana normal
-            year, month, week = calculate_next_week_info(2026, 1, 5)
+            from datetime import datetime
+            # Semana normal: fechas de semana 5 -> debe devolver semana 6
+            dates = [datetime(2026, 2, 2 + i) for i in range(5)]  # Lun-Vie
+            year, month, week = calculate_next_week_info_from_dates(dates, 5)
             assert week == 6, f"Semana siguiente debería ser 6, se obtuvo {week}"
+            assert year == 2026
+            assert month == 2
             
-            # Cambio de mes (ficción, pero testeable)
-            year2, month2, week2 = calculate_next_week_info(2026, 12, 52)
-            assert week2 == 1, "Semana 53 debería cambiar a 1"
-            assert year2 == 2027, "Año debería cambiar a 2027"
+            # Cambio de año: semana 52 -> semana 1
+            dates52 = [datetime(2026, 12, 21 + i) for i in range(5)]  # Lun 21-Vie 25 Dec
+            year2, month2, week2 = calculate_next_week_info_from_dates(dates52, 52)
+            assert week2 == 1, f"Semana 53 debería cambiar a 1, se obtuvo {week2}"
             
-            print("✅ Test: calculate_next_week_info calcula correctamente")
+            print("✅ Test: calculate_next_week_info_from_dates calcula correctamente")
             self.passed += 1
         except Exception as e:
-            print(f"❌ Test calculate_next_week_info falló: {e}")
+            print(f"❌ Test calculate_next_week_info_from_dates falló: {e}")
             self.failed += 1
     
     def test_generate_filename(self):
@@ -146,7 +150,7 @@ class TestLegacyUtils:
         self.test_get_work_location()
         self.test_safe_file_read_write()
         self.test_parse_float_input()
-        self.test_calculate_next_week_info()
+        self.test_calculate_next_week_info_from_dates()
         self.test_generate_filename()
         
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")

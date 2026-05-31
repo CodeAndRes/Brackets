@@ -11,82 +11,8 @@ import yaml
 DEFAULT_MENU_CONFIG: Dict[str, Any] = {
     "menus": {
         "main": {
-            "title": "M E N U  P R I N C I P A L",
+            "title": "ERROR: menu_config.yaml no encontrado",
             "items": [
-                {
-                    "id": "generation",
-                    "label": "Generacion de Bitacoras",
-                    "keys": ["1", "b"],
-                    "action": "exec",
-                    "command": "open_generation",
-                    "context_tag": "bitacoras_enabled",
-                },
-                {
-                    "id": "generation_disabled",
-                    "label": "Generacion de Bitacoras (desactivado)",
-                    "keys": ["1", "b"],
-                    "action": "noop",
-                    "context_tag": "bitacoras_disabled",
-                },
-                {
-                    "id": "consolidation",
-                    "label": "Consolidacion de Archivos",
-                    "keys": ["2", "c"],
-                    "action": "exec",
-                    "command": "open_consolidation",
-                    "context_tag": "bitacoras_enabled",
-                },
-                {
-                    "id": "consolidation_disabled",
-                    "label": "Consolidacion de Archivos (desactivado)",
-                    "keys": ["2", "c"],
-                    "action": "noop",
-                    "context_tag": "bitacoras_disabled",
-                },
-                {
-                    "id": "files",
-                    "label": "Gestion de Archivos y Categorias",
-                    "keys": ["3", "f"],
-                    "action": "exec",
-                    "command": "open_file_management",
-                },
-                {
-                    "id": "tools",
-                    "label": "Herramientas y Utilidades",
-                    "keys": ["4", "t"],
-                    "action": "exec",
-                    "command": "open_tools",
-                },
-                {
-                    "id": "settings",
-                    "label": "Configuracion",
-                    "keys": ["5", "s"],
-                    "action": "exec",
-                    "command": "open_settings",
-                },
-                {
-                    "id": "help",
-                    "label": "Ayuda",
-                    "keys": ["6", "h"],
-                    "action": "exec",
-                    "command": "open_help",
-                },
-                {
-                    "id": "quick_new_weekly",
-                    "label": "Nueva bitacora semanal (atajo)",
-                    "keys": ["n"],
-                    "action": "exec",
-                    "command": "quick_new_weekly",
-                    "context_tag": "active_vault",
-                },
-                {
-                    "id": "quick_consolidate_month",
-                    "label": "Consolidar mes (atajo)",
-                    "keys": ["m"],
-                    "action": "exec",
-                    "command": "quick_consolidate_month",
-                    "context_tag": "active_vault",
-                },
                 {
                     "id": "exit",
                     "label": "Salir",

@@ -127,12 +127,13 @@ class ContentGenerator:
         # Agregar emoji de estación al título
         season_emoji = get_season_emoji(month)
         month_name = calendar.month_name[month]
+        # Formato: # Month Topics ☀️
         title = f"# {month_name} Topics {season_emoji}"
 
-        if not cleaned_content.startswith('#'):
+        if not cleaned_content.strip().startswith('#'):
             cleaned_content = f"{title}\n\n" + cleaned_content
         else:
-            # Reemplazar el título existente
+            # Reemplazar la primera línea (título actual) por el nuevo formato
             lines = cleaned_content.split('\n')
             lines[0] = title
             cleaned_content = '\n'.join(lines)
