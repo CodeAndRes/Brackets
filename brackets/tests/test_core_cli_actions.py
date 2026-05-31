@@ -47,6 +47,11 @@ class _FakeYearConsolidator:
         return True
 
 
+class _FakeEventLog:
+    def append(self, event, **kwargs):
+        pass
+
+
 class _FakeManager:
     def __init__(self, bitacoras_enabled=True):
         self.bitacoras_enabled = bitacoras_enabled
@@ -54,6 +59,7 @@ class _FakeManager:
         self.monthly_gen = _FakeMonthlyGen()
         self.month_consolidator = _FakeMonthConsolidator()
         self.year_consolidator = _FakeYearConsolidator()
+        self.event_log = _FakeEventLog()
 
 
 class TestCoreCliActions:

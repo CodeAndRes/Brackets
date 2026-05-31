@@ -39,6 +39,7 @@ from brackets.core.startup import run_startup_flow
 from brackets.core.tools_controller import ToolsController
 from brackets.core.cli_actions import add_task_to_latest_file
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
+from brackets.worklog import EventLog
 
 
 def clear_screen():
@@ -149,6 +150,7 @@ class BitacoraManager:
         self.category_management_controller = None  # Lazy load cuando se necesite
         self.sync_yaml_controller = None  # Lazy load cuando se necesite
         self.file_rename_controller = None  # Lazy load cuando se necesite
+        self.event_log = EventLog(self.vault_root)
 
     def _menu_context(self) -> Dict[str, bool]:
         """Expone contexto dinámico consumido por MenuEngine."""
@@ -598,6 +600,7 @@ class BitacoraManager:
             
             # Si no es un cambio de destino, es una tarea
             if add_task_to_latest_file(self.directory, user_input, selected_target, silent=True):
+                self.event_log.append("task_added", task_text=user_input, target=selected_target)
                 status_msg = f"✅ Tarea añadida: {user_input[:40]}{'...' if len(user_input)>40 else ''}"
             else:
                 status_msg = "❌ Error al añadir la tarea (revisa que el archivo destino exista)"
@@ -628,6 +631,7 @@ class BitacoraManager:
 
         success = self.weekly_gen.create_next_or_manual_weekly_bitacora()
         if success:
+            self.event_log.append("bitacora_generated", type="weekly")
             print("\n✅ ¡Bitácora semanal creada exitosamente!")
         else:
             print("\n❌ Error al crear la bitácora semanal")
@@ -651,6 +655,7 @@ class BitacoraManager:
 
         success = self.monthly_gen.create_next_monthly_topics()
         if success:
+            self.event_log.append("bitacora_generated", type="monthly")
             print("\n✅ ¡Archivo mensual creado exitosamente!")
         else:
             print("\n❌ Error al crear el archivo mensual")
@@ -738,6 +743,7 @@ class BitacoraManager:
 
     def run(self) -> None:
         """Ejecuta el menú principal."""
+        self.event_log.append("session_start", vault=self.vault_name)
         selected_index = 0
         while True:
             try:

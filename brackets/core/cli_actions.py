@@ -32,17 +32,23 @@ def has_action_flags(args) -> bool:
 
 def dispatch_cli_action(args, manager, vault_directory: str) -> Optional[int]:
     """Execute direct CLI actions and return an exit code, or None for interactive mode."""
+    event_log = manager.event_log
+
     if args.add_task:
         target = args.task_target or "weekly"
         success = add_task_to_latest_file(vault_directory, args.add_task, target)
+        if success:
+            event_log.append("task_added", task_text=args.add_task, target=target, source="cli")
         return 0 if success else 1
 
     if args.weekly:
         if not manager.bitacoras_enabled:
             print("❌ Bitácoras desactivadas por configuración (feature_flags.bitacoras_enabled=false)")
             return 1
-        print("🗓️ Creando bitácora semanal...")
+        print("📅️ Creando bitácora semanal...")
         success = manager.weekly_gen.create_next_or_manual_weekly_bitacora()
+        if success:
+            event_log.append("bitacora_generated", type="weekly", source="cli")
         return 0 if success else 1
 
     if args.monthly:
@@ -51,6 +57,8 @@ def dispatch_cli_action(args, manager, vault_directory: str) -> Optional[int]:
             return 1
         print("📋 Creando archivo mensual...")
         success = manager.monthly_gen.create_next_monthly_topics()
+        if success:
+            event_log.append("bitacora_generated", type="monthly", source="cli")
         return 0 if success else 1
 
     if args.timer:
