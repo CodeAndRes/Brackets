@@ -38,6 +38,7 @@ from brackets.tests.test_core_tools_controller import TestCoreToolsController
 from brackets.tests.test_core_vault_type_menu_visibility import TestCoreVaultTypeMenuVisibility
 from brackets.tests.test_core_vault_selection import TestCoreVaultSelection
 from brackets.tests.test_version_policy import TestVersionPolicy
+from brackets.tests.test_event_log import TestEventLog
 
 
 def run_all_tests():
@@ -203,6 +204,12 @@ def run_all_tests():
     # Tests de política de versionado
     tester = TestVersionPolicy()
     version_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
+
+    # Tests de Event Log
+    tester = TestEventLog()
+    event_log_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
 
