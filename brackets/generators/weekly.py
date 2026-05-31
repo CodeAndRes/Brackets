@@ -66,19 +66,9 @@ class WeeklyGenerator:
         if ask_for_weight:
             weight_input = input(f"⚖️ Ingresa tu peso para la semana siguiente (Enter para omitir): ").strip()
             new_weight = parse_float_input(weight_input)
-        # Calcular fechas PRIMERO
-        try:
-            next_week_dates = self._calculate_next_week_dates_iso(year, current_week)
-            print_calculated_dates(0, next_week_dates)  # Mostrar sin número de semana aún
-        except Exception as iso_error:
-            # Fallback al parser legacy para no romper flujos existentes.
-            try:
-                print(f"⚠️ Cálculo ISO no disponible ({iso_error}). Usando fallback legacy...")
-                next_week_dates = parser.get_next_week_dates()
-                print_calculated_dates(0, next_week_dates)
-            except Exception as e:
-                print(f"⚠️ Error calculando fechas: {e}")
-                return False
+        # Calcular fechas usando calendario ISO (derivado del nombre del archivo)
+        next_week_dates = self._calculate_next_week_dates_iso(year, current_week)
+        print_calculated_dates(0, next_week_dates)
 
         # Calcular próxima semana basándose en las fechas reales
         next_year, next_month, next_week = calculate_next_week_info_from_dates(next_week_dates, current_week)
@@ -145,8 +135,14 @@ class WeeklyGenerator:
         if not year or not week:
             raise ValueError("Año/semana ISO inválidos")
 
-        current_monday = datetime.fromisocalendar(year, week, 1)
-        next_monday = current_monday + timedelta(days=7)
+        try:
+            current_monday = datetime.fromisocalendar(year, week, 1)
+            next_monday = current_monday + timedelta(days=7)
+        except ValueError:
+            # Manejo de semanas fuera de rango (ej: pedir semana 53 en año de 52)
+            # Avanzamos al primer día del año siguiente
+            next_monday = datetime.fromisocalendar(year + 1, 1, 1)
+
         return [next_monday + timedelta(days=i) for i in range(5)]
 
     def create_weekly_from_template(self, week_num: int, year: int, month: int) -> bool:

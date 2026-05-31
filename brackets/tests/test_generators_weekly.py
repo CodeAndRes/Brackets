@@ -53,6 +53,29 @@ class TestWeeklyGenerator:
             print(f"❌ Test lunes-viernes falló: {e}")
             self.failed += 1
 
+    def test_iso_next_week_edge_cases(self):
+        """Valida casos de borde como fin de año (Salto a la siguiente semana ISO)."""
+        try:
+            # Caso 1: Fin de año 2026 (tiene 53 semanas ISO)
+            # El lunes de la semana 53 es 2026-12-28
+            dates = self.generator._calculate_next_week_dates_iso(2026, 52)
+            assert dates[0].year == 2026, f"Debería seguir siendo 2026 (Semana 53), se obtuvo {dates[0].year}"
+            assert dates[0].month == 12, "Debería ser Diciembre"
+            assert dates[0].day == 28, f"Lunes semana 53 es 28 dic, se obtuvo {dates[0].day}"
+
+            # Caso 2: Salto a 2027 (Semana 53 -> 1)
+            # El lunes de la semana 1 de 2027 es 2027-01-04
+            dates = self.generator._calculate_next_week_dates_iso(2026, 53)
+            assert dates[0].year == 2027, f"Debería haber saltado a 2027, se obtuvo {dates[0].year}"
+            assert dates[0].month == 1, "Debería ser Enero"
+            assert dates[0].day == 4, f"Lunes semana 1 2027 es 4 ene, se obtuvo {dates[0].day}"
+
+            print("✅ Test: casos de borde ISO (semanas naturales y rollover)")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test casos de borde ISO falló: {e}")
+            self.failed += 1
+
     def test_create_next_or_manual_fallback_when_no_recent_weekly(self):
         """Si no hay bitácora previa, debe usar flujo manual automáticamente."""
         try:
@@ -158,6 +181,7 @@ class TestWeeklyGenerator:
 
         self.test_iso_next_week_dates_real_case_week12_2026()
         self.test_iso_next_week_always_monday_to_friday()
+        self.test_iso_next_week_edge_cases()
         self.test_create_next_or_manual_fallback_when_no_recent_weekly()
         self.test_create_next_or_manual_prefers_automatic_when_recent_exists()
         self.test_create_next_weekly_uses_generator_directory()

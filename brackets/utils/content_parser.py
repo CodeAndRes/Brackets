@@ -83,9 +83,11 @@ class ContentParser:
                 while stack and indent <= stack[-1][0]:
                     stack.pop()
 
+                # Verificar si algún ancestro en el stack está completado
                 has_completed_ancestor = any(is_task and completed for _, is_task, completed in stack)
 
-                if (is_pending or is_subsection) and not has_completed_ancestor:
+                # Solo procesar si NO tiene un ancestro completado Y NO está completada ella misma
+                if (is_pending or is_subsection) and not has_completed_ancestor and not is_completed:
                     key = line.strip()
                     if key not in seen:
                         pending_tasks.append(line)
@@ -159,121 +161,40 @@ class ContentParser:
         return daily_pending
 
     def get_next_week_dates(self) -> List[datetime]:
-        """Calcula las fechas de la próxima semana basándose en las fechas actuales del archivo."""
+        """Calcula las fechas de la próxima semana basándose en las fechas diarias del archivo.
+
+        DEPRECATED: Usar WeeklyGenerator._calculate_next_week_dates_iso() para generación.
+        Este método se mantiene únicamente para la herramienta de debug 'calcular fechas'.
+        """
         current_days = self.extract_daily_dates()
 
         if not current_days or len(current_days) < 5:
-            return self._get_default_next_week_dates()
+            # Fallback: próxima semana desde hoy
+            today = datetime.now()
+            days_until_monday = (7 - today.weekday()) % 7 or 7
+            next_monday = today + timedelta(days=days_until_monday)
+            return [next_monday + timedelta(days=i) for i in range(5)]
 
-        # Estrategia mejorada: buscar el mes correcto comparando con la fecha actual
+        # Intentar construir fechas usando el mes del primer día encontrado
         today = datetime.now()
+        for month_offset in [0, -1, 1]:
+            m = today.month + month_offset
+            y = today.year
+            if m < 1:
+                m = 12
+                y -= 1
+            elif m > 12:
+                m = 1
+                y += 1
+            try:
+                dates = [datetime(y, m, d) for d in current_days]
+                return [d + timedelta(days=7) for d in dates]
+            except ValueError:
+                continue
 
-        # Intentar construir las fechas en diferentes meses para encontrar el correcto
-        possible_dates = []
-
-        # Probar mes actual
-        possible_dates.append(self._try_build_dates(current_days, today.year, today.month))
-
-        # Probar mes anterior
-        prev_month = today.month - 1 if today.month > 1 else 12
-        prev_year = today.year if today.month > 1 else today.year - 1
-        possible_dates.append(self._try_build_dates(current_days, prev_year, prev_month))
-
-        # Probar mes siguiente
-        next_month = today.month + 1 if today.month < 12 else 1
-        next_year = today.year if today.month < 12 else today.year + 1
-        possible_dates.append(self._try_build_dates(current_days, next_year, next_month))
-
-        # Filtrar las opciones válidas y elegir la más cercana pero anterior a hoy
-        valid_dates = [d for d in possible_dates if d is not None]
-
-        if not valid_dates:
-            return self._get_default_next_week_dates()
-
-        # Elegir las fechas que sean más cercanas y anteriores o iguales a hoy
-        best_dates = None
-        min_diff = float('inf')
-
-        for dates in valid_dates:
-            first_date = dates[0]
-            # Queremos fechas que sean del pasado o de esta semana
-            if first_date <= today:
-                diff = (today - first_date).days
-                if diff < min_diff:
-                    min_diff = diff
-                    best_dates = dates
-
-        if best_dates is None:
-            # Si ninguna es del pasado, tomar la más antigua
-            best_dates = min(valid_dates, key=lambda d: d[0])
-
-        # Sumar 7 días a las fechas encontradas
-        next_week_dates = [date + timedelta(days=7) for date in best_dates]
-        return next_week_dates
-
-    def _try_build_dates(self, days: List[int], year: int, month: int) -> Optional[List[datetime]]:
-        """Intenta construir fechas para un año y mes específicos."""
-        try:
-            dates = []
-            for day in days:
-                dates.append(datetime(year, month, day))
-            return dates
-        except ValueError:
-            # Fecha inválida (ej: 31 de febrero)
-            return None
-
-    def _adjust_year_month(self, first_day: int, today: datetime) -> Tuple[int, int]:
-        """Ajusta el año y mes basándose en el primer día encontrado en el archivo."""
-        current_year = today.year
-        current_month = today.month
-
-        # Calcular la diferencia entre el día del archivo y el día actual
-        day_diff = abs(today.day - first_day)
-
-        # Si el primer día es mayor que 20 y el día actual es menor (cruce de mes hacia atrás)
-        if first_day > 20 and today.day < 15 and day_diff > 15:
-            # Las fechas del archivo son del mes anterior
-            if current_month == 1:
-                current_month = 12
-                current_year -= 1
-            else:
-                current_month -= 1
-
-        # Si el primer día es menor que 10 y el día actual es mayor (cruce de mes hacia adelante)
-        elif first_day < 10 and today.day > 15 and day_diff > 15:
-            # Las fechas del archivo son del mes siguiente
-            if current_month == 12:
-                current_month = 1
-                current_year += 1
-            else:
-                current_month += 1
-
-        # CASO ESPECIAL: Si estamos en los últimos días del mes y el primer día del archivo también
-        elif first_day > 20 and today.day > 20:
-            # Ambos están en el mismo mes, usar el mes actual
-            pass
-
-        return current_year, current_month
-
-    def _get_default_next_week_dates(self) -> List[datetime]:
-        """Obtiene fechas por defecto para la próxima semana basándose en la fecha actual."""
-        today = datetime.now()
-
-        # Encontrar el lunes de la PRÓXIMA semana
-        # No importa qué día sea hoy, buscamos el próximo lunes
-        days_since_monday = today.weekday()
-
-        # Si hoy es lunes (0), el próximo lunes es en 7 días
-        # Si hoy es martes (1), el próximo lunes es en 6 días
-        # etc.
-        if days_since_monday == 0:
-            # Si hoy es lunes, el próximo lunes es en 7 días
-            next_monday = today + timedelta(days=7)
-        else:
-            # Calcular días hasta el próximo lunes
-            days_until_next_monday = 7 - days_since_monday
-            next_monday = today + timedelta(days=days_until_next_monday)
-
+        # Último fallback
+        days_until_monday = (7 - today.weekday()) % 7 or 7
+        next_monday = today + timedelta(days=days_until_monday)
         return [next_monday + timedelta(days=i) for i in range(5)]
 
     def clean_completed_tasks(self) -> str:

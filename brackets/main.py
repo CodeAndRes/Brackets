@@ -544,22 +544,63 @@ class BitacoraManager:
         )
 
     def handle_add_task(self) -> None:
-        """Maneja la creación rápida de tarea desde menú."""
-        print("\n➕ AÑADIR TAREA RÁPIDA")
-        print("=" * 30)
-        print("Destino:")
-        print("  1. Último weekly")
-        print("  2. Último monthly")
+        """Maneja la creación rápida de tarea desde menú con flujo perfeccionado."""
+        selected_target = "weekly"
+        status_msg = ""
+        
+        while True:
+            clear_screen()
+            print("\n➕ AÑADIR TAREA RÁPIDA")
+            print("=" * 30)
+            
+            if status_msg:
+                print(f"{status_msg}\n" + "-" * 30)
+                status_msg = ""
 
-        target_choice = input("Selecciona destino (1/2, Enter=1): ").strip()
-        target = "monthly" if target_choice == "2" else "weekly"
-
-        task_text = input("Texto de la tarea: ").strip()
-        success = add_task_to_latest_file(self.directory, task_text, target)
-        if not success:
-            print("❌ No se pudo añadir la tarea")
-
-        input("\nPresiona Enter para continuar...")
+            # Mostrar archivos actuales para dar contexto
+            latest_weekly = self.finder.get_most_recent_weekly()
+            latest_monthly = self.finder.get_most_recent_monthly()
+            
+            print(f"Destino actual: [{selected_target.upper()}]")
+            if (selected_target == "weekly" or selected_target == "today") and latest_weekly:
+                section = "✅Topics" if selected_target == "weekly" else f"Hoy ({datetime.now().day})"
+                print(f"📄 Archivo: {os.path.basename(latest_weekly)} -> Sección: {section}")
+            elif selected_target == "monthly" and latest_monthly:
+                print(f"📄 Archivo: {os.path.basename(latest_monthly)} -> Sección: ✅Topics")
+            
+            print("\nOpciones de destino:")
+            print("  [w] Weekly (Topics)  [t] Hoy (Sección diaria)  [m] Monthly")
+            print("\nInstrucciones:")
+            print("  - Escribe el texto de la tarea y pulsa Enter")
+            print("  - Pulsa Enter con texto vacío para volver")
+            print("-" * 30)
+            
+            prompt = "Tarea / Opción: "
+            user_input = input(prompt).strip()
+            
+            if not user_input:
+                break
+                
+            # Cambiar destino si el input es una de las teclas rápidas
+            cmd = user_input.lower()
+            if cmd == 'w':
+                selected_target = "weekly"
+                status_msg = "🎯 Destino cambiado a: WEEKLY (Topics)"
+                continue
+            if cmd == 't':
+                selected_target = "today"
+                status_msg = "🎯 Destino cambiado a: HOY (Sección diaria)"
+                continue
+            if cmd == 'm':
+                selected_target = "monthly"
+                status_msg = "🎯 Destino cambiado a: MONTHLY (Topics)"
+                continue
+            
+            # Si no es un cambio de destino, es una tarea
+            if add_task_to_latest_file(self.directory, user_input, selected_target, silent=True):
+                status_msg = f"✅ Tarea añadida: {user_input[:40]}{'...' if len(user_input)>40 else ''}"
+            else:
+                status_msg = "❌ Error al añadir la tarea (revisa que el archivo destino exista)"
 
     def handle_tools_menu(self) -> None:
         """Maneja el submenú de herramientas."""

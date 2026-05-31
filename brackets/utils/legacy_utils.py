@@ -14,7 +14,6 @@ from brackets.config import (
     WORK_SCHEDULE,
     DEFAULT_ENCODING,
     MESSAGES,
-    MAX_WEEKS_PER_YEAR,
     WEEKDAYS
 )
 from brackets.managers.settings_manager import get_global_settings_manager
@@ -119,21 +118,6 @@ def calculate_next_week_info_from_dates(dates: List[datetime], current_week_num:
         next_week_num = 1
     
     return first_date.year, first_date.month, next_week_num
-
-
-def calculate_next_week_info(current_year: int, current_month: int, current_week: int) -> Tuple[int, int, int]:
-    """Calcula la información de la próxima semana (método legacy - usar calculate_next_week_info_from_dates)."""
-    next_week = current_week + 1
-    next_year = current_year
-    next_month = current_month
-    
-    # Verificar si necesitamos cambiar de mes/año
-    if next_week > MAX_WEEKS_PER_YEAR:
-        next_week = 1
-        next_year += 1
-        next_month = 1
-    
-    return next_year, next_month, next_week
 
 
 def generate_filename(
