@@ -34,7 +34,7 @@ class TestEventLog:
         self.temp_dir = None
 
     def test_append_creates_file(self):
-        """Test que append crea el archivo de log del día."""
+        """Test que append crea el archivo de log semanal."""
         try:
             log = self.setup()
             entry = log.append("test_event", detail="hello")
@@ -44,8 +44,8 @@ class TestEventLog:
             assert "ts" in entry
 
             # Verificar que el archivo existe
-            today_file = log._day_path(date.today())
-            assert os.path.exists(today_file), "El archivo de log debería existir"
+            week_file = log._week_path(date.today())
+            assert os.path.exists(week_file), "El archivo de log semanal debería existir"
 
             print("✅ Test: append crea archivo y devuelve entry correcto")
             self.passed += 1
@@ -91,44 +91,91 @@ class TestEventLog:
         finally:
             self.teardown()
 
-    def test_read_day_today(self):
-        """Test que read_day(None) lee el día actual."""
-        try:
-            log = self.setup()
-            log.append("session_start")
-            entries = log.read_day()  # None = today
-            assert len(entries) == 1
-            assert entries[0]["event"] == "session_start"
-
-            print("✅ Test: read_day() lee el día actual")
-            self.passed += 1
-        except Exception as e:
-            print(f"❌ Test read_day_today falló: {e}")
-            self.failed += 1
-        finally:
-            self.teardown()
-
-    def test_read_range(self):
-        """Test que read_range combina entries de varios días."""
+    def test_read_day_filters_by_date(self):
+        """Test que read_day filtra entries por fecha dentro de la semana."""
         try:
             log = self.setup()
             log._ensure_dir()
 
-            # Crear manualmente archivos para días consecutivos
             import yaml
-            for i in range(3):
-                day = date(2026, 3, 10 + i)
-                path = log._day_path(day)
-                data = {"entries": [{"ts": f"2026-03-{10+i}T09:00:00", "event": f"day_{i}"}]}
-                with open(path, "w", encoding="utf-8") as f:
-                    yaml.dump(data, f, allow_unicode=True)
+            # Semana del 2026-03-09 (lunes W11)
+            week_file = log._week_path(date(2026, 3, 9))
+            data = {"entries": [
+                {"ts": "2026-03-09T09:00:00", "event": "monday"},
+                {"ts": "2026-03-10T10:00:00", "event": "tuesday"},
+                {"ts": "2026-03-11T11:00:00", "event": "wednesday"},
+            ]}
+            with open(week_file, "w", encoding="utf-8") as f:
+                yaml.dump(data, f, allow_unicode=True)
 
-            entries = log.read_range(date(2026, 3, 10), date(2026, 3, 12))
+            entries = log.read_day(date(2026, 3, 10))
+            assert len(entries) == 1, f"Esperaba 1 entry, obtuvo {len(entries)}"
+            assert entries[0]["event"] == "tuesday"
+
+            print("✅ Test: read_day filtra por fecha dentro de semana")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test read_day_filters falló: {e}")
+            self.failed += 1
+        finally:
+            self.teardown()
+
+    def test_read_week(self):
+        """Test que read_week devuelve toda la semana."""
+        try:
+            log = self.setup()
+            log._ensure_dir()
+
+            import yaml
+            week_file = log._week_path(date(2026, 3, 9))
+            data = {"entries": [
+                {"ts": "2026-03-09T09:00:00", "event": "e1"},
+                {"ts": "2026-03-13T17:00:00", "event": "e2"},
+            ]}
+            with open(week_file, "w", encoding="utf-8") as f:
+                yaml.dump(data, f, allow_unicode=True)
+
+            entries = log.read_week(date(2026, 3, 11))  # miércoles de esa semana
+            assert len(entries) == 2, f"Esperaba 2 entries, obtuvo {len(entries)}"
+
+            print("✅ Test: read_week devuelve toda la semana")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test read_week falló: {e}")
+            self.failed += 1
+        finally:
+            self.teardown()
+
+    def test_read_range_cross_weeks(self):
+        """Test que read_range funciona cruzando semanas."""
+        try:
+            log = self.setup()
+            log._ensure_dir()
+
+            import yaml
+            # Semana W11 (2026-03-09 a 2026-03-15)
+            w11 = log._week_path(date(2026, 3, 9))
+            data_w11 = {"entries": [
+                {"ts": "2026-03-13T09:00:00", "event": "w11_fri"},
+            ]}
+            with open(w11, "w", encoding="utf-8") as f:
+                yaml.dump(data_w11, f, allow_unicode=True)
+
+            # Semana W12 (2026-03-16 a 2026-03-22)
+            w12 = log._week_path(date(2026, 3, 16))
+            data_w12 = {"entries": [
+                {"ts": "2026-03-16T09:00:00", "event": "w12_mon"},
+                {"ts": "2026-03-17T09:00:00", "event": "w12_tue"},
+            ]}
+            with open(w12, "w", encoding="utf-8") as f:
+                yaml.dump(data_w12, f, allow_unicode=True)
+
+            entries = log.read_range(date(2026, 3, 13), date(2026, 3, 17))
             assert len(entries) == 3, f"Esperaba 3 entries, obtuvo {len(entries)}"
-            assert entries[0]["event"] == "day_0"
-            assert entries[2]["event"] == "day_2"
+            assert entries[0]["event"] == "w11_fri"
+            assert entries[2]["event"] == "w12_tue"
 
-            print("✅ Test: read_range combina entries de varios días")
+            print("✅ Test: read_range cruza semanas correctamente")
             self.passed += 1
         except Exception as e:
             print(f"❌ Test read_range falló: {e}")
@@ -142,12 +189,11 @@ class TestEventLog:
             log = self.setup()
             log._ensure_dir()
 
-            # Escribir contenido inválido
-            path = log._day_path(date(2026, 1, 1))
+            path = log._week_path(date(2026, 1, 5))
             with open(path, "w", encoding="utf-8") as f:
                 f.write("{{invalid yaml: [[[")
 
-            entries = log.read_day(date(2026, 1, 1))
+            entries = log.read_week(date(2026, 1, 5))
             assert entries == [], "Archivo corrupto debería devolver lista vacía"
 
             print("✅ Test: archivo corrupto devuelve lista vacía")
@@ -205,6 +251,24 @@ class TestEventLog:
         finally:
             self.teardown()
 
+    def test_week_file_naming(self):
+        """Test que el nombre del archivo sigue formato YYYY-WXX.yaml."""
+        try:
+            log = self.setup()
+            path = log._week_path(date(2026, 5, 31))  # Sábado de W22
+            assert path.endswith("2026-W22.yaml"), f"Nombre incorrecto: {path}"
+
+            path2 = log._week_path(date(2026, 1, 5))  # Lunes de W02
+            assert path2.endswith("2026-W02.yaml"), f"Nombre incorrecto: {path2}"
+
+            print("✅ Test: nombre de archivo sigue formato YYYY-WXX.yaml")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test week_file_naming falló: {e}")
+            self.failed += 1
+        finally:
+            self.teardown()
+
     def run_all(self):
         """Ejecutar todos los tests."""
         print("\n🧪 TESTS: worklog/event_log.py")
@@ -213,11 +277,13 @@ class TestEventLog:
         self.test_append_creates_file()
         self.test_append_multiple_entries()
         self.test_read_day_empty()
-        self.test_read_day_today()
-        self.test_read_range()
+        self.test_read_day_filters_by_date()
+        self.test_read_week()
+        self.test_read_range_cross_weeks()
         self.test_corrupted_file_returns_empty()
         self.test_entry_preserves_kwargs()
         self.test_log_dir_creation()
+        self.test_week_file_naming()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0
