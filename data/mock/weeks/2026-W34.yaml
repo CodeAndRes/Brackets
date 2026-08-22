@@ -3,37 +3,36 @@ month: 8
 week_number: 34
 weight: null
 topics_task_ids:
-- TSK-0001
-- TSK-0002
-- TSK-0003
+  - TSK-0001
+  - TSK-0002
+  - TSK-0003
 note_ids:
-- NOTE-0001
+  - NOTE-0001
 days:
-- day_number: 17
-  location_emoji: 🚗
-  location_note: Oficina
-  task_ids:
-  - TSK-0010
-  - TSK-0011
-- day_number: 18
-  location_emoji: 🚗
-  location_note: Oficina
-  task_ids:
-  - TSK-0020
-  - TSK-0021
-- day_number: 19
-  location_emoji: 🏠
-  location_note: Casa
-  task_ids: []
-- day_number: 20
-  location_emoji: 🏠
-  location_note: Casa
-  task_ids:
-  - TSK-0030
-  - TSK-0031
-  - TSK-0032
-- day_number: 21
-  location_emoji: 🚗
-  location_note: Oficina
-  task_ids:
-  - TSK-0011
+  - day_number: 17
+    location_emoji: 🚗
+    location_note: Oficina
+    task_ids:
+      - TSK-0010
+      - TSK-0011
+  - day_number: 18
+    location_emoji: 🚗
+    location_note: Oficina
+    task_ids:
+      - TSK-0020
+      - TSK-0021
+  - day_number: 19
+    location_emoji: 🏠
+    location_note: Casa
+    task_ids: []
+  - day_number: 20
+    location_emoji: 🏠
+    location_note: Casa
+    task_ids:
+      - TSK-0030
+      - TSK-0031
+      - TSK-0032
+  - day_number: 21
+    location_emoji: 🚗
+    location_note: Oficina
+    task_ids: []

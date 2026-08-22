@@ -1,93 +1,53 @@
 tasks:
-- id: TSK-0001
-  title: Revisar feedback de usuario final en dashboard de NCM
-  status: pending
-  created_at: '2026-08-17'
-  completed_at: null
-  definition_ids: []
-  project_id: NCM
-  parent_id: null
-  tags: []
-- id: TSK-0002
-  title: Preparar POC de integración Rovo + Teams
-  status: pending
-  created_at: '2026-08-17'
-  completed_at: null
-  definition_ids: []
-  project_id: ROVO
-  parent_id: null
-  tags: []
-- id: TSK-0003
-  title: Reunión de Cardinal con @JoanAmat, @QuimFernandez y @NicoRamirez
-  status: cancelled
-  created_at: '2026-08-17'
-  completed_at: null
-  definition_ids: []
-  project_id: CARDINAL
-  parent_id: null
-  tags: []
-- id: TSK-0010
-  title: Pruebas de AMRs para la vuelta (flujo 3) con @HectorPons y @IvanMuñoz
-  status: done
-  created_at: '2026-08-17'
-  completed_at: '2026-08-17'
-  definition_ids: []
-  project_id: AMR
-  parent_id: null
-  tags: []
-- id: TSK-0011
-  title: Validar flujo E2E con Copilot [🎫ATLM-99999]
-  status: pending
-  created_at: '2026-08-22'
-  completed_at: null
-  definition_ids:
-  - '[🎫ATLM-99999]'
-  project_id: null
-  parent_id: null
-  tags: []
-- id: TSK-0020
-  title: Parar las queries grandes de @MarcMarlet en InfluxDB.
-  status: done
-  created_at: '2026-08-18'
-  completed_at: '2026-08-18'
-  definition_ids: []
-  project_id: null
-  parent_id: null
-  tags: []
-- id: TSK-0021
-  title: Reunión de Cowork IA. Cancelada
-  status: cancelled
-  created_at: '2026-08-18'
-  completed_at: null
-  definition_ids: []
-  project_id: null
-  parent_id: null
-  tags: []
-- id: TSK-0030
-  title: Empezar a preparar propuesta de next steps para iniciativas de IA para @JoanAmat
-  status: pending
-  created_at: '2026-08-20'
-  completed_at: null
-  definition_ids: []
-  project_id: null
-  parent_id: null
-  tags: []
-- id: TSK-0031
-  title: Reunión de Proyecto de Export FollowUp con @DidacAlbi, @PereGimenez y @ManuelBlanco
-  status: done
-  created_at: '2026-08-20'
-  completed_at: '2026-08-20'
-  definition_ids: []
-  project_id: null
-  parent_id: null
-  tags: []
-- id: TSK-0032
-  title: Pruebas del agente de Rovo para el proyecto de Export de Jira [🎫ATLM-12703].
-  status: done
-  created_at: '2026-08-20'
-  completed_at: '2026-08-20'
-  definition_ids:
-  - '[🎫ATLM-12703]'
-  project_id: null
-  parent_id: null
-  tags: []
+  - id: TSK-0001
+    title: Revisar feedback de usuario final en dashboard de NCM
+    status: pending
+    created_at: '2026-08-17'
+    project_id: NCM
+  - id: TSK-0002
+    title: Preparar POC de integración Rovo + Teams
+    status: pending
+    created_at: '2026-08-17'
+    project_id: ROVO
+  - id: TSK-0003
+    title: Reunión de Cardinal con @JoanAmat, @QuimFernandez y @NicoRamirez
+    status: cancelled
+    created_at: '2026-08-17'
+    project_id: CARDINAL
+  - id: TSK-0010
+    title: Pruebas de AMRs para la vuelta (flujo 3) con @HectorPons y @IvanMuñoz
+    status: done
+    created_at: '2026-08-17'
+    completed_at: '2026-08-17'
+    project_id: AMR
+  - id: TSK-0011
+    title: Seguir con la prueba de creación de Agente Rovo para el proyecto de SOG de Jira.
+    status: done
+    created_at: '2026-08-17'
+    completed_at: '2026-08-17'
+    project_id: ROVO
+  - id: TSK-0020
+    title: Parar las queries grandes de @MarcMarlet en InfluxDB.
+    status: done
+    created_at: '2026-08-18'
+    completed_at: '2026-08-18'
+  - id: TSK-0021
+    title: Reunión de Cowork IA. Cancelada
+    status: cancelled
+    created_at: '2026-08-18'
+  - id: TSK-0030
+    title: Empezar a preparar propuesta de next steps para iniciativas de IA para @JoanAmat
+    status: pending
+    created_at: '2026-08-20'
+  - id: TSK-0031
+    title: Reunión de Proyecto de Export FollowUp con @DidacAlbi, @PereGimenez y @ManuelBlanco
+    status: done
+    created_at: '2026-08-20'
+    completed_at: '2026-08-20'
+  - id: TSK-0032
+    title: Pruebas del agente de Rovo para el proyecto de Export de Jira [🎫ATLM-12703].
+    status: done
+    created_at: '2026-08-20'
+    completed_at: '2026-08-20'
+    definition_ids:
+      - '[🎫ATLM-12703]'

@@ -35,6 +35,8 @@ class DailyHubController:
         self.read_single_key = read_single_key_fn
         self.clear_screen = clear_screen_fn or (lambda: None)
 
+        self.active_day_number: Optional[int] = None
+
         if entity_manager:
             self.manager = entity_manager
         else:
@@ -66,22 +68,24 @@ class DailyHubController:
             else:
                 return None, None
 
-        if not week:
+        if not week or not week.days:
             return None, None
 
+        # Si el usuario ha fijado un día activo, buscarlo
+        if self.active_day_number is not None:
+            for day in week.days:
+                if day.day_number == self.active_day_number:
+                    return week, day
+
         # Buscar el día de hoy dentro de la semana
-        active_day = None
         for day in week.days:
             if day.day_number == today_day:
-                active_day = day
-                break
+                self.active_day_number = day.day_number
+                return week, day
 
-        # Si hoy no está en los días (ej: fin de semana o mock), tomar el primer día con tareas o el último disponible
-        if not active_day and week.days:
-            # Preferir un día que tenga tareas
-            days_with_tasks = [d for d in week.days if d.task_ids]
-            active_day = days_with_tasks[0] if days_with_tasks else week.days[0]
-
+        # Si hoy no está en los días de la semana (ej: fin de semana), usar el último día disponible
+        active_day = week.days[-1]
+        self.active_day_number = active_day.day_number
         return week, active_day
 
     def _get_target_md_filepath(self, week: WeekSchedule) -> str:
@@ -140,9 +144,9 @@ class DailyHubController:
             self.print("  (Sin notas registradas)")
 
         self.print("\n" + "-" * 65)
-        self.print("[c] Marcar/Desmarcar Tarea   [n] Nueva Tarea Hoy      [j] Tarea Jira")
-        self.print("[d] Borrar Tarea             [m] Añadir Nota Semana   [b] Menú General")
-        self.print("[q] Salir")
+        self.print("[c] Marcar/Desmarcar Tarea   [n] Nueva Tarea Día      [j] Tarea Jira")
+        self.print("[d] Borrar Tarea             [m] Añadir Nota Semana   [s] Cambiar Día Activo")
+        self.print("[b] Menú General             [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -172,7 +176,28 @@ class DailyHubController:
             if choice in ("b", "menu"):
                 return "menu"
 
-            if choice == "c":
+            if choice == "s":
+                # Cambiar día activo
+                self.print("\n📅 DÍAS DE LA SEMANA:")
+                for idx, d in enumerate(week.days, start=1):
+                    current_marker = " 👈 (Activo)" if d.day_number == day.day_number else ""
+                    note_str = f" ({d.location_note})" if d.location_note else ""
+                    task_count = len(d.task_ids)
+                    self.print(f"  [{idx}] {d.location_emoji} Día {d.day_number}{note_str} - {task_count} tarea(s){current_marker}")
+
+                day_choice_str = self.input(f"\nSelecciona día (1-{len(week.days)}): ").strip()
+                try:
+                    d_idx = int(day_choice_str)
+                    if 1 <= d_idx <= len(week.days):
+                        self.active_day_number = week.days[d_idx - 1].day_number
+                    else:
+                        self.print("❌ Selección fuera de rango.")
+                        self.input("Presiona Enter para continuar...")
+                except ValueError:
+                    self.print("❌ Ingresa un número válido.")
+                    self.input("Presiona Enter para continuar...")
+
+            elif choice == "c":
                 # Marcar / desmarcar tarea
                 if not ordered_task_ids:
                     self.print("❌ No hay tareas para marcar.")

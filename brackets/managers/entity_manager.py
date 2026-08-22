@@ -5,6 +5,7 @@ Gestor de Entidades y Almacén de Datos Relacional para Brackets.
 
 from __future__ import annotations
 import os
+import re
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 import yaml
@@ -131,6 +132,24 @@ class EntityManager:
     # -------------------------------------------------------------------------
     # Métodos de Negocio: Tareas
     # -------------------------------------------------------------------------
+    def _generate_next_task_id(self) -> str:
+        """Calcula el siguiente ID de tarea disponible evitando colisiones."""
+        max_num = 0
+        for tid in self.tasks.keys():
+            match = re.search(r'\d+', tid)
+            if match:
+                max_num = max(max_num, int(match.group()))
+        return f"TSK-{max_num + 1:04d}"
+
+    def _generate_next_note_id(self) -> str:
+        """Calcula el siguiente ID de nota disponible evitando colisiones."""
+        max_num = 0
+        for nid in self.notes.keys():
+            match = re.search(r'\d+', nid)
+            if match:
+                max_num = max(max_num, int(match.group()))
+        return f"NOTE-{max_num + 1:04d}"
+
     def create_task(
         self,
         title: str,
@@ -146,9 +165,7 @@ class EntityManager:
         """Crea una tarea, la registra en la tabla y opcionalmente la vincula a la semana/día."""
         today_str = datetime.now().strftime("%Y-%m-%d")
         if not task_id:
-            # Generar ID incremental simple basado en timestamp/conteo
-            count = len(self.tasks) + 1
-            task_id = f"TSK-{count:04d}"
+            task_id = self._generate_next_task_id()
 
         task = Task(
             id=task_id,
@@ -262,7 +279,7 @@ class EntityManager:
         """Crea una nota y la asocia a la semana indicada."""
         today_str = datetime.now().strftime("%Y-%m-%d")
         if not note_id:
-            note_id = f"NOTE-{len(self.notes) + 1:04d}"
+            note_id = self._generate_next_note_id()
 
         if isinstance(content, str):
             content_list = [content]
