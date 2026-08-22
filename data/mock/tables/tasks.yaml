@@ -65,9 +65,9 @@ tasks:
   tags: []
 - id: TSK-0030
   title: Empezar a preparar propuesta de next steps para iniciativas de IA para @JoanAmat
-  status: done
+  status: pending
   created_at: '2026-08-20'
-  completed_at: '2026-08-22'
+  completed_at: null
   definition_ids: []
   project_id: null
   parent_id: null

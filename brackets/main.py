@@ -37,6 +37,7 @@ from brackets.core.menu_engine import MenuEngine
 from brackets.core.sync_yaml_controller import SyncYamlController
 from brackets.core.startup import run_startup_flow
 from brackets.core.tools_controller import ToolsController
+from brackets.core.daily_hub_controller import DailyHubController
 from brackets.core.cli_actions import add_task_to_latest_file
 from brackets.core.workspace_context import resolve_workspace_context as _resolve_workspace_context
 from brackets.worklog import EventLog
@@ -150,6 +151,7 @@ class BitacoraManager:
         self.category_management_controller = None  # Lazy load cuando se necesite
         self.sync_yaml_controller = None  # Lazy load cuando se necesite
         self.file_rename_controller = None  # Lazy load cuando se necesite
+        self.daily_hub_controller = None  # Lazy load cuando se necesite
         self.event_log = EventLog(self.vault_root)
 
     def _menu_context(self) -> Dict[str, bool]:
@@ -211,6 +213,13 @@ class BitacoraManager:
             self.handle_configuration()
         elif command == "open_help":
             self.show_help()
+        elif command == "open_daily_hub":
+            if self.bitacoras_enabled:
+                result = self.handle_daily_hub()
+                if result == "exit":
+                    return False
+            else:
+                self._show_bitacoras_disabled_message()
         elif command == "quick_new_weekly":
             if self.bitacoras_enabled:
                 clear_screen()
@@ -742,9 +751,31 @@ class BitacoraManager:
         print("• Clave: feature_flags.bitacoras_enabled (true/false)")
         input("\nPresiona Enter para continuar...")
 
+    def _get_daily_hub_controller(self) -> DailyHubController:
+        """Obtiene o inicializa el controlador del Hub Diario."""
+        if self.daily_hub_controller is None:
+            self.daily_hub_controller = DailyHubController(
+                vault_root=self.vault_root,
+                input_fn=input,
+                print_fn=print,
+                read_single_key_fn=read_single_key,
+                clear_screen_fn=clear_screen,
+            )
+        return self.daily_hub_controller
+
+    def handle_daily_hub(self) -> str:
+        """Ejecuta el Hub Diario interactivo."""
+        return self._get_daily_hub_controller().run()
+
     def run(self) -> None:
-        """Ejecuta el menú principal."""
+        """Ejecuta el menú principal o inicia en el Hub Diario si las bitácoras están activas."""
         self.event_log.append("session_start", vault=self.vault_name)
+
+        if self.bitacoras_enabled:
+            hub_result = self.handle_daily_hub()
+            if hub_result == "exit":
+                return
+
         selected_index = 0
         while True:
             try:

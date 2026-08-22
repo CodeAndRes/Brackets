@@ -41,6 +41,7 @@ from brackets.tests.test_version_policy import TestVersionPolicy
 from brackets.tests.test_event_log import TestEventLog
 import unittest
 from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitacoraRenderer
+from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubController
 
 
 def run_all_tests():
@@ -225,6 +226,17 @@ def run_all_tests():
     relational_failed = len(result.failures) + len(result.errors)
     total_passed += relational_passed
     total_failed += relational_failed
+
+    # Tests de DailyHubController
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: DailyHubController (Hub Diario Interactivo)")
+    print("=" * 60)
+    hub_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestCoreDailyHubController)
+    hub_result = unittest.TextTestRunner(verbosity=1).run(hub_suite)
+    hub_passed = hub_result.testsRun - len(hub_result.failures) - len(hub_result.errors)
+    hub_failed = len(hub_result.failures) + len(hub_result.errors)
+    total_passed += hub_passed
+    total_failed += hub_failed
 
     # Mostrar resumen final
     print("\n" + "=" * 60)

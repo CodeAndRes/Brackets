@@ -52,6 +52,13 @@ menus:
         action: exec
         command: open_help
 
+      - id: daily_hub
+        label: "Hub Diario (Gestion de la Jornada)"
+        keys: ["d"]
+        action: exec
+        command: open_daily_hub
+        context_tag: bitacoras_enabled
+
       - id: quick_new_weekly
         label: "Nueva bitacora semanal (atajo)"
         keys: ["n"]
