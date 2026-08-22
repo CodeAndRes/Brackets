@@ -1,0 +1,25 @@
+definitions:
+- id: '[🎫ATLM-12682]'
+  url: https://mangospain.atlassian.net/browse/ATLM-12682
+  title: ATLM-12682
+  type: jira
+- id: '[🎫ATLM-12673]'
+  url: https://mangospain.atlassian.net/browse/ATLM-12673
+  title: ATLM-12673
+  type: jira
+- id: '[🎫ATLM-12703]'
+  url: https://mangospain.atlassian.net/browse/ATLM-12703
+  title: ATLM-12703
+  type: jira
+- id: '[🦒EXPORT]'
+  url: https://mangospain.atlassian.net/jira/servicedesk/projects/EXP/queues
+  title: EXPORT
+  type: jira
+- id: '[🤖Export Ticket Validator]'
+  url: https://home.atlassian.com/o/6750cck8-5d53-1b55-k44b-17926c8k95d3/people/agent/e8f470e5-f1e3-4a4b-b51e-ca159756c469
+  title: Export Ticket Validator
+  type: rovo
+- id: '[🎫ATLM-99999]'
+  url: https://mangospain.atlassian.net/browse/ATLM-99999
+  title: ATLM-99999
+  type: jira

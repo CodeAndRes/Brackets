@@ -1,0 +1,10 @@
+notes:
+  - id: "NOTE-0001"
+    created_at: "2026-08-17"
+    content:
+      - "El problema de mensagería DXC->TOM era que no estaba mapeadas las posciones 28C-0905 y 28C-0906."
+      - "El [🎫ATLM-12673] para pedir acceso al proyecto Export de Jira se cancelara @ALbertoGuerra por temas de restricción."
+      - "El Agente [🤖Export Ticket Validator] funciona correctamente con tickets SOG"
+      - "Ya me han dado acceso al Sandbox de Jira para poder crear el Agente de Rovo para el proyecto de Export de Jira [🎫ATLM-12682]."
+      - "Ya tengo acceso al espacio de Jira de [🦒EXPORT]"
+      - "Dentro del Sandbox de Jira no hay acceso a Rovo, o se habilita o no nos sirve."

@@ -39,6 +39,8 @@ from brackets.tests.test_core_vault_type_menu_visibility import TestCoreVaultTyp
 from brackets.tests.test_core_vault_selection import TestCoreVaultSelection
 from brackets.tests.test_version_policy import TestVersionPolicy
 from brackets.tests.test_event_log import TestEventLog
+import unittest
+from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitacoraRenderer
 
 
 def run_all_tests():
@@ -212,6 +214,17 @@ def run_all_tests():
     event_log_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
+
+    # Tests de Motor Relacional YAML-First
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: Motor Relacional YAML-First (BitacoraRenderer & Entities)")
+    print("=" * 60)
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestRelationalBitacoraRenderer)
+    result = unittest.TextTestRunner(verbosity=1).run(suite)
+    relational_passed = result.testsRun - len(result.failures) - len(result.errors)
+    relational_failed = len(result.failures) + len(result.errors)
+    total_passed += relational_passed
+    total_failed += relational_failed
 
     # Mostrar resumen final
     print("\n" + "=" * 60)
