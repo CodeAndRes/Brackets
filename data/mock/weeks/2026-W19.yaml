@@ -1,0 +1,142 @@
+year: 2026
+month: 5
+week_number: 19
+weight: null
+topics_task_ids:
+- TSK-0219
+- TSK-0002
+- TSK-0003
+- TSK-0004
+- TSK-0005
+- TSK-0007
+- TSK-0008
+- TSK-0009
+- TSK-0010
+- TSK-0011
+- TSK-0012
+- TSK-0013
+- TSK-0015
+- TSK-0029
+- TSK-0030
+- TSK-0184
+- TSK-0185
+- TSK-0190
+- TSK-0191
+- TSK-0192
+- TSK-0193
+- TSK-0195
+- TSK-0200
+- TSK-0213
+- TSK-0217
+- TSK-0236
+- TSK-0267
+- TSK-0255
+- TSK-0260
+- TSK-0266
+- TSK-0272
+- TSK-0287
+- TSK-0288
+- TSK-0289
+- TSK-0290
+- TSK-0291
+- TSK-0292
+- TSK-0294
+- TSK-0295
+- TSK-0296
+- TSK-0297
+- TSK-0298
+- TSK-0299
+- TSK-0300
+- TSK-0301
+- TSK-0303
+- TSK-0317
+- TSK-0318
+- TSK-0323
+- TSK-0324
+- TSK-0338
+- TSK-0340
+- TSK-0365
+- TSK-0366
+- TSK-0367
+- TSK-0370
+- TSK-0371
+- TSK-0390
+- TSK-0391
+- TSK-0392
+- TSK-0393
+- TSK-0394
+- TSK-0395
+- TSK-0396
+- TSK-0408
+- TSK-0409
+- TSK-0414
+- TSK-0422
+- TSK-0423
+- TSK-0424
+note_ids:
+- NOTE-0380
+- NOTE-0381
+- NOTE-0382
+- NOTE-0383
+- NOTE-0384
+- NOTE-0385
+- NOTE-0386
+- NOTE-0387
+- NOTE-0388
+- NOTE-0389
+- NOTE-0390
+days:
+- day_number: 4
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0428
+  - TSK-0429
+  - TSK-0430
+  - TSK-0431
+- day_number: 5
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0432
+  - TSK-0433
+  - TSK-0434
+- day_number: 6
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0435
+  - TSK-0436
+  - TSK-0437
+  - TSK-0438
+  - TSK-0439
+  - TSK-0440
+  - TSK-0441
+- day_number: 7
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0442
+  - TSK-0443
+  - TSK-0444
+  - TSK-0445
+  - TSK-0446
+  - TSK-0447
+  - TSK-0448
+  - TSK-0449
+- day_number: 8
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0450
+  - TSK-0451
+  - TSK-0452
+  - TSK-0453
+  - TSK-0415
+  - TSK-0454
+  - TSK-0455
+  - TSK-0456
+  - TSK-0457
+  - TSK-0458
+  - TSK-0459
+  - TSK-0460

@@ -1,53 +1,6837 @@
 tasks:
-  - id: TSK-0001
-    title: Revisar feedback de usuario final en dashboard de NCM
-    status: pending
-    created_at: '2026-08-17'
-    project_id: NCM
-  - id: TSK-0002
-    title: Preparar POC de integración Rovo + Teams
-    status: pending
-    created_at: '2026-08-17'
-    project_id: ROVO
-  - id: TSK-0003
-    title: Reunión de Cardinal con @JoanAmat, @QuimFernandez y @NicoRamirez
-    status: cancelled
-    created_at: '2026-08-17'
-    project_id: CARDINAL
-  - id: TSK-0010
-    title: Pruebas de AMRs para la vuelta (flujo 3) con @HectorPons y @IvanMuñoz
-    status: done
-    created_at: '2026-08-17'
-    completed_at: '2026-08-17'
-    project_id: AMR
-  - id: TSK-0011
-    title: Seguir con la prueba de creación de Agente Rovo para el proyecto de SOG de Jira.
-    status: done
-    created_at: '2026-08-17'
-    completed_at: '2026-08-17'
-    project_id: ROVO
-  - id: TSK-0020
-    title: Parar las queries grandes de @MarcMarlet en InfluxDB.
-    status: done
-    created_at: '2026-08-18'
-    completed_at: '2026-08-18'
-  - id: TSK-0021
-    title: Reunión de Cowork IA. Cancelada
-    status: cancelled
-    created_at: '2026-08-18'
-  - id: TSK-0030
-    title: Empezar a preparar propuesta de next steps para iniciativas de IA para @JoanAmat
-    status: pending
-    created_at: '2026-08-20'
-  - id: TSK-0031
-    title: Reunión de Proyecto de Export FollowUp con @DidacAlbi, @PereGimenez y @ManuelBlanco
-    status: done
-    created_at: '2026-08-20'
-    completed_at: '2026-08-20'
-  - id: TSK-0032
-    title: Pruebas del agente de Rovo para el proyecto de Export de Jira [🎫ATLM-12703].
-    status: done
-    created_at: '2026-08-20'
-    completed_at: '2026-08-20'
-    definition_ids:
-      - '[🎫ATLM-12703]'
+- id: TSK-0001
+  title: Reclamar la conexión desde el servidor de InfluxDB con PSB
+  status: done
+  created_at: '2026-01-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0002
+  title: Empezar a construir Dashboards de PSB en Grafana
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0003
+  title: Investigar Kaggle para posibles proyectos de ML.
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0004
+  title: Investigar la integración de Miro con GH-Copilot.
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0005
+  title: Crear una pagina en [B] para el proyecto de estructura de Confluence Lisa
+    friendly de CDOs.
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0006
+  title: Crear sub-tarea del 🎫de RFID para las modificaciones de las queries
+  status: done
+  created_at: '2026-01-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0007
+  title: Revisar la [formación]() de GH-Copilot que compartió @JordiRiera en el chat
+    de 🤖🗝️
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0008
+  title: Revisar el plugin de Markitdown para convertir Word a Markdown
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0009
+  title: Documentar la petición del plugin de Mermaid para Confluence
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0010
+  title: Documentar la iniciativa de logs backend de DXC SILO en ElasticSearch
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0011
+  title: Investigar conexión MS-Lists/SharePoint con Grafana directamente
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0012
+  title: Investigar conexión MS-Lists/SharePoint con MNG_SILO de insertar datos y
+    luego conectar Grafana con MNG_SILO
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0013
+  title: Preparar propuesta de reports realTime de bases de datos de Lliçà para la
+    sesión del martes
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0014
+  title: Reunirme con @JesúsRegadera, @ArnauVazquez y @DaniAlba para definir la pizarra
+    de Reporting
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0015
+  title: Ir revisando necesidades del @NCM que me ha pasado @QuimFernandez
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0016
+  title: Buscar servidores de base de datos de Fives para la conexión con InfluxDB
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0017
+  title: Aclarar con @PabloMartinez si se necesita la base de datos de KPIS de PSB
+    por la conexión desde InfluxDB
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0018
+  title: Crear la Demanda para el proyecto de [📊PantallasLliçà]
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0019
+  title: Comentar con @JosueMartinez definir el contenido de la formación de IA para
+    el equipo de BT-Supply
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0020
+  title: Investigar herramienta de reports de bases de datos de Lliçà
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0021
+  title: Preguntar al equipo de CDOs como se conectan los futuros usuarios de Grafana
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0022
+  title: Preguntar al equipo de CDOs si tenemos una lista de usuarios de GlobalProtect
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0023
+  title: Seguir con la securización de las conexiones del Qorex
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0024
+  title: Pedir apertura de firewall para la base de datos de PSB Statistics.
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0025
+  title: Buscar algún contacto de PSB
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0026
+  title: Perfilar la estrategia para la reunión de la herramienta de reports para
+    bases de datos de Lliçà
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0027
+  title: Comentar con @PauMartinez la nueva manera de crear los 🎫
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0028
+  title: Reunión de Backlog de Reporting Grafana con @BelenLibonati, @EspeRouco, @JesúsRegadera
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0029
+  title: Crear una pagina de Delayed Tasks
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0030
+  title: Crear Delayed Task `Pedir a comms desbloquear acceso a BD silo dev sin GlobalProtect`
+  status: pending
+  created_at: '2026-01-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0031
+  title: Entender los repositorios de Kotlin que me ha pasado @ArnauAlaman @Project-T13W
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0032
+  title: Cambiar password del usuario svc_telegraf en InfluxDB
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0033
+  title: '- [ ] Empezar el Tutorial del uso de copilot dentro de VsCode'
+  status: cancelled
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0034
+  title: Revisar el video de Consolidación Ruedo (BIG)
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0035
+  title: Crear pagina del proyecto de Dashboard de Sorters NCM
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0036
+  title: Crear 🎫 SOG para los Dashboards de Joan L.
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0037
+  title: Limpieza del Sharepoint de Fakes
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0038
+  title: Investigar sobre Remote workspaces index de Github Copilot
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0039
+  title: Iniciar proyecto de construcción de Dashboard de BT-Supply
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0040
+  title: '- [ ] Añadir listado de proyectos de IA para el 2026(siguiente Ai Adoption
+    Workshop)'
+  status: cancelled
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0041
+  title: Re-visionar el video de la sesión de AI Alignment de Enero
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0042
+  title: Sacar lista de conceptos y tecnologías a investigar
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0043
+  title: '- [ ] New Cartonisation Model Actualizar consulta flux para el en Grafana'
+  status: cancelled
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0044
+  title: New Cartonisation Model Actualizar 🎫 y subir nueva versión de la query de
+    Koerber
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0045
+  title: Investigar el problema del borrado de archivos de MyNotes desde Copilot
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0046
+  title: Lista temas de 2026
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0047
+  title: Revisar tema de la migración del InfluxDB a la versión 3.0 --> 2.7 ya no
+    es el 3.0
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0048
+  title: Confirmar con Marc Cristany que tipo de ticket tengo que abrir para pedir
+    la nueva organización de Grafana para CDOs.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0049
+  title: Recordar la encuesta de uso de Copilot a los compañeros del equipo con licencia.
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0050
+  title: Empezar tutorial de Kotlin
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0051
+  title: Crear diagrama de flujo de datos para la POC de control de desubicados.
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0052
+  title: Ver el Video de StandUp Tech
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0053
+  title: Crear 🎫 Para query de Roger [🎫SOG-334](https://mangospain.atlassian.net/browse/SOG-334)
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids:
+  - '[🎫SOG-334]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0054
+  title: Convocar a los AI key users para proponer buscar iniciativas de IA para 2026
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0055
+  title: Reclamar a Marc Cristany la creación de la nueva organización de Grafana
+    para CDOs.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0056
+  title: Revisar plug-in de GraphQl para navegador Edge
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0057
+  title: Empezar a generar los datos de Influx para la vista v_man_mc_sorter_batches
+    para el NCM
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0058
+  title: Crear pagina para empezar a mover el tema de Logs del Backend de SILO a elasticsearch
+  status: pending
+  created_at: '2026-02-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0059
+  title: Subir consulta de Roger de mesas de encajado RFID [🎫SOG-334](https://mangospain.atlassian.net/browse/SOG-334)
+  status: done
+  created_at: '2026-02-02'
+  completed_at: '2026-02-02'
+  definition_ids:
+  - '[🎫SOG-334]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0060
+  title: Mensaje de despedida a @JordiNadal
+  status: done
+  created_at: '2026-02-02'
+  completed_at: '2026-02-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0061
+  title: 📞@Quim Ideas sobre 📊Dashboard BT-Supply
+  status: done
+  created_at: '2026-02-02'
+  completed_at: '2026-02-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0062
+  title: Preparar reunión con AI Adoption Key Users
+  status: done
+  created_at: '2026-02-02'
+  completed_at: '2026-02-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0063
+  title: Reunión con Ai Adoption Key Users
+  status: done
+  created_at: '2026-02-02'
+  completed_at: '2026-02-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0064
+  title: Retomar dashboard RFID, crear panel tipos Data [🎫SOG-334](https://mangospain.atlassian.net/browse/SOG-334)
+  status: done
+  created_at: '2026-02-03'
+  completed_at: '2026-02-03'
+  definition_ids:
+  - '[🎫SOG-334]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0065
+  title: Continuar con los paneles de Dashboard de RFID BT-Supply
+  status: done
+  created_at: '2026-02-03'
+  completed_at: '2026-02-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0066
+  title: '[🎫SOG-331](https://mangospain.atlassian.net/browse/SOG-331)'
+  status: done
+  created_at: '2026-02-03'
+  completed_at: '2026-02-03'
+  definition_ids:
+  - '[🎫SOG-331]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0067
+  title: Reunión Formaciones IA Lliçà
+  status: done
+  created_at: '2026-02-03'
+  completed_at: '2026-02-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0068
+  title: Reunión con @JosueMartinez sobre AI Adoption
+  status: done
+  created_at: '2026-02-03'
+  completed_at: '2026-02-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0069
+  title: Preparar reunión con @YaizaAlmagro
+  status: done
+  created_at: '2026-02-04'
+  completed_at: '2026-02-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0070
+  title: Reunión con @YaizaAlmagro sobre Formaciones IA Lliçà [[[💬👥MEETINGS][🤖🧠AI][🤖🥑AI_ADVOCATE]👥💻ColaboracionPeopleIT.md]]
+  status: done
+  created_at: '2026-02-04'
+  completed_at: '2026-02-04'
+  definition_ids:
+  - '[🤖🧠AI]'
+  - '[🤖🥑AI_ADVOCATE]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0071
+  title: Comentar con Roger la primera versión del dashboard de RFID BT-Supply
+  status: done
+  created_at: '2026-02-04'
+  completed_at: '2026-02-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0072
+  title: Documentar la reunión de Formaciones de IA en Lliçà
+  status: pending
+  created_at: '2026-02-04'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0073
+  title: Documentar la reunión con los Key Users de AI Adoption
+  status: pending
+  created_at: '2026-02-04'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0074
+  title: Crear Tickets de propuestas de paneles para el Dashboard de BT-Supply
+  status: pending
+  created_at: '2026-02-04'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0075
+  title: Crear ticket SOG para nuevas consultas personalizadas de Cesar.
+  status: pending
+  created_at: '2026-02-04'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0076
+  title: Comentar con @JoanLlansana que la vista v_man_mc_sorter_batches no esta en
+    Pro
+  status: done
+  created_at: '2026-02-04'
+  completed_at: '2026-02-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0077
+  title: Pedir Feedback a @JordiRiera sobre la reunión de AI Adoption Key Users
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0078
+  title: Comentar con @PauMartinez la priorización de las primeras queries de Vanderlande
+    [🎫SOG-337](https://mangospain.atlassian.net/browse/SOG-337)
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids:
+  - '[🎫SOG-337]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0079
+  title: Comentar con @PauMartinez la conexión con PSB
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0080
+  title: Comentar con @JoanAmat lo que se ha movido de AI Adoption en su ausencia\
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0081
+  title: Primera versión del [panel de Oleadas](https://pappgrafana01.intranet.mango.es/d/e534aaad-513b-4517-94f1-9d500c7e5c30/newcartonisationmodel?orgId=1&from=now-5m&to=now&timezone=browser)
+    para el Dashboard de Sorters NCM.
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0082
+  title: Comentar con @MarcCristany el acceso desde el servidor de InfluxDB a las
+    base de datos de PSB.
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0083
+  title: Comentar con @MarcCristany el tema de la migración del InfluxDB a la versión
+    3.0 -> 2.7
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0084
+  title: Reclamar a @MarcCristany la creación de la nueva organización de Grafana
+    para CDOs.
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0085
+  title: Comentar con @MarcCristany el tema de poder hacer públicos algunos dashboards
+    de Grafana en las pantallas de Lliçà.
+  status: done
+  created_at: '2026-02-05'
+  completed_at: '2026-02-05'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0086
+  title: Revisar los repos que me ha pasado @ArnauAlaman
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0087
+  title: Comentar con los Key Users de AI Adoption la sesión con AI Academy team para
+    la plantilla de confluence
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0088
+  title: Convocar reunión con el equipo de Lisa y @EricGarcia para comentar el enfoque
+    del espacio de Confluence de CDOs.
+  status: done
+  created_at: '2026-02-06'
+  completed_at: '2026-02-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0089
+  title: Seguir con dashboard de NCM, Arreglar dato del total en la barra blanca
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0090
+  title: Recap Enero
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0091
+  title: Comentar con @GemmaBonet la visita al almacén para definir la primera fase
+    del proyecto de [[[📋PROJECTS][GRAFANA]📊🏭PantallasLliçà.md]]
+  status: done
+  created_at: '2026-02-06'
+  completed_at: '2026-02-06'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0092
+  title: NCM Retocar valores, en la barra blanca debe verse el total
+  status: done
+  created_at: '2026-02-06'
+  completed_at: '2026-02-06'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0093
+  title: Revisar correo de @MarElgarrista sobre [📋PROJECTS][GRAFANA]📊🏭PantallasLliçà.md
+  status: done
+  created_at: '2026-02-06'
+  completed_at: '2026-02-06'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0094
+  title: Revisar el ReleaseNote del VsCode January
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0095
+  title: Reenviar convo de seguiemnto de Reporting de BT-Supply a @PabloMartinez
+  status: done
+  created_at: '2026-02-06'
+  completed_at: '2026-02-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0096
+  title: Comentar con @JosueMartinez sobre las formaciones de IA en Lliçà
+  status: done
+  created_at: '2026-02-06'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0097
+  title: Sesiones de BT-Supply primero
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0098
+  title: Moveremos licencias de Copilot para poder hacer la formación práctica especializada
+    en Copilot
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0099
+  title: Tentativamente las sesiones podría ser en las oficinas el 22@
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0100
+  title: '@JoanAmat se encargará de que las consultoras nos apoyen para la asistencia
+    de los externos a las formaciones.'
+  status: pending
+  created_at: '2026-02-06'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0101
+  title: Pedir acceso a la base de datos de PSB desde InfluxDB.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0102
+  title: Retomar la securización de las conexiones del Qorex.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0103
+  title: Cambiar password del usuario svc_telegraf en InfluxDB.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0104
+  title: Investigar Microsoft list para almacenar datos y luego llevarlos a InfluxDB.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0105
+  title: Revisar el Dashboard de NCM con Joan Llansana.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0106
+  title: Revisar el Dashboard de RFID con Roger Guzman.
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0107
+  title: '[🎫SOG-317](https://mangospain.atlassian.net/browse/SOG-317)'
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids:
+  - '[🎫SOG-317]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0108
+  title: Recuperar rama SOG-336 y hacer merge con main.
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0109
+  title: Comentar con @CristianTrujillo el jueves para acompañar a la Laia a la UB
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0110
+  title: Comentar con @JoanLlansana la licencia de Copilot
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0111
+  title: Pedir licencias de Copilot para internos
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0112
+  title: '@JoanAmat'
+  status: pending
+  created_at: '2026-02-09'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0113
+  title: '@GerardCepero'
+  status: pending
+  created_at: '2026-02-09'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0114
+  title: '@CarlesGibert'
+  status: pending
+  created_at: '2026-02-09'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0115
+  title: '@JoaquimFernandez'
+  status: pending
+  created_at: '2026-02-09'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0116
+  title: Reunión de Estructura Confluence Lisa friendly
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0117
+  title: Reunión de presentación de primera versión de NCM Dashboard
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0118
+  title: Crear en [B] una pagina para Backlog general [[[📋PROJECTS]✅BackLog.md]]
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0119
+  title: Crear una pagina en [B] para documentar tareas que ahogo en mi dia a día.
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0120
+  title: Lista de usuarios de Copilot dentro de la BT
+  status: done
+  created_at: '2026-02-09'
+  completed_at: '2026-02-09'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0121
+  title: Verificar el acceso de @JoanAmat al GH-Copilot
+  status: done
+  created_at: '2026-02-10'
+  completed_at: '2026-02-10'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0122
+  title: Verificar el acceso de @GerardCepero al GH-Copilot
+  status: done
+  created_at: '2026-02-10'
+  completed_at: '2026-02-10'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0123
+  title: Verificar el acceso de @CarlesGibert al GH-Copilot
+  status: done
+  created_at: '2026-02-10'
+  completed_at: '2026-02-10'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0124
+  title: Verificar el acceso de @JoaquimFernandez al GH-Copilot
+  status: done
+  created_at: '2026-02-10'
+  completed_at: '2026-02-10'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0125
+  title: '[[[💬👥MEETINGS][🗓️BIWEEKLY]🏭SeguimientoBTLliçà.md]]'
+  status: done
+  created_at: '2026-02-10'
+  completed_at: '2026-02-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0126
+  title: Comentar con @EricGarcia la posibilidad de usar diagramas Mermaid en Confluence
+    para Lisa pueda leerlos.
+  status: done
+  created_at: '2026-02-10'
+  completed_at: '2026-02-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0127
+  title: Preparar el día
+  status: done
+  created_at: '2026-02-11'
+  completed_at: '2026-02-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0128
+  title: Ayudar Jordi Rosa a empezar a usar el GH-Copilot
+  status: done
+  created_at: '2026-02-11'
+  completed_at: '2026-02-11'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0129
+  title: Ayudar a @QuimFernandez a empezar a usar el GH-Copilot
+  status: done
+  created_at: '2026-02-11'
+  completed_at: '2026-02-11'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0130
+  title: Hacer una prueba de conexión a la base de datos de PSB desde InfluxDB
+  status: done
+  created_at: '2026-02-11'
+  completed_at: '2026-02-11'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0131
+  title: '- [ ] Reunión de Seguimiento de Reporting Cancelada por @MariaBelenLibonati'
+  status: cancelled
+  created_at: '2026-02-11'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0132
+  title: Revisar con @RogerGuzman el Dashboard de RFID
+  status: done
+  created_at: '2026-02-12'
+  completed_at: '2026-02-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0133
+  title: Verificar el acceso a la base de datos de PSB con @PabloMartinez
+  status: done
+  created_at: '2026-02-12'
+  completed_at: '2026-02-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0134
+  title: Revisar el problema de de @QuimFernandez con el acceso a los tickets de Jira
+    de SUPPLY desde el GH-Copilot
+  status: done
+  created_at: '2026-02-12'
+  completed_at: '2026-02-12'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0135
+  title: Hacer merge de la rama de 🌿SOG-334 con main de KPI-Reporting
+  status: done
+  created_at: '2026-02-12'
+  completed_at: '2026-02-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0136
+  title: Hacer merge de la rama de 🌿SOG-336 con main de KPI-Reporting
+  status: done
+  created_at: '2026-02-12'
+  completed_at: '2026-02-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0137
+  title: Crear petición de firewall para la base de datos de PSB [🎫COMMS-35203](https://mangospain.atlassian.net/browse/COMMS-35203)
+  status: done
+  created_at: '2026-02-12'
+  completed_at: '2026-02-12'
+  definition_ids:
+  - '[🎫COMMS-35203]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0138
+  title: Preguntar a @EricGarcia sobre el estado de la petición del plugin de Mermaid
+    para Confluence
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0139
+  title: Comentar con @Truji el cambio de horario de mi visita al 🧑🏻‍⚕️Médico
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0140
+  title: ❓Duda a @YulianaTorres sobre la petición del plugin de Mermaid para Confluence
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0141
+  title: 🪑Comentar con @GuillermoLoisButron el tema de re-aprovechar sillas viejas
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0142
+  title: Prueba de conexión a la base de datos de PSB desde InfluxDB ✅
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0143
+  title: Buscar PLugIn de Mermaid para Confluence
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0144
+  title: Cambiar password del usuario svc_telegraf en InfluxDB server via 🔐Secrets
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0145
+  title: Cambiar password del usuario svc_telegraf en la configuraciónd del VsCode
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0146
+  title: Documentar el cambio de password del usuario svc_telegraf en InfluxDB en
+    la
+  status: done
+  created_at: '2026-02-13'
+  completed_at: '2026-02-13'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0147
+  title: '[pagina de tareas personales][def1]'
+  status: pending
+  created_at: '2026-02-13'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0148
+  title: '[def1]: [📋PROJECTS]🧩Tasks.md#cambiar-password-del-usuario-svc_telegraf-en-influxdb'
+  status: pending
+  created_at: '2026-02-13'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0149
+  title: Reclamar la creación de la nueva organización de Grafana para CDOs
+  status: done
+  created_at: '2026-02-01'
+  completed_at: '2026-02-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0150
+  title: Revisión de la base de datos de Vanderlande con @PabloMartinez
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0151
+  title: Reunión con @PereGimenez para conocer y dar acceso al nuevo compañero de
+    Data en lliçà
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0152
+  title: Alta de @MartinSavransky en SILO
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0153
+  title: Responder propuesta de revisión médica en Mango
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0154
+  title: Pedir plugin de 🧜🏻‍♀️Mermaid para Confluence [🎫ATLM-10489]
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids:
+  - '[🎫ATLM-10489]'
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0155
+  title: Recordar a los usuarios de GH-Copilot que rellenen la [Encuesta GH-Copilot]
+    de feedback para mejorar el producto
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0156
+  title: Ayudar a @JoanLlansana a empezar a usar el GH-Copilot
+  status: done
+  created_at: '2026-02-16'
+  completed_at: '2026-02-16'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0157
+  title: Reunión de seguimiento de Reporting
+  status: done
+  created_at: '2026-02-17'
+  completed_at: '2026-05-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0158
+  title: Preguntar a @JoanAmat sobre la sesión de AI workshop en el 22@ y reunion
+    del jueves a las 15:30
+  status: done
+  created_at: '2026-02-17'
+  completed_at: '2026-02-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0159
+  title: Convocar reunión herramienta Report Excel de @FerranVallalta
+  status: done
+  created_at: '2026-02-17'
+  completed_at: '2026-02-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0160
+  title: 📞Con @SergiVendrell sobre la petición de la nueva organización de Grafana
+    para CDOs
+  status: done
+  created_at: '2026-02-17'
+  completed_at: '2026-02-17'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0161
+  title: Rellenar la pagina de Confluence con la información de la reunión de AI Alignment
+    del Miércoles 18/02/2026
+  status: done
+  created_at: '2026-02-18'
+  completed_at: '2026-02-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0162
+  title: Reunión AI Alignment BT
+  status: done
+  created_at: '2026-02-18'
+  completed_at: '2026-02-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0163
+  title: Reunión Informes pantallas Expediciones
+  status: done
+  created_at: '2026-02-18'
+  completed_at: '2026-02-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0164
+  title: Documentar la conversación con @SergiVendrell sobre la petición de la nueva
+    organización de Grafana para CDOs
+  status: done
+  created_at: '2026-02-18'
+  completed_at: '2026-02-18'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0165
+  title: Preguntar a @JoanLlansana por los servidores de FIVES que se necesita conectar
+    con InfluxDB
+  status: done
+  created_at: '2026-02-18'
+  completed_at: '2026-02-18'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0166
+  title: Preguntar a @PabloMartinez si se necesita la base de datos de KPIS de PSB
+    por la conexión desde InfluxDB
+  status: done
+  created_at: '2026-02-18'
+  completed_at: '2026-02-18'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0167
+  title: '- [ ] Asistir al Community of Practice'
+  status: cancelled
+  created_at: '2026-02-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0168
+  title: Documentar la necesidad de herramienta de reports para bases de datos de
+    Lliçà
+  status: done
+  created_at: '2026-02-19'
+  completed_at: '2026-02-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0169
+  title: Convocar reunión de config de pizarra de Reporting con @JesúsRegadera, @ArnauVazquez
+    y @DaniAlba
+  status: done
+  created_at: '2026-02-19'
+  completed_at: '2026-02-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0170
+  title: Pasar a @JoanLlansana el usuario y contraseña de la base de datos de Vanderlande
+    para la conexión con InfluxDB
+  status: done
+  created_at: '2026-02-19'
+  completed_at: '2026-02-19'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0171
+  title: Reunión Data-BT
+  status: done
+  created_at: '2026-02-19'
+  completed_at: '2026-02-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0172
+  title: Subir query de @RogerGuzman para los dashboards de RFID
+  status: done
+  created_at: '2026-02-19'
+  completed_at: '2026-02-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0173
+  title: Crear [🎫SOG-338] con la nueva consulta de @RogerGuzman para los dashboards
+    de RFID
+  status: done
+  created_at: '2026-02-19'
+  completed_at: '2026-02-19'
+  definition_ids:
+  - '[🎫SOG-338]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0174
+  title: Leer 📧 de @JosueMartinez sobre la reunión de las formaciones de IA en Lliça
+  status: done
+  created_at: '2026-02-20'
+  completed_at: '2026-02-20'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0175
+  title: Reunión de config de pizarra de Reporting
+  status: done
+  created_at: '2026-02-20'
+  completed_at: '2026-02-20'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0176
+  title: Eliminar 📆 [WeeklyKpiReporting]
+  status: done
+  created_at: '2026-02-20'
+  completed_at: '2026-02-20'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0177
+  title: Adaptar los dashboards de RFID a la query nueva de @RogerGuzman [🎫SOG-339]
+  status: done
+  created_at: '2026-02-23'
+  completed_at: '2026-02-23'
+  definition_ids:
+  - '[🎫SOG-339]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0178
+  title: Convocar a @JoanAmat y @Truji
+  status: done
+  created_at: '2026-02-23'
+  completed_at: '2026-02-23'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0179
+  title: Creación de un Backlog único para [B]
+  status: done
+  created_at: '2026-02-23'
+  completed_at: '2026-02-23'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0180
+  title: Revisar el [🎫SUPPLY-16422] que me ha pasado Truji!
+  status: done
+  created_at: '2026-02-23'
+  completed_at: '2026-02-23'
+  definition_ids:
+  - '[🎫SUPPLY-16422]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0181
+  title: Hacer un resumen de la épica [🎫SUPPLY-16422] de @RayFernandez
+  status: done
+  created_at: '2026-02-23'
+  completed_at: '2026-02-23'
+  definition_ids:
+  - '[🎫SUPPLY-16422]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0182
+  title: ☕ with @Truji
+  status: done
+  created_at: '2026-02-23'
+  completed_at: '2026-02-23'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0183
+  title: Responder a @MarcCristany sobre la conexión de InfluxDB con PSB
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0184
+  title: Preparar la reunión de la herramienta de reports para bases de datos de Lliçà
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0185
+  title: Preparar la encuesta de colaborador técnico para InfluxDB
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0186
+  title: Preparar reunión con @JoanAmat y @Truji para hablar de la Formalización del
+    Role Ai Adoption Lead
+  status: done
+  created_at: '2026-02-24'
+  completed_at: '2026-02-24'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0187
+  title: Empezar a preparar el AI Adoption Workshop del 27 de marzo
+  status: done
+  created_at: '2026-02-24'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0188
+  title: Responder a @JosueMartinez sobre las fechas de la formación de IA
+  status: done
+  created_at: '2026-02-24'
+  completed_at: '2026-02-24'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0189
+  title: Comentar con @MarElgarrista  que no podré a la reunión de POC de la pantalla
+    del almacén
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0190
+  title: Documentar reunión de Herramienta de reports para bases de datos de Lliçà
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0191
+  title: Agendar reunión con @FranGaspar y @QuimFernandez para hablar de la creación
+    del Agente de IA para el equipo de BT-Supply.
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0192
+  title: Nota sobre nuevo proyecto derivado de la reunión de la herramienta de reports
+    de turnos.
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0193
+  title: Nota sobre la conversación con @FranGaspar sobre la creación del Agente de
+    IA para el equipo de BT-Supply.
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0194
+  title: Empezar a preparar el traspaso de tareas de Grafana e InfluxDB a @JesusRegadera
+    + @PorDefinir
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0195
+  title: Revisar el STANDUP 🚨 Lisa + Office
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0196
+  title: Preguntar a @QuimFernandez si ya puede crear sub-carpetas en el PAM
+  status: pending
+  created_at: '2026-02-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0197
+  title: Responder a @JosueMartinez sobre la formación de IA para el equipo de BT-Supply
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0198
+  title: Reunión con @XaviMartinez y @JesusRegadera sobre como securizar el servidor
+    de Fakes
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0199
+  title: Reunión de seguimiento del proyecto de NCM con @PauMartinez, @FerranVallalta
+    y @JoanLlansana
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0200
+  title: Empezar a preparar la migración todos los dashboards de Ferag de Grafana
+  status: pending
+  created_at: '2026-02-25'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0201
+  title: Responder el Mail de @Ferag sobre la migración de los dashboards de Ferag
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0202
+  title: Buscar 🎫 origen del proyecto [📊PantallasLliçà]
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0203
+  title: Confirmar co @SergiVendrell que para pedir que un dashboard de Grafana se
+    publique se crea demanda @Zaka directamente @SergiVendrell
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0204
+  title: Pedir que se publique el [📊DashboardExpediciones] -> [📊DashboardExpedicionesPublico]
+  status: done
+  created_at: '2026-02-25'
+  completed_at: '2026-02-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0205
+  title: Aplicar cambios de la query de @JoanLlansana de NCM para las oleadas
+  status: done
+  created_at: '2026-02-26'
+  completed_at: '2026-02-26'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0206
+  title: Comentar con @JoanAmat/@QuimFernandez la iniciativa de @JesusPerez
+  status: done
+  created_at: '2026-02-26'
+  completed_at: '2026-02-26'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0207
+  title: '[🎫SOG-315]'
+  status: done
+  created_at: '2026-02-26'
+  completed_at: '2026-02-26'
+  definition_ids:
+  - '[🎫SOG-315]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0208
+  title: Continuar con [🎫SUPPLY-16696]
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids:
+  - '[🎫SUPPLY-16696]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0209
+  title: Preguntar por el ticket de origen del proyecto de [📊PantallasLliçà] a @RogerLopez
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0210
+  title: Crear la [demanda][🎫OP-55061] para el proyecto de [📊PantallasLliçà] adjuntando
+    el [🎫AUTM-2043]
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids:
+  - '[🎫OP-55061]'
+  - '[🎫AUTM-2043]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0211
+  title: Añadir una pantalla mas [demanda][🎫OP-55061]
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids:
+  - '[🎫OP-55061]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0212
+  title: Resonder a @RogerLopez sobre como se creara las demandas para las siguientes
+    fases del proyecto de [📊PantallasLliçà]
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0213
+  title: Crear dos paneles nuevos en el dashboard de sorter para mostrar las métricas
+    de ncm_mc_sorter_batches
+  status: pending
+  created_at: '2026-02-27'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0214
+  title: Mapear todas las columnas de la vista inwms.v_man_mc_sorter en el influx
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0215
+  title: Activar métrica ncm_mc_sorter_batches
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0216
+  title: Desactivar métrica uso_chutes_sorter_b2b
+  status: done
+  created_at: '2026-02-27'
+  completed_at: '2026-02-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0217
+  title: Eliminar métrica uso_chutes_sorter_b2b del json de koerber de 2 minutos
+  status: pending
+  created_at: '2026-02-27'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0218
+  title: Activar proceso3 del json de koerber
+  status: pending
+  created_at: '2026-02-27'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0219
+  title: Modificar [My Jira Dashboard] para mostrar los tickets de SUPPLY
+  status: pending
+  created_at: '2026-03-01'
+  completed_at: null
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0220
+  title: Seguir con [🎫SOG-315]
+  status: done
+  created_at: '2026-03-02'
+  completed_at: '2026-03-02'
+  definition_ids:
+  - '[🎫SOG-315]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0221
+  title: Ticket de perdida de acceso a GH-Copilot [🎫MSCTECH-227626]
+  status: done
+  created_at: '2026-03-02'
+  completed_at: '2026-03-02'
+  definition_ids:
+  - '[🎫MSCTECH-227626]'
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0222
+  title: Lista de externos por tipo de licencia de GH Copilot
+  status: done
+  created_at: '2026-03-02'
+  completed_at: '2026-03-02'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0223
+  title: Abrir ticket por perdida de acceso a GH Copilot
+  status: done
+  created_at: '2026-03-02'
+  completed_at: '2026-03-02'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0224
+  title: Responder Mail de @AlbertoMoreno
+  status: done
+  created_at: '2026-03-02'
+  completed_at: '2026-03-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0225
+  title: '**Continuar con [🎫SUPPLY-16696]**'
+  status: done
+  created_at: '2026-03-03'
+  completed_at: '2026-03-03'
+  definition_ids:
+  - '[🎫SUPPLY-16696]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0226
+  title: '**Volver con el [🎫SOG-315]**'
+  status: done
+  created_at: '2026-03-03'
+  completed_at: '2026-03-03'
+  definition_ids:
+  - '[🎫SOG-315]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0227
+  title: Pedir acceso a GH Copilot para @JordiRosa y @NuriaMarin [🎫MSCTECH-228180]
+    [🎫MSCTECH-228247]
+  status: done
+  created_at: '2026-03-03'
+  completed_at: '2026-03-03'
+  definition_ids:
+  - '[🎫MSCTECH-228180]'
+  - '[🎫MSCTECH-228247]'
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0228
+  title: Poner Git en el servidor de Fakes
+  status: done
+  created_at: '2026-03-03'
+  completed_at: '2026-03-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0229
+  title: Avisar por 📧correo a @Ferag y @MarcCristany que la migración de dashboard
+    ya esta finalizada
+  status: done
+  created_at: '2026-03-05'
+  completed_at: '2026-03-05'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0230
+  title: '**Seguir con la migración dashboards de Ferag de Grafana** [[[📋PROJECTS][GRAFANA]MigracionFerag.md]]'
+  status: done
+  created_at: '2026-03-05'
+  completed_at: '2026-03-05'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0231
+  title: Cambios en el Dashboard de RFID [🎫SUPPLY-16696]
+  status: done
+  created_at: '2026-03-05'
+  completed_at: '2026-03-05'
+  definition_ids:
+  - '[🎫SUPPLY-16696]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0232
+  title: 🏛️TownHall
+  status: done
+  created_at: '2026-03-05'
+  completed_at: '2026-03-05'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0233
+  title: Adaptar My Jira Dashboard para mostrar los tickets de SUPPLY
+  status: done
+  created_at: '2026-03-05'
+  completed_at: '2026-03-05'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0234
+  title: Configurar respuesta automática para el correo viernes de 08:00 a 12:00
+  status: done
+  created_at: '2026-03-05'
+  completed_at: '2026-03-05'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0235
+  title: Retomar la nueva versión del Qorex
+  status: done
+  created_at: '2026-03-07'
+  completed_at: '2026-03-07'
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0236
+  title: Revisar el [🎥MCP]
+  status: pending
+  created_at: '2026-03-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0237
+  title: pensar en un amuy breve matriz de responsabilidades para el proyecto de pantallas
+    de Lliçà
+  status: pending
+  created_at: '2026-03-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0238
+  title: Reunión de seguimiento del proyecto ExcelOffice con @JesusRegadera y @MontseMartinez
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0239
+  title: Pasar a @MontseMartinez las credenciales de MNG_SILO
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0240
+  title: Preguntar a @MarcCristany sobre el uso de PowerBI
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0241
+  title: Cambio en la query de NCM de batches inwms.v_man_mc_sorter_batches
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0242
+  title: Insertar el fichero de desubicado de @IvanMuñoz
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0243
+  title: Modificación de minLlenado de cubeta para el desubicado
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0244
+  title: Cambios en la query oracle de ncm_mc_sorter_batches [🆕📦NCM]
+  status: done
+  created_at: '2026-03-09'
+  completed_at: '2026-03-09'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0245
+  title: Preguntar a @JoanAmat sobre el traspaso de tareas de Grafana e InfluxDB a
+    @JesusRegadera + @PorDefinir
+  status: done
+  created_at: '2026-03-10'
+  completed_at: '2026-03-10'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0246
+  title: Reunión de seguimiento BT Lliçà
+  status: done
+  created_at: '2026-03-10'
+  completed_at: '2026-03-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0247
+  title: Reunión del proyecto ExcelOff
+  status: done
+  created_at: '2026-03-10'
+  completed_at: '2026-03-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0248
+  title: Cambios en la query flux de ncm_mc_sorter_batches [🆕📦NCM]
+  status: done
+  created_at: '2026-03-10'
+  completed_at: '2026-03-10'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0249
+  title: Comentar con @Piero de Msc el tema de POwerBI
+  status: done
+  created_at: '2026-03-11'
+  completed_at: '2026-03-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0250
+  title: Preguntar a @GemmaBonet sobre el plazo de entrega de las pantallas de Lliçà
+  status: done
+  created_at: '2026-03-11'
+  completed_at: '2026-03-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0251
+  title: Preparar la reunión de AI ALignment
+  status: done
+  created_at: '2026-03-11'
+  completed_at: '2026-03-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0252
+  title: Llamada con @XaviMartinez Fakes mientras estaba de vacaciones
+  status: done
+  created_at: '2026-03-11'
+  completed_at: '2026-03-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0253
+  title: Revisar y ejecutar el script de modulo de logs de BC en MNG_SILO de @XaviNavarro
+  status: done
+  created_at: '2026-03-11'
+  completed_at: '2026-03-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0254
+  title: Reunión de AI Alignment
+  status: done
+  created_at: '2026-03-11'
+  completed_at: '2026-03-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0255
+  title: Investigar Copilot Cli
+  status: pending
+  created_at: '2026-03-12'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0256
+  title: Lanzar pregunta de la instalación eléctrica de las pantallas de Lliçà
+  status: done
+  created_at: '2026-03-12'
+  completed_at: '2026-03-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0257
+  title: Responder a @RogerLopez que la instalación eléctrica la hace mantenimiento
+  status: done
+  created_at: '2026-03-12'
+  completed_at: '2026-03-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0258
+  title: Reunión de [🎓🤖🧠Formación IA BT + BC log ]
+  status: done
+  created_at: '2026-03-12'
+  completed_at: '2026-03-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0259
+  title: Grants para la ejecución del package de logs de BC en MNG_SILO para ususarios
+    de SILO [@XaviNavarro]
+  status: pending
+  created_at: '2026-03-12'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0260
+  title: Tomar notas de la reunión de AI Alignment para comentar en la Ai Adoption
+    Workshop del 27 de marzo
+  status: pending
+  created_at: '2026-03-12'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0261
+  title: '[[[🎓LEARNING][DXC-SILO]🗃️DataBase.md]]'
+  status: pending
+  created_at: '2026-03-12'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0262
+  title: '[[test]]'
+  status: pending
+  created_at: '2026-03-12'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0263
+  title: Preguntar por la Release del sábado a @ArnauAlaman
+  status: done
+  created_at: '2026-03-13'
+  completed_at: '2026-03-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0264
+  title: Hablar con @MarElgarrista sobre la petición de instalación de puntos de alimentación
+    para las pantallas de Lliçà
+  status: done
+  created_at: '2026-03-13'
+  completed_at: '2026-03-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0265
+  title: '[🎫SOG-341]'
+  status: done
+  created_at: '2026-03-13'
+  completed_at: '2026-03-13'
+  definition_ids:
+  - '[🎫SOG-341]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0266
+  title: Revisar el tema de la compactación de Agentes de IA
+  status: pending
+  created_at: '2026-03-13'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0267
+  title: pensar en una muy breve matriz de responsabilidades para el proyecto de pantallas
+    de Lliçà
+  status: pending
+  created_at: '2026-03-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0268
+  title: Reunión para presentar el trabajo con Git dentro de Fakeorders [@FakeUsers]
+    [📃FakeGit]
+  status: done
+  created_at: '2026-03-16'
+  completed_at: '2026-03-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0269
+  title: Abrir 🎫 para la gestión de la instalación de tomas de corriente del proyecto
+    [📊PantallasLliçà]
+  status: done
+  created_at: '2026-03-16'
+  completed_at: '2026-03-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0270
+  title: Hacer login en diferentes plataformas para no perder el acceso
+  status: done
+  created_at: '2026-03-16'
+  completed_at: '2026-03-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0271
+  title: Reunión con @JoanAmat para hablar del evento de BT-Supply Impulse
+  status: done
+  created_at: '2026-03-16'
+  completed_at: '2026-03-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0272
+  title: Limpieza de Tareas de la semana
+  status: done
+  created_at: '2026-03-17'
+  completed_at: '2026-03-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0273
+  title: 🎦Revisar el STANDUP TECNOLOGIA, DATOS/ADVANCED ANALYTICS... etc
+  status: done
+  created_at: '2026-03-17'
+  completed_at: '2026-03-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0274
+  title: Convocar reunión con @SoniaMoran, @GerardCepero y @JoanAmant para coordinar
+    con People el evento de BT-Supply Impulse
+  status: done
+  created_at: '2026-03-17'
+  completed_at: '2026-03-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0275
+  title: Buscar alguien de Lisa para comentar la idea de crear un agente de IA para
+    el equipo de BT-Supply
+  status: done
+  created_at: '2026-03-17'
+  completed_at: '2026-03-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0276
+  title: Contacto con @AndréRibeiro para comentar la idea de copiloto de faltas picking
+    para Lisa
+  status: done
+  created_at: '2026-03-17'
+  completed_at: '2026-03-17'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0277
+  title: Contacto con @BorjaFernandez para comentar la idea de copiloto de faltas
+    picking para Lisa
+  status: done
+  created_at: '2026-03-17'
+  completed_at: '2026-03-17'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0278
+  title: Reunión de seguimiento de reporting, comentar el ticket [🎫SUPPLY-16696]
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids:
+  - '[🎫SUPPLY-16696]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0279
+  title: Revisar Respuesta de @AndréRibeiro
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0280
+  title: Pedir vacaciones de 31 Marzo
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0281
+  title: BackLog KPI/Reporting Retomar Avisos de Grafana [🎫SOG-348]
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids:
+  - '[🎫SOG-348]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0282
+  title: BackLog KPI/Reporting Métricas provenientes del mismo servidor de grafana
+    Carpeta/Dashboard/Panel/Métrica [🎫SOG-347]
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids:
+  - '[🎫SOG-347]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0283
+  title: BackLog KPI/Reporting Grafana como repo de json [🎫SOG-346]
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids:
+  - '[🎫SOG-346]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0284
+  title: BackLog KPI/Reporting Ejecución queries por bloques de un minuto [🎫SOG-345]
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids:
+  - '[🎫SOG-345]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0285
+  title: BackLog KPI/Reporting Ejecución queries a una hora determinada [🎫SOG-344]
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids:
+  - '[🎫SOG-344]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0286
+  title: Convocar a @GerardCepero para actualizar la reunión del lunes con @JoanAmat
+    sobre el evento de BT-Supply Impulse
+  status: done
+  created_at: '2026-03-18'
+  completed_at: '2026-03-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0287
+  title: Revisar Respuesta de @BorjaFernandez
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0288
+  title: Añadir el bucket en los logs del Qorex
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0289
+  title: Profundizar en como usar Registry del equipo MLOPs
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0290
+  title: Pedir a @ArnauAlamn Acceso a los repos de ejemplo que me pasó
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0291
+  title: Explorar la creación de Agentes de Atlassian para automatizar tareas relacionadas
+    con Jira, Confluence, etc...
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0292
+  title: Probar el [BT-Supply Agent]
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0293
+  title: Hablar con @SergiGomezCortell sobre el avance de la instalación de las tomas
+    de corriente para el proyecto de pantallas de Lliçà
+  status: done
+  created_at: '2026-03-19'
+  completed_at: '2026-03-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0294
+  title: Crear sesiones de GeekPals para compartir conocimientos sobre herramientas
+    de IA con el equipo de BT-Supply
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0295
+  title: Crear pagina de NoticIAs
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0296
+  title: Crear pagina de BT-Supply Impulse
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0297
+  title: Entrada en la pagina de BT-Supply Impulse con sección de noticias
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0298
+  title: Investigar [AgentsDoc]
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0299
+  title: Revisar el video completo de la CoP
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0300
+  title: Reunión de migración a GitHub
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0301
+  title: Compartir las notas del programa del BT-Supply Impulse
+  status: pending
+  created_at: '2026-03-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0302
+  title: '## 🏠22'
+  status: pending
+  created_at: '2026-03-20'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0303
+  title: Investigr esto `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`
+  status: pending
+  created_at: '2026-03-20'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0304
+  title: Empezar con el [🎫SUPPLY-17018] de @XaviNavarro del package de MNG_SILO
+  status: done
+  created_at: '2026-03-24'
+  completed_at: '2026-03-24'
+  definition_ids:
+  - '[🎫SUPPLY-17018]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0305
+  title: Preguntar a @FerranVallalta si les puede interesar la POC de plugin de Lisa
+    en Office
+  status: done
+  created_at: '2026-03-24'
+  completed_at: '2026-03-24'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0306
+  title: Preguntar a @MarElgarrista si tiene el link del add-on de Lisa para Office
+  status: done
+  created_at: '2026-03-25'
+  completed_at: '2026-03-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0307
+  title: Finalizar el MED
+  status: done
+  created_at: '2026-03-25'
+  completed_at: '2026-03-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0308
+  title: Introducir los Objetivos del año
+  status: done
+  created_at: '2026-03-25'
+  completed_at: '2026-03-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0309
+  title: Hacer el plan de desarrollo personal para el año
+  status: done
+  created_at: '2026-03-25'
+  completed_at: '2026-03-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0310
+  title: Rescatar notas de OneNote de AMRs
+  status: done
+  created_at: '2026-03-26'
+  completed_at: '2026-03-26'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0311
+  title: Rescatar documentación de AMRs de TGW y DXC
+  status: done
+  created_at: '2026-03-26'
+  completed_at: '2026-03-26'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0312
+  title: Crear una guia para crear Agentes Rovo en Atlassian
+  status: done
+  created_at: '2026-03-26'
+  completed_at: '2026-03-26'
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0313
+  title: Enviar los Goals del año + IDP en Workday
+  status: done
+  created_at: '2026-03-26'
+  completed_at: '2026-03-26'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0314
+  title: Reunión de Data - BT
+  status: done
+  created_at: '2026-03-26'
+  completed_at: '2026-03-26'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0315
+  title: Finalizar el [🎫SUPPLY-17018] - UATs
+  status: done
+  created_at: '2026-03-26'
+  completed_at: '2026-03-26'
+  definition_ids:
+  - '[🎫SUPPLY-17018]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0316
+  title: Crear una pagina de seguimiento [B] para el proyecto AMRs
+  status: done
+  created_at: '2026-03-27'
+  completed_at: '2026-03-27'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0317
+  title: Crear Repo para el modulo de OneNote2Markdown en GitHub
+  status: pending
+  created_at: '2026-03-27'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0318
+  title: Investigar la `/create Agent` de GH-Copilot para crear un agente personalizado
+  status: pending
+  created_at: '2026-03-27'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0319
+  title: SUPPLY-17062
+  status: done
+  created_at: '2026-03-27'
+  completed_at: '2026-03-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0320
+  title: '[📝AddOnLisaOffice]: https://forms.office.com/e/1gTm7SsFVE'
+  status: pending
+  created_at: '2026-03-27'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0321
+  title: '[🎫SUPPLY-17018]: https://mangospain.atlassian.net/browse/SUPPLY-17018'
+  status: pending
+  created_at: '2026-03-27'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17018]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0322
+  title: '[🎫SUPPLY-17018 📄Doc]: ../../DataBaseProjects/MNG_SILO/SUPPLY-17018/RESUMEN_EJECUCION_SUPPLY-17018.md'
+  status: pending
+  created_at: '2026-03-27'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17018 📄Doc]'
+  - '[🎫SUPPLY-17018]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0323
+  title: Forzar que todos los tickets de SOG esten finalizados
+  status: pending
+  created_at: '2026-03-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0324
+  title: Profundizar en la librería rich de python para ver los .md en la terminal
+  status: pending
+  created_at: '2026-03-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0325
+  title: Comentar con @XaviNavarro el [🎫SUPPLY-17018]
+  status: done
+  created_at: '2026-03-30'
+  completed_at: '2026-03-30'
+  definition_ids:
+  - '[🎫SUPPLY-17018]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0326
+  title: Deshacer el cambio de la métrica OMAs [🎫SUPPLY-17062]
+  status: done
+  created_at: '2026-03-30'
+  completed_at: '2026-03-30'
+  definition_ids:
+  - '[🎫SUPPLY-17062]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0327
+  title: Responder Pregunta sobre el [🎫ATLM-10989]
+  status: done
+  created_at: '2026-03-30'
+  completed_at: '2026-03-30'
+  definition_ids:
+  - '[🎫ATLM-10989]'
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0328
+  title: Probar el plugin de Mermaid para Confluence
+  status: done
+  created_at: '2026-03-30'
+  completed_at: '2026-03-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0329
+  title: Cambio de Password Windows
+  status: done
+  created_at: '2026-03-30'
+  completed_at: '2026-03-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0330
+  title: Investigar por que no se estan generando datos de la metríca de plc10 en
+    influxDB
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0331
+  title: Convo para hablar sobre la despedida de @JoanLlansana
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0332
+  title: Prepara la reunión de AI Alignment [Ai Aligment 📝]
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0333
+  title: Verificar la instalación de las Pantallas de Lliçà
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0334
+  title: Avisar a @SergiGomez de que ya tenemos las pantallas en Lliçà instaladas
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0335
+  title: 'Reunión con @GerardCepero y @JoanAmat #BT-SupplyImpulse'
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0336
+  title: Notificar a @OriolValverde y @RogerLopez de la instacion de las pantallas
+    en Lliçà
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0337
+  title: Pedir el acceso a toda la BT a Github Enterprise [🎫MSCTECH-237945]
+  status: done
+  created_at: '2026-03-01'
+  completed_at: '2026-03-01'
+  definition_ids:
+  - '[🎫MSCTECH-237945]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0338
+  title: Volver a desactivar la métrica de OMAs
+  status: pending
+  created_at: '2026-03-02'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0339
+  title: Arreglar el problema de la métrica de plc10 en InfluxDB
+  status: done
+  created_at: '2026-03-02'
+  completed_at: '2026-03-02'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0340
+  title: Crear nuevo ticket para la instación de los enchufes en Lliçà para las pantallas
+    que ya están instaladas
+  status: pending
+  created_at: '2026-03-02'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0341
+  title: '[🎫ATLM-10989]: https://mangospain.atlassian.net/browse/ATLM-10989'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids:
+  - '[🎫ATLM-10989]'
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0342
+  title: '[🎫SUPPLY-17062]: https://mangospain.atlassian.net/browse/SUPPLY-17062'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17062]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0343
+  title: '[🎫SUPPLY-17081]: https://mangospain.atlassian.net/browse/SUPPLY-17081'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17081]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0344
+  title: '[Ejemplo 🧜🏻‍♀️]: https://mangospain.atlassian.net/wiki/x/BoFRNw'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0345
+  title: '[Ai Aligment 📝]: [💬👥MEETINGS][🤖🧠AI][🤖🥑AI_ADVOCATE]Seguimientos.md#️01042026-ai-alignment'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids:
+  - '[🤖🧠AI]'
+  - '[🤖🥑AI_ADVOCATE]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0346
+  title: '[🎫MSCTECH-237945]: https://mangospain.atlassian.net/browse/MSCTECH-237945'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids:
+  - '[🎫MSCTECH-237945]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0347
+  title: '[GitHub BT-Supply]: https://github.com/bt-supply'
+  status: pending
+  created_at: '2026-03-03'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0348
+  title: Pedir los usuarios mango externos de CDOs para darles acceso a los dashboards
+    de Grafana en la nueva organización.
+  status: done
+  created_at: '2026-04-07'
+  completed_at: '2026-04-07'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0349
+  title: Preparar Reunión del equipo de Lliça
+  status: done
+  created_at: '2026-04-07'
+  completed_at: '2026-04-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0350
+  title: Sesión de mentoria IA con @JoanAntoniTorrent
+  status: done
+  created_at: '2026-04-07'
+  completed_at: '2026-04-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0351
+  title: Reunión de Seguimiento de equipo de Lliça
+  status: done
+  created_at: '2026-04-07'
+  completed_at: '2026-04-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0352
+  title: Investigar el Copilot Cowork
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0353
+  title: Revisar el reenvío de correo de pesos a @XaviNavarro
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0354
+  title: Ejecutar el script de @XaviNavarro
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0355
+  title: Empezar con la Hackathon de IA de la CoP de IA de Atlassian
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0356
+  title: Reunión Agente Vulcan con @FranGaspar
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0357
+  title: Comentar tema de usuarios AD de CDOs externos con @ArnauVazquez.
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0358
+  title: Pedir los usuarios mango externos de Ferag para darles acceso a los dashboards
+    de Grafana en la nueva organización.
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0359
+  title: Crear y pasar un Forms con Alergias para el pedido de Vicio de Bt-Supply
+    Impulse
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0360
+  title: Responder a @AdriaRauret sobre el feedback del Add-on de Lisa en Outlook
+  status: done
+  created_at: '2026-04-08'
+  completed_at: '2026-04-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0361
+  title: Implantar el styandard de GitHub para sistemas Multiagenticos en el repo
+    KpiReporting
+  status: done
+  created_at: '2026-04-09'
+  completed_at: '2026-04-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0362
+  title: Reunión de My Mango Benefits
+  status: done
+  created_at: '2026-04-09'
+  completed_at: '2026-04-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0363
+  title: Reunión Herramientas BT-Supply con @MarcCristany
+  status: done
+  created_at: '2026-04-09'
+  completed_at: '2026-04-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0364
+  title: '[🎫SUPPLY-17100]'
+  status: done
+  created_at: '2026-04-09'
+  completed_at: '2026-04-09'
+  definition_ids:
+  - '[🎫SUPPLY-17100]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0365
+  title: Buscar conexiones entre herramientas que uso en el día a día y herramientas
+    de IA para automatizar tareas.
+  status: pending
+  created_at: '2026-04-10'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0366
+  title: Seguir con la organización del curso de IA para IT de Lliçà
+  status: pending
+  created_at: '2026-04-10'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0367
+  title: Pedir horas de convenio para el martes 14 de abril
+  status: pending
+  created_at: '2026-04-10'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0368
+  title: '[🎫SUPPLY-17153] Ticket de @MarcMarlet, alta de query SGA_OWNER en Grafana
+    --> Pendiente @MarcMarlet'
+  status: done
+  created_at: '2026-04-10'
+  completed_at: '2026-04-10'
+  definition_ids:
+  - '[🎫SUPPLY-17153]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0369
+  title: Revisar el tema de la automatización de la migracion de repos de Bitbucket
+    a GitHub
+  status: done
+  created_at: '2026-04-10'
+  completed_at: '2026-04-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0370
+  title: Crear una Pagina de proyecto para la migración de repos de Bitbucket a GitHub
+  status: pending
+  created_at: '2026-04-10'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0371
+  title: Market de 🛋️Home
+  status: pending
+  created_at: '2026-04-10'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0372
+  title: Renovar accesos
+  status: done
+  created_at: '2026-04-10'
+  completed_at: '2026-04-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0373
+  title: Comentar con @GerardCepero el tema del repo de la Hackathon en gitHub
+  status: done
+  created_at: '2026-04-13'
+  completed_at: '2026-04-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0374
+  title: '[🎫SUPPLY-17153] de @MarcMarlet primera query'
+  status: done
+  created_at: '2026-04-13'
+  completed_at: '2026-04-13'
+  definition_ids:
+  - '[🎫SUPPLY-17153]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0375
+  title: Consulta migración bitbucket a gitHub con @EsteveOria y @JaimeGalvez
+  status: done
+  created_at: '2026-04-13'
+  completed_at: '2026-04-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0376
+  title: Revisar la nueva query del bucket de COBOL
+  status: done
+  created_at: '2026-04-14'
+  completed_at: '2026-04-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0377
+  title: Reunión con @EsteveOria y @JaimeGalvez para avanzar en la migración de repos
+    de Bitbucket a GitHub
+  status: done
+  created_at: '2026-04-14'
+  completed_at: '2026-04-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0378
+  title: Preparar la reunión de revisión de la documentación del proyecto de AMRs
+  status: done
+  created_at: '2026-04-14'
+  completed_at: '2026-04-14'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0379
+  title: Reunión con @OriolValverde que el tema de las pantallas espera al ok de las
+    3 primeras
+  status: done
+  created_at: '2026-04-14'
+  completed_at: '2026-04-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0380
+  title: Tocar el [🎫OP-55061] de la demanda de pantallas para que en la siguiente
+    fase sean 7 pantallas
+  status: done
+  created_at: '2026-04-14'
+  completed_at: '2026-04-14'
+  definition_ids:
+  - '[🎫OP-55061]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0381
+  title: Empezar el acceso de externos de CDO a GrafanaCDO y Ferag
+  status: done
+  created_at: '2026-04-15'
+  completed_at: '2026-04-15'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0382
+  title: 'Reunión con @JoanLlansana y @FranTorre para revisar los cambios en la vista
+    inwms.v_man_mc_sorter_batches #NCM'
+  status: done
+  created_at: '2026-04-15'
+  completed_at: '2026-04-15'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0383
+  title: Prueba de la query de @MarcMarlet para el tema del bucket de COBOL
+  status: done
+  created_at: '2026-04-15'
+  completed_at: '2026-04-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0384
+  title: Comentar con @Truji el tema de la release del Sabado y añadir a @PacoPerez
+    para el soporte
+  status: done
+  created_at: '2026-04-15'
+  completed_at: '2026-04-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0385
+  title: '[📄Encuesta] de sesiones de IA Academy en Lliçà'
+  status: done
+  created_at: '2026-04-15'
+  completed_at: '2026-04-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0386
+  title: Pedir licencia de GitHub @NicoRamirez [🎫MSCTECH-241985]
+  status: done
+  created_at: '2026-04-15'
+  completed_at: '2026-04-15'
+  definition_ids:
+  - '[🎫MSCTECH-241985]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0387
+  title: Crar repo para el Hackathon de BT-Supply Imulse, o bien en Bitbucket o bien
+    en GitHub Personal
+  status: done
+  created_at: '2026-04-16'
+  completed_at: '2026-04-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0388
+  title: Reunión de Data & BT-Supply
+  status: done
+  created_at: '2026-04-16'
+  completed_at: '2026-04-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0389
+  title: '[🎫SUPPLY-17211]'
+  status: done
+  created_at: '2026-04-16'
+  completed_at: '2026-04-16'
+  definition_ids:
+  - '[🎫SUPPLY-17211]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0390
+  title: Avanzar en los cambios para el dashboard del NCM
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0391
+  title: Curso de Teraform para la migración de repos de Bitbucket a GitHub
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0392
+  title: Empezar el tema de las mejoras en el panel de visualización de oleadas del
+    NCM
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0393
+  title: Retomar te postman para AMRs
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0394
+  title: Mover a Jochen a las 9:00 en BT-Supply Impulse
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0395
+  title: Investigar mermaid/gantt de grafana para NCM
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0396
+  title: Investigar que es Samba para el tema del desarrollo local y despliegue en
+    el servidor de rexx
+  status: pending
+  created_at: '2026-04-17'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0397
+  title: Crear nuevo repo de bitbucket para consultas personalizadas [🗄️silo-personal-queries]
+  status: done
+  created_at: '2026-04-17'
+  completed_at: '2026-04-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0398
+  title: Hacer la petición del vale de descuento de Mango para la Invitada del BT-Supply
+    Impulse
+  status: done
+  created_at: '2026-04-20'
+  completed_at: '2026-04-20'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0399
+  title: 'Pregunta de @JoanLlansana de porque en el grafana de #NCM  no se pinta nada
+    reciente'
+  status: done
+  created_at: '2026-04-20'
+  completed_at: '2026-04-20'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0400
+  title: Reunión con @GerardCepero para avanzar en la preparación del BT-Supply Impulse
+  status: done
+  created_at: '2026-04-21'
+  completed_at: '2026-04-21'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0401
+  title: Convo instalación pantallas Lliçà para el 22 de abril
+  status: done
+  created_at: '2026-04-21'
+  completed_at: '2026-04-21'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0402
+  title: Ticket para @PaulaTorres por la inclusión de grupo MANGO_Bitbucket_users
+  status: done
+  created_at: '2026-04-22'
+  completed_at: '2026-04-22'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0403
+  title: Reunión con Mantenimiento sobre instalacón electrica de las pantallas de
+    Lliçà.
+  status: done
+  created_at: '2026-04-22'
+  completed_at: '2026-04-22'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0404
+  title: '[🎫SUPPLY-17302] de @MarcMarlet'
+  status: done
+  created_at: '2026-04-22'
+  completed_at: '2026-04-22'
+  definition_ids:
+  - '[🎫SUPPLY-17302]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0405
+  title: Reunión de AMRs para revisar el estado del proyecto y próximos pasos
+  status: done
+  created_at: '2026-04-23'
+  completed_at: '2026-04-23'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0406
+  title: Reunión de Data-BT
+  status: done
+  created_at: '2026-04-23'
+  completed_at: '2026-04-23'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0407
+  title: Reunión con @EsteveOria para los siguientes pasos en la migración de repos
+    de Bitbucket a GitHub
+  status: done
+  created_at: '2026-04-23'
+  completed_at: '2026-04-23'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0408
+  title: Recordar pedir sesiones de IA para la BT 2 Databricks y Rovo
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0409
+  title: '[🎫SUPPLY-17314]'
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17314]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0410
+  title: Pedir los dashboards pubicos [📊Rampas] [🎫SYSC-61767]
+  status: done
+  created_at: '2026-04-24'
+  completed_at: '2026-04-24'
+  definition_ids:
+  - '[🎫SYSC-61767]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0411
+  title: '[🎫SUPPLY-17302] revisar porque no esta funcionando'
+  status: done
+  created_at: '2026-04-24'
+  completed_at: '2026-04-24'
+  definition_ids:
+  - '[🎫SUPPLY-17302]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0412
+  title: Petición de ApiKeys para el Hackathon a @AdrianCatalan --> No se puede
+  status: done
+  created_at: '2026-04-24'
+  completed_at: '2026-04-24'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0413
+  title: Comentar con @IraitzLavado el acceso de Jenkins para la BT-Supply
+  status: done
+  created_at: '2026-04-24'
+  completed_at: '2026-04-24'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0414
+  title: Comentar con @SErgiVendrell si hace falta pasar por le CAB la publicación
+    de los dashboards de rampas
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0415
+  title: <!--Definiciones-->
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0416
+  title: '[🎫SUPPLY-17302]: https://mangospain.atlassian.net/browse/SUPPLY-17302'
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17302]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0417
+  title: '[📊Rampas]: https://pappgrafana01.intranet.mango.es/dashboards/f/afcwfys9ap4aoa/b2b-expediciones-subrampas-screens'
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0418
+  title: '[🎫SUPPLY-17314]: https://mangospain.atlassian.net/browse/SUPPLY-17314'
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17314]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0419
+  title: '[🎫SYSC-61767]: https://mangospain.atlassian.net/browse/SYSC-61767'
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-61767]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0420
+  title: '[🎫CHG-10024]: https://mangospain.atlassian.net/browse/CHG-10024'
+  status: pending
+  created_at: '2026-04-24'
+  completed_at: null
+  definition_ids:
+  - '[🎫CHG-10024]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0421
+  title: Pruebas de AMRs en el Amancen de Lliçà
+  status: done
+  created_at: '2026-04-27'
+  completed_at: '2026-04-27'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0422
+  title: Lista de asistentes al curso de IA para IT de Lliçà
+  status: done
+  created_at: '2026-04-27'
+  completed_at: '2026-04-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0423
+  title: Probar primera migración de un repositorio de Bitbucket a GitHub
+  status: pending
+  created_at: '2026-04-27'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0424
+  title: Pasar a @PauMartinez la lista de las urls de los dashboards públicos que
+    me pidió
+  status: pending
+  created_at: '2026-04-27'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0425
+  title: Reunión AMRs seguimiento
+  status: done
+  created_at: '2026-04-28'
+  completed_at: '2026-04-28'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0426
+  title: Reglas de hackathon para el BT-Supply Impulse en el powerpoint
+  status: pending
+  created_at: '2026-04-28'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0427
+  title: Acceso pedido por correo
+  status: done
+  created_at: '2026-04-28'
+  completed_at: '2026-04-28'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0428
+  title: Hacer el ticket de @XaviNavarro
+  status: done
+  created_at: '2026-05-04'
+  completed_at: '2026-05-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0429
+  title: Contactar a @EsteveOria para pedirle una convo para hablr del tema de los
+    Jenkins de BT-Supply
+  status: done
+  created_at: '2026-05-04'
+  completed_at: '2026-05-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0430
+  title: Reunión con @EsteveOria, @NicoRamirez y @ArnauAlamn para hablar del tema
+    de los Jenkins de BT-Supply
+  status: done
+  created_at: '2026-05-04'
+  completed_at: '2026-05-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0431
+  title: Revisar el tema de @MarcMarlet, reunión
+  status: done
+  created_at: '2026-05-04'
+  completed_at: '2026-05-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0432
+  title: Revisar las posiciones de las oleadas en el dashboard de NCM
+  status: done
+  created_at: '2026-05-05'
+  completed_at: '2026-05-05'
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0433
+  title: Pedir licencias de GH-Copilot para el resto de los internos
+  status: done
+  created_at: '2026-05-05'
+  completed_at: '2026-05-05'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0434
+  title: Empezar con [🎫SUPPLY-17421] Primera query de TGW
+  status: done
+  created_at: '2026-05-05'
+  completed_at: '2026-05-05'
+  definition_ids:
+  - '[🎫SUPPLY-17421]'
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0435
+  title: Contactar con @IgnasiGenis para el tema del Agente de IA para el equipo de
+    BT-Supply
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0436
+  title: Pedir acceso a Dynatrace [🎫MSCTECH-249503]
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids:
+  - '[🎫MSCTECH-249503]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0437
+  title: Retomar el proyecto de las pantallas de Lliçà.
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0438
+  title: Comentar en en la demanda [🎫OP-55061] con @GemmaBonet que retomen la compra
+    de las 📺
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids:
+  - '[🎫OP-55061]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0439
+  title: Preguntar a @SergiGomez si hay que crear un nuevo ticket para la instalación
+    de los enchufes en Lliçà.
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0440
+  title: Strint Plan S^3
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0441
+  title: Petición de cambio de contraseña de MNG_INFLUXDB en la base de datos de TGW
+    [🎫SYSC-62375]
+  status: done
+  created_at: '2026-05-06'
+  completed_at: '2026-05-06'
+  definition_ids:
+  - '[🎫SYSC-62375]'
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0442
+  title: Revisar la conexión de MyJobNotes con Github
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0443
+  title: Verificar que la contraseña de MNG_INFLUXDB se ha cambiado correctamente
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0444
+  title: Convo con @IgnasiGenis y @FranGaspar para hablar de la creación del Agente
+    de IA para el equipo de BT-Supply
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0445
+  title: '[🎫SUPPLY-17421] Finalizar la tarea'
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids:
+  - '[🎫SUPPLY-17421]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0446
+  title: Remainder de aportaciones del regalo de @JoanLlansana
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0447
+  title: Reclamar las convos de los cursos de IA para IT de Lliçà
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0448
+  title: Pedir Acceso a Jenkins para mi
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0449
+  title: '[🎫MSCTECH-249983] Petición de acxceso a Jenkins para mi'
+  status: done
+  created_at: '2026-05-07'
+  completed_at: '2026-05-07'
+  definition_ids:
+  - '[🎫MSCTECH-249983]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0450
+  title: Cambiar pass de InfluxDB ubuntu
+  status: done
+  created_at: '2026-05-08'
+  completed_at: '2026-05-08'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0451
+  title: Cambio de pass de DXC SILO
+  status: done
+  created_at: '2026-05-08'
+  completed_at: '2026-05-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0452
+  title: Renovar accesos a herramientas
+  status: done
+  created_at: '2026-05-08'
+  completed_at: '2026-05-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0453
+  title: Problema con las convos de las formaciones de IA
+  status: done
+  created_at: '2026-05-08'
+  completed_at: '2026-05-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0454
+  title: '[🎫SUPPLY-17421]: https://mangospain.atlassian.net/browse/SUPPLY-17421'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17421]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0455
+  title: '[🎫SUPPLY-17369]: https://mangospain.atlassian.net/browse/SUPPLY-17369'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17369]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0456
+  title: '[🎫SYSC-62375]: https://mangospain.atlassian.net/browse/SYSC-62375'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-62375]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0457
+  title: '[🎫CHG-10094]: https://mangospain.atlassian.net/browse/CHG-10094'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫CHG-10094]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0458
+  title: '[🎫MSCTECH-249503]: https://mangospain.atlassian.net/browse/MSCTECH-249503'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫MSCTECH-249503]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0459
+  title: '[🎫OP-55061]: https://mangospain.atlassian.net/browse/OP-55061'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫OP-55061]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0460
+  title: '[🎫MSCTECH-249983]: https://mangospain.atlassian.net/browse/MSCTECH-249983'
+  status: pending
+  created_at: '2026-05-08'
+  completed_at: null
+  definition_ids:
+  - '[🎫MSCTECH-249983]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0461
+  title: Contactar con @xx para empezar la petición de ApiKeys
+  status: pending
+  created_at: '2026-05-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0462
+  title: Empezar con la migración de repos de Bitbucket a GitHub
+  status: done
+  created_at: '2026-05-11'
+  completed_at: '2026-05-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0463
+  title: Revisar ticket de @XavierNavarro
+  status: done
+  created_at: '2026-05-11'
+  completed_at: '2026-05-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0464
+  title: Comentar con @EsteveOria la aprovación del acceso a Jenkins
+  status: done
+  created_at: '2026-05-12'
+  completed_at: '2026-05-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0465
+  title: Formación de GH-Copilot
+  status: done
+  created_at: '2026-05-12'
+  completed_at: '2026-05-12'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0466
+  title: Formación de IA para IT de Lliçà
+  status: done
+  created_at: '2026-05-12'
+  completed_at: '2026-05-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0467
+  title: Recordar a @JosueMartinez lo de la POC de Copilot 365
+  status: done
+  created_at: '2026-05-12'
+  completed_at: '2026-05-12'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0468
+  title: Pasar SeguimientoPedidosOnline a una hora
+  status: done
+  created_at: '2026-05-12'
+  completed_at: '2026-05-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0469
+  title: Montar reuniones con toda la BT que tengan Repos de Bitbucket para explicar
+    el proceso de migración a GitHub
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0470
+  title: Revisar problema de los commits firmados para github usando repos de Bitbucket
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0471
+  title: Verificar que tengo habilitada la transcripción en tiempo real de Teams
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0472
+  title: Pregunta a @EricGarcia sobre la lista de Repos a migrrar a GitHub
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0473
+  title: Pregunta a @Truji sobre la lista de Repos a migrrar a GitHub
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0474
+  title: '[🎫SUPPLY-17556]'
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids:
+  - '[🎫SUPPLY-17556]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0475
+  title: '[🎫SUPPLY-17458]'
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids:
+  - '[🎫SUPPLY-17458]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0476
+  title: '[🎫SOG-343]'
+  status: done
+  created_at: '2026-05-14'
+  completed_at: '2026-05-14'
+  definition_ids:
+  - '[🎫SOG-343]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0477
+  title: Revisar novedades de GH-Copilot en Visual Studio Code 1.120
+  status: pending
+  created_at: '2026-05-15'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0478
+  title: Sesión de Copilot con @PacoMarti
+  status: pending
+  created_at: '2026-05-15'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0479
+  title: Comentar con @PacoMarti la POC de negocio de crear un Ajente de control de
+    stock web <-> Lliça
+  status: pending
+  created_at: '2026-05-15'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0480
+  title: Preguntar a @JoanAmat por los AI-MeetUps
+  status: done
+  created_at: '2026-05-15'
+  completed_at: '2026-05-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0481
+  title: Crear una rama para la creación de los repos no cicd de la BT-Supply en Terraform
+  status: done
+  created_at: '2026-05-15'
+  completed_at: '2026-05-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0482
+  title: Enviar el correo de la tarjeta regalo de despedida de @JoanLlasana
+  status: done
+  created_at: '2026-05-15'
+  completed_at: '2026-05-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0483
+  title: '[🎫SUPPLY-17458]: https://mangospain.atlassian.net/browse/SUPPLY-17458'
+  status: pending
+  created_at: '2026-05-15'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17458]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0484
+  title: '[🎫SUPPLY-17556]: https://mangospain.atlassian.net/browse/SUPPLY-17556'
+  status: pending
+  created_at: '2026-05-15'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17556]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0485
+  title: '[🎫SOG-343]: https://mangospain.atlassian.net/browse/SOG-343'
+  status: pending
+  created_at: '2026-05-15'
+  completed_at: null
+  definition_ids:
+  - '[🎫SOG-343]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0486
+  title: Hacer PR para creación de repos no cicd de GitHub
+  status: done
+  created_at: '2026-05-18'
+  completed_at: '2026-05-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0487
+  title: Reunión sobre desinstalación de Notepad++ del servidor de FakeOrders
+  status: done
+  created_at: '2026-05-18'
+  completed_at: '2026-05-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0488
+  title: Daily de S^3
+  status: done
+  created_at: '2026-05-18'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0489
+  title: Encuesta de AI-MeetUps
+  status: done
+  created_at: '2026-05-18'
+  completed_at: '2026-05-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0490
+  title: Encuesta de fiesta de Verano para externos
+  status: done
+  created_at: '2026-05-18'
+  completed_at: '2026-05-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0491
+  title: Hablar con @PabloMartinez sobre el acceso a la base de datos KPI de PSB
+  status: pending
+  created_at: '2026-05-19'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0492
+  title: Revisar como se puede bloquear el acceso a unos modelos de GH-Copilot
+  status: pending
+  created_at: '2026-05-19'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0493
+  title: '[🎫SOG-313]'
+  status: done
+  created_at: '2026-05-19'
+  completed_at: '2026-05-19'
+  definition_ids:
+  - '[🎫SOG-313]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0494
+  title: iniciar la migración de repos de Bitbucket a GitHub con @AleixMurtra
+  status: done
+  created_at: '2026-05-19'
+  completed_at: '2026-05-19'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0495
+  title: Revisar correos de acceso a los servidores de AMRs
+  status: done
+  created_at: '2026-05-20'
+  completed_at: '2026-05-20'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0496
+  title: Acabar con tickets highest de KPI-Reporting
+  status: pending
+  created_at: '2026-05-20'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0497
+  title: Reunión de prueba de conectividad de AMRs
+  status: pending
+  created_at: '2026-05-20'
+  completed_at: null
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0498
+  title: Migración de repos de Bitbucket a GitHub con @AleixMurtra
+  status: pending
+  created_at: '2026-05-20'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0499
+  title: Revisar el estado del servidor de InfluxDB para el tema de la CPU con comando
+    `top`
+  status: pending
+  created_at: '2026-05-20'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0500
+  title: '[🎫SYSC-63074]'
+  status: done
+  created_at: '2026-05-20'
+  completed_at: '2026-05-20'
+  definition_ids:
+  - '[🎫SYSC-63074]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0501
+  title: '[🎫SUPPLY-17635]'
+  status: done
+  created_at: '2026-05-20'
+  completed_at: '2026-05-20'
+  definition_ids:
+  - '[🎫SUPPLY-17635]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0502
+  title: Migrar repo local de Kpi-Reporting a GitHub
+  status: done
+  created_at: '2026-05-20'
+  completed_at: '2026-05-20'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0503
+  title: '[🎫SYSC-63223]'
+  status: pending
+  created_at: '2026-05-22'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-63223]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0504
+  title: Explicar a @DaniAlba como cambiar a GitHub
+  status: done
+  created_at: '2026-05-22'
+  completed_at: '2026-05-22'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0505
+  title: Convocar AI-MeetUp para el 2 de Junio
+  status: done
+  created_at: '2026-05-22'
+  completed_at: '2026-05-22'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0506
+  title: Revisar los servicios caidoes del Influxdb
+  status: done
+  created_at: '2026-05-22'
+  completed_at: '2026-05-22'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0507
+  title: <!-- Refers -- >
+  status: pending
+  created_at: '2026-05-22'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0508
+  title: '[🎫SOG-313]: https://mangospain.atlassian.net/browse/SOG-313'
+  status: pending
+  created_at: '2026-05-22'
+  completed_at: null
+  definition_ids:
+  - '[🎫SOG-313]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0509
+  title: '[🎫SYSC-63074]: https://mangospain.atlassian.net/browse/SYSC-63074'
+  status: pending
+  created_at: '2026-05-22'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-63074]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0510
+  title: '[🎫SUPPLY-17635]: https://mangospain.atlassian.net/browse/SUPPLY-17635'
+  status: pending
+  created_at: '2026-05-22'
+  completed_at: null
+  definition_ids:
+  - '[🎫SUPPLY-17635]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0511
+  title: '[🎫SYSC-63223]: https://mangospain.atlassian.net/browse/SYSC-63223'
+  status: pending
+  created_at: '2026-05-22'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-63223]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0512
+  title: test trea
+  status: pending
+  created_at: '2026-05-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0513
+  title: Postmontem del Deploy de S^3
+  status: done
+  created_at: '2026-05-26'
+  completed_at: '2026-05-26'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0514
+  title: Prueba con equipo de CDOs accesoa los repos de GitHub.
+  status: done
+  created_at: '2026-05-26'
+  completed_at: '2026-05-26'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0515
+  title: PR para añadir miembros a los equipos de gestionan los repos de Lliça y CDOs
+  status: cancelled
+  created_at: '2026-05-26'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0516
+  title: TaskForce de configuración para proyecto de AMRs
+  status: done
+  created_at: '2026-05-26'
+  completed_at: '2026-05-26'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0517
+  title: Revisar cambios en el repo de Kpi-Reporting para no tener que hacer PRs
+  status: done
+  created_at: '2026-05-26'
+  completed_at: '2026-05-26'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0518
+  title: Daily S^3
+  status: done
+  created_at: '2026-05-27'
+  completed_at: '2026-08-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0519
+  title: '[🎫SOG-342]'
+  status: done
+  created_at: '2026-05-27'
+  completed_at: '2026-05-27'
+  definition_ids:
+  - '[🎫SOG-342]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0520
+  title: Recordar la encuesta de participación de la fiesta de verano para externos
+  status: done
+  created_at: '2026-05-29'
+  completed_at: '2026-05-29'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0521
+  title: <!-- Defs -->
+  status: pending
+  created_at: '2026-05-29'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0522
+  title: '[🎫SOG-342]: https://mangospain.atlassian.net/browse/SOG-342'
+  status: pending
+  created_at: '2026-05-29'
+  completed_at: null
+  definition_ids:
+  - '[🎫SOG-342]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0523
+  title: Ayudar a @DaniAlba con la migración de Dashborads a la organización nueva
+    de CDOs
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0524
+  title: Pedir creación de grupo de AD para Grafana-CDOs viewers [🎫MSCTECH-259247]
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids:
+  - '[🎫MSCTECH-259247]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0525
+  title: Contactar con @ArnauFont para preguntar por el procedimiento de petición
+    de ApiKeys de IA
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0526
+  title: Reunión de Agentes con los Automatistas
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0527
+  title: Preparar la AI MeetUp
+  status: done
+  created_at: '2026-06-02'
+  completed_at: '2026-06-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0528
+  title: AI MeetUp
+  status: done
+  created_at: '2026-06-02'
+  completed_at: '2026-06-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0529
+  title: Crear la lista IA al Día
+  status: done
+  created_at: '2026-06-02'
+  completed_at: '2026-06-02'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0530
+  title: Probar de convertir videos de YouTube a podcasts y subirlos al Raindrop
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0531
+  title: Iniciar documentación del repo de Terraform para toda la BT-Supply [📃Terraform]
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0532
+  title: AI Alignment
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0533
+  title: Preparar el AI Alignment
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0534
+  title: Generar resumen de la reunión de compartir conocimiento Terraform S^3
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0535
+  title: Responder a la encuesta de feedback de Fabrics
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0536
+  title: Reunión de compartir conocimiento Terraform S^3
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0537
+  title: Buscar un contacto alternativo para el tema de las ApiKeys
+  status: done
+  created_at: '2026-06-03'
+  completed_at: '2026-06-03'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0538
+  title: Push ticket de conexión de grupo de AD a Grafana-CDOs
+  status: done
+  created_at: '2026-06-05'
+  completed_at: '2026-06-08'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0539
+  title: Enviar doc para AVSEC
+  status: done
+  created_at: '2026-06-05'
+  completed_at: '2026-06-08'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0540
+  title: Preguntar por soporte de GH-Copilot a @LuisRuiz
+  status: pending
+  created_at: '2026-06-05'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0541
+  title: Echarle un vistazo a repo Eureka.
+  status: pending
+  created_at: '2026-06-05'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0542
+  title: Empezar a mirar los papeles para el AVSEC
+  status: pending
+  created_at: '2026-06-05'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0543
+  title: Comentar el detalle de la API key con @FranGaspar
+  status: pending
+  created_at: '2026-06-05'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0544
+  title: Pasarle detalle a @CarlosBragado de la API key
+  status: pending
+  created_at: '2026-06-05'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0545
+  title: '*38 tareas duplicadas pasadas al backlog (ver [📋BackLog]). Limpieza completada.*'
+  status: pending
+  created_at: '2026-06-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0546
+  title: Documentar reunión con equipos NDC sobre migración de Ferag
+  status: pending
+  created_at: '2026-06-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0547
+  title: Revisar feedback de usuario final en dashboard de NCM
+  status: pending
+  created_at: '2026-06-01'
+  completed_at: null
+  definition_ids: []
+  project_id: NCM_DASHBOARD
+  parent_id: null
+  tags: []
+- id: TSK-0548
+  title: Preparar POC de integración Rovo + Teams
+  status: pending
+  created_at: '2026-06-01'
+  completed_at: null
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0549
+  title: Evaluar solución de API Keys con MLOps
+  status: pending
+  created_at: '2026-06-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0550
+  title: Revisar Dashboard de NCM de Grafana
+  status: done
+  created_at: '2026-06-08'
+  completed_at: '2026-06-08'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0551
+  title: Reunión de Dashboard de NCM de Grafana
+  status: done
+  created_at: '2026-06-08'
+  completed_at: '2026-06-08'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0552
+  title: '[🎫SUPPLY-17787]'
+  status: done
+  created_at: '2026-06-08'
+  completed_at: '2026-06-08'
+  definition_ids:
+  - '[🎫SUPPLY-17787]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0553
+  title: Abrir demanda para usuarios externos de Grafana CDOs [🎫OP-56367]
+  status: done
+  created_at: '2026-06-08'
+  completed_at: '2026-06-08'
+  definition_ids:
+  - '[🎫OP-56367]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0554
+  title: Comentar con @JesusRegadera la reunión de AMRs
+  status: done
+  created_at: '2026-06-08'
+  completed_at: '2026-06-08'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0555
+  title: Preparar presentación del cambio de facturación de GH-Copilot
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0556
+  title: Instalación de NoLlama
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0557
+  title: Consulta con @IraitzLavado sobre como configurar el acceso de los usuarios
+    externos a Grafana-CDOs
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0558
+  title: Preparar el AI MeetUp de Hoy
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0559
+  title: Reunión de flujos de AMRs con @JesusRegadera
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0560
+  title: Recordarle a @PacoMarti la sesión de Copilot
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0561
+  title: Investigar EntraID para gestión de acceso a Grafana-CDOs
+  status: done
+  created_at: '2026-06-09'
+  completed_at: '2026-06-09'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0562
+  title: Ver como el tema de las pantallas [🎫OP-55061]
+  status: done
+  created_at: '2026-06-10'
+  completed_at: '2026-06-10'
+  definition_ids:
+  - '[🎫OP-55061]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0563
+  title: Comentar con @DaniAlba que igual tardaremos en poder añadir a los usuarios
+    externos a Grafana-CDOs por el cambio de sistema de acceso
+  status: done
+  created_at: '2026-06-10'
+  completed_at: '2026-06-10'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0564
+  title: Probar acceso a [Dynatrace]
+  status: done
+  created_at: '2026-06-10'
+  completed_at: '2026-06-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0565
+  title: Comentar con @ArnauAlaman el tema de los StreamLites
+  status: done
+  created_at: '2026-06-10'
+  completed_at: '2026-06-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0566
+  title: Listar todos los repos de StreamLites que tenemos.
+  status: done
+  created_at: '2026-06-10'
+  completed_at: '2026-06-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0567
+  title: Pedir acceso a ArgoCD [🎫MSCTECH-264348]
+  status: done
+  created_at: '2026-06-10'
+  completed_at: '2026-06-10'
+  definition_ids:
+  - '[🎫MSCTECH-264348]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0568
+  title: Comentar con @MarcCristany el tema del cambio en el acceso a Grafana
+  status: done
+  created_at: '2026-06-11'
+  completed_at: '2026-06-11'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0569
+  title: Reunión de Herramientas BT Supply con @MarcCristany
+  status: done
+  created_at: '2026-06-11'
+  completed_at: '2026-06-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0570
+  title: Pedir usuarios de InfluxDB para @MarElgarrista y @ShaneDixon [🎫SYSC-64539]
+  status: done
+  created_at: '2026-06-11'
+  completed_at: '2026-06-11'
+  definition_ids:
+  - '[🎫SYSC-64539]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0571
+  title: Reunión de Data - BT Supply
+  status: done
+  created_at: '2026-06-11'
+  completed_at: '2026-06-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0572
+  title: Preguntar a @JoanAmat sobre la reunión de Cardinal
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0573
+  title: Prueba del nuevo Qorex
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0574
+  title: Reunión con @ArnauAlaman el tema de los StreamLites
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0575
+  title: Verificar que todo esta preparado para la Release del Sabado !
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0576
+  title: Contactar con @AlbertoMoreno para el acceso a PSB desde InfluxDB
+  status: pending
+  created_at: '2026-06-12'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0577
+  title: Revisar [📺Cop Ingeniaría Agéntica]
+  status: pending
+  created_at: '2026-06-12'
+  completed_at: null
+  definition_ids:
+  - '[📺Cop Ingeniaría Agéntica]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0578
+  title: Comentar en la Daily S^3 la duda sobre @ShaneDixon
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0579
+  title: Prueba de AMRs con @JesusRegadera, @YessAdauto y @HectorPons
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-12'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0580
+  title: Petición creación de nuevo grupo para usuarios de negocio en github [🎫MSCTECH-265153]
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-12'
+  definition_ids:
+  - '[🎫MSCTECH-265153]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0581
+  title: Reunión de eliminación de usuarios de BitBucket con @AdrianCatalan
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-12'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0582
+  title: Comentar con @MarcCristany por el servidor Intelijent 10.162.61.182
+  status: done
+  created_at: '2026-06-12'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0583
+  title: Fichar a la salida
+  status: pending
+  created_at: '2026-06-13'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0584
+  title: Deploy CICD de DXC SILO
+  status: done
+  created_at: '2026-06-13'
+  completed_at: '2026-06-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0585
+  title: Fichar a la entrada
+  status: done
+  created_at: '2026-06-13'
+  completed_at: '2026-06-13'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0586
+  title: Borrar los archivo de back de la nueva versión del Qorex
+  status: pending
+  created_at: '2026-06-13'
+  completed_at: null
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0587
+  title: Cerrar la PR KPI-Reporting
+  status: done
+  created_at: '2026-06-13'
+  completed_at: '2026-06-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0588
+  title: Reclamar a @KiKuVargas el ticket de acceso a Influxdb de @MarElgarrista
+  status: pending
+  created_at: '2026-06-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0589
+  title: Comentar con @PauMartinez la posibilidad de campos string en las queries
+    de InfluxDB
+  status: done
+  created_at: '2026-06-15'
+  completed_at: '2026-06-15'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0590
+  title: Aprobación de la PR de Martin
+  status: done
+  created_at: '2026-06-15'
+  completed_at: '2026-06-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0591
+  title: Revisar [🎫MSCTECH-265153]
+  status: done
+  created_at: '2026-06-15'
+  completed_at: '2026-06-15'
+  definition_ids:
+  - '[🎫MSCTECH-265153]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0592
+  title: Pedir acceso al GYM y vestuario
+  status: done
+  created_at: '2026-06-15'
+  completed_at: '2026-06-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0593
+  title: 🔐Pedir taquilla de vestuario
+  status: done
+  created_at: '2026-06-15'
+  completed_at: '2026-06-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0594
+  title: Pedir 4 horas para el viernes
+  status: done
+  created_at: '2026-06-15'
+  completed_at: '2026-06-15'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0595
+  title: '@NicoRamirez Repos de WMS Koerber de Bitbucktet a Github'
+  status: done
+  created_at: '2026-06-16'
+  completed_at: '2026-06-16'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0596
+  title: '@Comentar con @AleixMutra los repos que quedan por migrar de BTPMS de Bitbucket'
+  status: done
+  created_at: '2026-06-16'
+  completed_at: '2026-06-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0597
+  title: Migrar lo repos faltantes de BTPMS de Bitbucket a Github
+  status: done
+  created_at: '2026-06-16'
+  completed_at: '2026-06-16'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0598
+  title: Comentar con @JoanAmat el uso de Copilot business para los externos y Claude
+  status: done
+  created_at: '2026-06-16'
+  completed_at: '2026-06-16'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0599
+  title: Recordar a @KiKuVargas que me tiene que dar acceso a InfluxDB para @MarElgarrista
+  status: pending
+  created_at: '2026-06-17'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0600
+  title: Volver a ver el video de la presentación de AgentCore de AWS
+  status: pending
+  created_at: '2026-06-17'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0601
+  title: Investigar AWS AgentCore y Bedrock
+  status: pending
+  created_at: '2026-06-17'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0602
+  title: Preparar reunión con @NicoRamirez
+  status: done
+  created_at: '2026-06-17'
+  completed_at: '2026-06-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0603
+  title: Reunión de Reporting
+  status: done
+  created_at: '2026-06-17'
+  completed_at: '2026-06-17'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0604
+  title: Probar acceso a ArgoCD
+  status: pending
+  created_at: '2026-06-18'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0605
+  title: Excepcionar los repos de CDs de PR's
+  status: done
+  created_at: '2026-06-18'
+  completed_at: '2026-06-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0606
+  title: Cambiar los repos excepcionado de PR's a PR's sin Reviewer
+  status: done
+  created_at: '2026-06-18'
+  completed_at: '2026-06-18'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0607
+  title: Probar acceso de @ShaneDixon a GitHub
+  status: pending
+  created_at: '2026-06-18'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0608
+  title: Pedir los dashboards de @PauMartinez públicos [🎫OPSC-110607]
+  status: pending
+  created_at: '2026-06-18'
+  completed_at: null
+  definition_ids:
+  - '[🎫OPSC-110607]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0609
+  title: Reunión de Cardinal con @JoanAmat, @QuimFernandez y @NicoRamirez
+  status: cancelled
+  created_at: '2026-06-22'
+  completed_at: null
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0610
+  title: Reunión del proyecto de pantallas.
+  status: done
+  created_at: '2026-06-22'
+  completed_at: '2026-06-22'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0611
+  title: '[🎫SUPPLY-17959]'
+  status: done
+  created_at: '2026-06-22'
+  completed_at: '2026-06-22'
+  definition_ids:
+  - '[🎫SUPPLY-17959]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0612
+  title: '[🎫SUPPLY-17976]'
+  status: done
+  created_at: '2026-06-22'
+  completed_at: '2026-06-22'
+  definition_ids:
+  - '[🎫SUPPLY-17976]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0613
+  title: '[🎫SUPPLY-17957]'
+  status: done
+  created_at: '2026-06-22'
+  completed_at: '2026-06-22'
+  definition_ids:
+  - '[🎫SUPPLY-17957]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0614
+  title: '[🎫SUPPLY-17407]'
+  status: done
+  created_at: '2026-06-22'
+  completed_at: '2026-06-22'
+  definition_ids:
+  - '[🎫SUPPLY-17407]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0615
+  title: Cambiar la contraseña
+  status: pending
+  created_at: '2026-06-25'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0616
+  title: Hablar con @JoanAmat para ver cuando podemos hacer la reunión de Cardinal
+  status: pending
+  created_at: '2026-06-25'
+  completed_at: null
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0617
+  title: Documentar el proyecto de Koerber End2End
+  status: pending
+  created_at: '2026-06-25'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0618
+  title: Reunión de Data BT-Supply
+  status: done
+  created_at: '2026-06-25'
+  completed_at: '2026-06-25'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0619
+  title: Preguntar por historificación de métricas de InfluxDB en Databricks
+  status: pending
+  created_at: '2026-06-25'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0620
+  title: ❓Creación de consultas de métricas para bbdd TGW
+  status: pending
+  created_at: '2026-06-25'
+  completed_at: null
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0621
+  title: Reprogramar reunión de Cardinal con @JoanAmat, @QuimFernandez y @NicoRamirez
+  status: done
+  created_at: '2026-06-25'
+  completed_at: '2026-06-25'
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0622
+  title: Verificar que @ShaneDixon ya no es parte de team-bt-llica y team-bt-cdo
+  status: pending
+  created_at: '2026-06-26'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0623
+  title: ❓repos silo_wms, silo_webservices, silo_backend migración a github
+  status: pending
+  created_at: '2026-06-26'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0624
+  title: ❓github actions con runners locales
+  status: pending
+  created_at: '2026-06-26'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0625
+  title: Verificar que la versión de Qorex no rompe nada
+  status: done
+  created_at: '2026-06-26'
+  completed_at: '2026-06-26'
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0626
+  title: Empezar a documentar el proyecto de Koerber End2End
+  status: pending
+  created_at: '2026-06-29'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0627
+  title: Push tickets de Grafana e InfluxDB
+  status: pending
+  created_at: '2026-06-29'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0628
+  title: Pedir aumento de sesiones de MNG_INFLUXDB [🎫SYSC-65548]
+  status: pending
+  created_at: '2026-06-29'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-65548]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0629
+  title: Añadir al backlog de Qorex un control de ejecución de cada query
+  status: pending
+  created_at: '2026-06-29'
+  completed_at: null
+  definition_ids: []
+  project_id: QOREX_DB
+  parent_id: null
+  tags: []
+- id: TSK-0630
+  title: Reunión con @Truji sobre el proyecto de Koerber End2End
+  status: done
+  created_at: '2026-06-29'
+  completed_at: '2026-06-29'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0631
+  title: Comentar con @GerardCepero Reunión de IA-Champins de Supply
+  status: done
+  created_at: '2026-06-30'
+  completed_at: '2026-06-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0632
+  title: Pedir las vacaciones
+  status: done
+  created_at: '2026-06-30'
+  completed_at: '2026-06-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0633
+  title: Preguntar por como se gestionan los externos en gh copilot
+  status: done
+  created_at: '2026-06-30'
+  completed_at: '2026-06-30'
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0634
+  title: Reunión business case 🧭Cardinal
+  status: done
+  created_at: '2026-06-30'
+  completed_at: '2026-06-30'
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0635
+  title: Retomar tema apikey [ChatApyKey] pedirla
+  status: done
+  created_at: '2026-06-30'
+  completed_at: '2026-06-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0636
+  title: Repasar las notas @NicoRamirez
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0637
+  title: Push API Keys a MLOps
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0638
+  title: Reunión con @RayFernandez sobre orquestador de pruebas de Cypress
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0639
+  title: Pedir a @NicoRamirez que me pase el mail de petición oficial de API Keys
+    a MLOps
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0640
+  title: Crear un repo de Pytest para las pruebas E2E de Koerber
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0641
+  title: Revisar Dashboard de Pedidos b2c
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0642
+  title: Pedir la creación de un repo de Pytest para las pruebas E2E de Koerber
+  status: done
+  created_at: '2026-06-01'
+  completed_at: '2026-06-01'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0643
+  title: Verificar el no acceso de @ShaneDixon a los repos de team-bt-llica y team-bt-cdo
+  status: pending
+  created_at: '2026-06-02'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0644
+  title: Descargar el repo de PyTest para las pruebas E2E de Koerber
+  status: pending
+  created_at: '2026-06-02'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0645
+  title: Validar el acceso de @MarElgarrista y @ShaneDixon a InfluxDB [🎫SYSC-64539]
+  status: pending
+  created_at: '2026-06-03'
+  completed_at: null
+  definition_ids:
+  - '[🎫SYSC-64539]'
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0646
+  title: Revisar metrica temporal de cobol
+  status: pending
+  created_at: '2026-06-03'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0647
+  title: Preguntar pr historificación de métricas de InfluxDB en Databricks
+  status: pending
+  created_at: '2026-07-01'
+  completed_at: null
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0648
+  title: Ver el video de AI Alignment del 15/07/2026
+  status: pending
+  created_at: '2026-07-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0649
+  title: Ver los 3 videos de la AI MeetUp
+  status: pending
+  created_at: '2026-07-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0650
+  title: Que es @Facilitador de Teams
+  status: pending
+  created_at: '2026-07-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0651
+  title: Ver video de la reuniónAlignment IA Champions
+  status: pending
+  created_at: '2026-07-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0652
+  title: Hacer formación de 🤖Albert de Ciberseguridad
+  status: pending
+  created_at: '2026-07-01'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0653
+  title: '[🎫SUPPLY-18359]'
+  status: done
+  created_at: '2026-07-27'
+  completed_at: '2026-07-27'
+  definition_ids:
+  - '[🎫SUPPLY-18359]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0654
+  title: '[🎫SUPPLY-18364]'
+  status: done
+  created_at: '2026-07-27'
+  completed_at: '2026-07-27'
+  definition_ids:
+  - '[🎫SUPPLY-18364]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0655
+  title: Buscar los Links de los dashboards de @PauMartinez
+  status: done
+  created_at: '2026-07-27'
+  completed_at: '2026-07-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0656
+  title: Mandar foto de la fiesta a @MartaArrollo
+  status: done
+  created_at: '2026-07-27'
+  completed_at: '2026-07-27'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0657
+  title: Preguntar a @JesusRegadera por los AMRs
+  status: done
+  created_at: '2026-07-27'
+  completed_at: '2026-07-27'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0658
+  title: '[🎫SUPPLY-18367]'
+  status: done
+  created_at: '2026-07-28'
+  completed_at: '2026-07-28'
+  definition_ids:
+  - '[🎫SUPPLY-18367]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0659
+  title: '[🎫SUPPLY-18368]'
+  status: done
+  created_at: '2026-07-28'
+  completed_at: '2026-07-28'
+  definition_ids:
+  - '[🎫SUPPLY-18368]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0660
+  title: Reunión de Projectos IA.
+  status: done
+  created_at: '2026-07-28'
+  completed_at: '2026-07-28'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0661
+  title: Revisar videos de la AI MeetUp
+  status: done
+  created_at: '2026-07-28'
+  completed_at: '2026-07-28'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0662
+  title: Preguntar por la API Key de Cardinal.
+  status: done
+  created_at: '2026-07-28'
+  completed_at: '2026-07-28'
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0663
+  title: Poner las API Keys de Cardinal en el PAM
+  status: done
+  created_at: '2026-07-29'
+  completed_at: '2026-07-29'
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0664
+  title: Comentar las API Keys de Cardinal a @FranGaspar
+  status: done
+  created_at: '2026-07-29'
+  completed_at: '2026-07-29'
+  definition_ids: []
+  project_id: CARDINAL
+  parent_id: null
+  tags: []
+- id: TSK-0665
+  title: Reunión del proyecto de IA de Supply Export
+  status: done
+  created_at: '2026-07-29'
+  completed_at: '2026-07-29'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0666
+  title: '[🎫SUPPLY-18386]'
+  status: done
+  created_at: '2026-07-29'
+  completed_at: '2026-07-29'
+  definition_ids:
+  - '[🎫SUPPLY-18386]'
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0667
+  title: Retomar el repo de pruebas E2E de Koerber
+  status: done
+  created_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0668
+  title: Crear métrica de datos agrupados de COBOL para @MarcMarlet
+  status: done
+  created_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0669
+  title: Crear paginas de proyectos de IA de Supply.
+  status: done
+  created_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0670
+  title: Reunión de Data/BT-Supply
+  status: done
+  created_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0671
+  title: Limpiar Ramas locales de KPI-repo y KPI-Reporting
+  status: done
+  created_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0672
+  title: Retomar tema de query de TGW de pablo [🎫SUPPLY-18081]
+  status: done
+  created_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  definition_ids:
+  - '[🎫SUPPLY-18081]'
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0673
+  title: Revisar [[[🧩GENERAL][🟨PostIts]🏖️PostHolidays]]
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0674
+  title: Revisar [FormacionesMS-Copilot]
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0675
+  title: Crear documento para aprender a usar MS-Copilot
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: MS_COPILOT
+  parent_id: null
+  tags: []
+- id: TSK-0676
+  title: Revisa el Release Note de la nueva versión del VsCode
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0677
+  title: Crear lista de tecnologias
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0678
+  title: Revisar la documentación del proyecto de JIRA Export IA
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0679
+  title: Revisar tickets abiertos por mi.
+  status: pending
+  created_at: '2026-07-31'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0680
+  title: Reunión de Test E2E de Koerber con @Truji, @RayFernandez y @LuisRuiz
+  status: done
+  created_at: '2026-08-03'
+  completed_at: '2026-08-03'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0681
+  title: Preguntar a @IvanMuñoz si podemos hacer las pruebas de los AMRs para Hector
+    esta semana
+  status: done
+  created_at: '2026-08-03'
+  completed_at: '2026-08-03'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0682
+  title: Pedir a @DidacAlbi que añada a @PereGimenez para el proyecto de JIRA Export
+    IA
+  status: done
+  created_at: '2026-08-03'
+  completed_at: '2026-08-03'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0683
+  title: Revisar el problema del Repo de Test E2E de Koerber, no me deja hacer PR
+  status: done
+  created_at: '2026-08-03'
+  completed_at: '2026-08-03'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0684
+  title: Comentar con @NicoRamirez como se va a avanzar con el proyecto de IA de Jira
+  status: done
+  created_at: '2026-08-03'
+  completed_at: '2026-08-03'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0685
+  title: Preparar la AI-MeetUp del 04/08/2026
+  status: done
+  created_at: '2026-08-04'
+  completed_at: '2026-08-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0686
+  title: Hacer pequeña presentación de como funcionan los worktrees de Git.
+  status: done
+  created_at: '2026-08-04'
+  completed_at: '2026-08-04'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0687
+  title: Deshabilitar los rulsets del repo de Test E2E de Koerber para poder hacer
+    PR
+  status: done
+  created_at: '2026-08-04'
+  completed_at: '2026-08-04'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0688
+  title: Revisar cambios en el repo de Test E2E de Koerber y dejar el repo limpio
+    y funcional
+  status: done
+  created_at: '2026-08-04'
+  completed_at: '2026-08-04'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0689
+  title: Revisar con @IvanMuñoz el tema de las pruebas de los AMRs para Hector esta
+    semana
+  status: done
+  created_at: '2026-08-04'
+  completed_at: '2026-08-04'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0690
+  title: Crear guía básica de acceso al repo de test E2E de Koerber
+  status: done
+  created_at: '2026-08-04'
+  completed_at: '2026-08-04'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0691
+  title: Pedir usuario DE TRABAJO  para E2E de Koerber
+  status: cancelled
+  created_at: '2026-08-06'
+  completed_at: null
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0692
+  title: Preparar proyecto Jira
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0693
+  title: Reunión PROYECTO JIRA - EXPORT con @DidacAlbi, @PereGimenez y @GerardCepero
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0694
+  title: Revisar y documentar el proyecto JIRA EXPORT IA, incluyendo el posible MVP
+    del agente y los flujos actuales de trabajo
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0695
+  title: Reunión Data - BT
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0696
+  title: Revisar con @DanielAlba el problema de acceso a Grafana y el ticket MSCTECH-286435
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0697
+  title: Mid Sprint Review
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0698
+  title: Reunión de pruebas de comunicación y operación de AMRs con @IvanMuñoz y @HectorPons
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0699
+  title: Coordinar la realización de pruebas AMR con @MariaCastro, @IvanMuñoz y @HectorPons
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0700
+  title: Soporte a @RaydelFernandez para resolver problemas de conexión Oracle en
+    el proyecto de Koerber
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: KOERBER_E2E
+  parent_id: null
+  tags: []
+- id: TSK-0701
+  title: Revisar con @MarcMarlet los problemas de carga de datos de expediciones en
+    Influx
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0702
+  title: Revisar con @PabloMartinez la generación automática de tickets y nomenclatura
+    de ramas GitHub (feature/)
+  status: done
+  created_at: '2026-08-06'
+  completed_at: '2026-08-06'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0703
+  title: Daily SSS
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0704
+  title: Preparar prueba AMRs 2 con @IvanMuñoz
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0705
+  title: Coordinar con @HectorPons e @IvanMuñoz la sesión de pruebas de Mobile Robots
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0706
+  title: 'Mango: Prueba con Mobile Robots'
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0707
+  title: Test AMRs con @IvanMuñoz
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0708
+  title: Verificar el movimiento de racks hacia Buffer 1 y validar la generación correcta
+    de OMAs durante las pruebas
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0709
+  title: Solicitar a @HectorPons el listado de ubicaciones mapeadas para definir la
+    nueva zona de racks vacíos (Zona 3)
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0710
+  title: Revisar el ticket SUPPLY-17696 sobre pruebas de reactivación de AMRs y posiciones
+    activas de buffer
+  status: done
+  created_at: '2026-08-07'
+  completed_at: '2026-08-07'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0711
+  title: Creación de Agente Rovo para @PauMartinez.
+  status: cancelled
+  created_at: '2026-08-01'
+  completed_at: null
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0712
+  title: 'Reunión: Mango: mobile robots - Pruebas con @HectorPons y @IvanMuñoz'
+  status: done
+  created_at: '2026-08-10'
+  completed_at: '2026-08-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0713
+  title: Prueba de problema en query de SeguimientoPedidosOnlineAgrupado COBOL @MarcMarlet
+  status: done
+  created_at: '2026-08-10'
+  completed_at: '2026-08-10'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0714
+  title: Petición de reactivación de usuarios de @HectorPons y @RauldelasHeras de
+    TGW
+  status: done
+  created_at: '2026-08-10'
+  completed_at: '2026-08-10'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0715
+  title: Gestión de acceso de @RauldelasHeras con @FerminFuentes.
+  status: done
+  created_at: '2026-08-11'
+  completed_at: '2026-08-11'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0716
+  title: Prueba E2E de AMRs flujos 1,2,3,4,5 con @HectorPons y @IvanMuñoz
+  status: done
+  created_at: '2026-08-11'
+  completed_at: '2026-08-11'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0717
+  title: Solicitud de integración de Rovo con SharedPoint y Teams para el proyecto
+    de Jira Export IA con @DidacAlbi
+  status: done
+  created_at: '2026-08-13'
+  completed_at: '2026-08-13'
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0718
+  title: Pedir acceso al proyecto Export de Jira para el proyecto de Jira Export IA
+    con @DidacAlbi [🎫ATLM-12673]
+  status: done
+  created_at: '2026-08-13'
+  completed_at: '2026-08-13'
+  definition_ids:
+  - '[🎫ATLM-12673]'
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0719
+  title: Pedir a @DidacAlbi que me de acceso al proyecto de Jira Export para poder
+    hacer pruebas de Rovo
+  status: done
+  created_at: '2026-08-13'
+  completed_at: '2026-08-13'
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0720
+  title: Prueba de creación de Agente Rovo para Proyecto Jira SOG
+  status: pending
+  created_at: '2026-08-14'
+  completed_at: null
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0721
+  title: Preparar reunión con @JoanAmat.
+  status: pending
+  created_at: '2026-08-14'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0722
+  title: Renovación de accesos
+  status: done
+  created_at: '2026-08-14'
+  completed_at: '2026-08-14'
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0723
+  title: Pedir proyecto de Jira SandBox [ATLM-12682]
+  status: done
+  created_at: '2026-08-14'
+  completed_at: '2026-08-14'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0724
+  title: Pruebas de AMRs para la vuelta (flujo 3) con @HectorPons y @IvanMuñoz
+  status: done
+  created_at: '2026-08-17'
+  completed_at: '2026-08-17'
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []
+- id: TSK-0725
+  title: Seguir con la prueba de creación de Agente Rovo para el proyecto de SOG de
+    Jira.
+  status: done
+  created_at: '2026-08-17'
+  completed_at: '2026-08-17'
+  definition_ids: []
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0726
+  title: Parar las queries grandes de @MarcMarlet en InfluxDB.
+  status: done
+  created_at: '2026-08-18'
+  completed_at: '2026-08-18'
+  definition_ids: []
+  project_id: METRICS_INFLUXDB
+  parent_id: null
+  tags: []
+- id: TSK-0727
+  title: Reunión de Cowork IA. Cancelada
+  status: cancelled
+  created_at: '2026-08-18'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0728
+  title: Empezar a preparar propuesta de next steps para iniciativas de IA para @JoanAmat
+  status: pending
+  created_at: '2026-08-20'
+  completed_at: null
+  definition_ids: []
+  project_id: GENERAL
+  parent_id: null
+  tags: []
+- id: TSK-0729
+  title: Reunión de Proyecto de Export FollowUp con @DidacAlbi, @PereGimenez y @ManuelBlanco
+  status: done
+  created_at: '2026-08-20'
+  completed_at: '2026-08-20'
+  definition_ids: []
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0730
+  title: Pruebas del agente de Rovo para el proyecto de Export de Jira [🎫ATLM-12703].
+  status: done
+  created_at: '2026-08-20'
+  completed_at: '2026-08-20'
+  definition_ids:
+  - '[🎫ATLM-12703]'
+  project_id: ROVO_AI
+  parent_id: null
+  tags: []
+- id: TSK-0731
+  title: Validar flujo E2E con Copilot [🎫ATLM-99999]
+  status: pending
+  created_at: '2026-08-21'
+  completed_at: null
+  definition_ids:
+  - '[🎫ATLM-99999]'
+  project_id: JIRA_EXPORT
+  parent_id: null
+  tags: []
+- id: TSK-0732
+  title: Comentar con @JoanAmat la propuesta de @Automatistas de eliminar DXC del
+    flujo de AMRs.
+  status: pending
+  created_at: '2026-08-01'
+  completed_at: null
+  definition_ids: []
+  project_id: AMR_LOGISTICS
+  parent_id: null
+  tags: []

@@ -21,7 +21,7 @@ def resolve_workspace_context(current_dir: str) -> tuple[str, bool]:
         is_workspace_root = os.path.exists(os.path.join(cursor, "brackets", "brackets"))
         is_vault_root = os.path.exists(os.path.join(cursor, "data", "config.yaml"))
 
-        if is_vault_root and not is_workspace_root:
+        if is_vault_root:
             return cursor, True
 
         if is_workspace_root:

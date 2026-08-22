@@ -1,0 +1,64 @@
+year: 2026
+month: 6
+week_number: 26
+weight: null
+topics_task_ids:
+- TSK-0547
+- TSK-0548
+- TSK-0549
+- TSK-0576
+- TSK-0577
+- TSK-0588
+- TSK-0599
+- TSK-0600
+- TSK-0586
+- TSK-0601
+- TSK-0604
+- TSK-0608
+note_ids:
+- NOTE-0488
+- NOTE-0489
+- NOTE-0490
+- NOTE-0491
+- NOTE-0492
+- NOTE-0493
+- NOTE-0494
+- NOTE-0495
+- NOTE-0496
+- NOTE-0497
+- NOTE-0498
+days:
+- day_number: 22
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0609
+  - TSK-0518
+  - TSK-0610
+  - TSK-0611
+  - TSK-0612
+  - TSK-0613
+  - TSK-0614
+- day_number: 24
+  location_emoji: 🏖️
+  location_note: Sant Joan
+  task_ids: []
+- day_number: 25
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0615
+  - TSK-0616
+  - TSK-0617
+  - TSK-0618
+  - TSK-0619
+  - TSK-0620
+  - TSK-0621
+- day_number: 26
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0622
+  - TSK-0623
+  - TSK-0624
+  - TSK-0625

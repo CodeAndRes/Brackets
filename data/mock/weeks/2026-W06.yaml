@@ -1,0 +1,152 @@
+year: 2026
+month: 2
+week_number: 6
+weight: 109.0
+topics_task_ids:
+- TSK-0031
+- TSK-0032
+- TSK-0033
+- TSK-0034
+- TSK-0035
+- TSK-0036
+- TSK-0037
+- TSK-0038
+- TSK-0039
+- TSK-0040
+- TSK-0041
+- TSK-0042
+- TSK-0043
+- TSK-0044
+- TSK-0045
+- TSK-0046
+- TSK-0047
+- TSK-0048
+- TSK-0049
+- TSK-0050
+- TSK-0051
+- TSK-0052
+- TSK-0053
+- TSK-0054
+- TSK-0055
+- TSK-0056
+- TSK-0057
+- TSK-0058
+note_ids:
+- NOTE-0001
+- NOTE-0002
+- NOTE-0003
+- NOTE-0004
+- NOTE-0005
+- NOTE-0006
+- NOTE-0007
+- NOTE-0008
+- NOTE-0009
+- NOTE-0010
+- NOTE-0011
+- NOTE-0012
+- NOTE-0013
+- NOTE-0014
+- NOTE-0015
+- NOTE-0016
+- NOTE-0017
+- NOTE-0018
+- NOTE-0019
+- NOTE-0020
+- NOTE-0021
+- NOTE-0022
+- NOTE-0023
+- NOTE-0024
+- NOTE-0025
+- NOTE-0026
+- NOTE-0027
+- NOTE-0028
+- NOTE-0029
+- NOTE-0030
+- NOTE-0031
+- NOTE-0032
+- NOTE-0033
+- NOTE-0034
+- NOTE-0035
+- NOTE-0036
+- NOTE-0037
+- NOTE-0038
+- NOTE-0039
+- NOTE-0040
+- NOTE-0041
+- NOTE-0042
+- NOTE-0043
+- NOTE-0044
+- NOTE-0045
+- NOTE-0046
+- NOTE-0047
+- NOTE-0048
+- NOTE-0049
+- NOTE-0050
+- NOTE-0051
+- NOTE-0052
+- NOTE-0053
+- NOTE-0054
+- NOTE-0055
+days:
+- day_number: 2
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0059
+  - TSK-0060
+  - TSK-0061
+  - TSK-0062
+  - TSK-0063
+- day_number: 3
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0064
+  - TSK-0065
+  - TSK-0066
+  - TSK-0067
+  - TSK-0068
+- day_number: 4
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0069
+  - TSK-0070
+  - TSK-0071
+  - TSK-0072
+  - TSK-0073
+  - TSK-0074
+  - TSK-0075
+  - TSK-0076
+- day_number: 5
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0077
+  - TSK-0078
+  - TSK-0079
+  - TSK-0080
+  - TSK-0081
+  - TSK-0082
+  - TSK-0083
+  - TSK-0084
+  - TSK-0085
+- day_number: 6
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0086
+  - TSK-0087
+  - TSK-0088
+  - TSK-0089
+  - TSK-0090
+  - TSK-0091
+  - TSK-0092
+  - TSK-0093
+  - TSK-0094
+  - TSK-0095
+  - TSK-0096
+  - TSK-0097
+  - TSK-0098
+  - TSK-0099
+  - TSK-0100

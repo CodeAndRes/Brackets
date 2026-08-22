@@ -1,0 +1,124 @@
+year: 2026
+month: 4
+week_number: 15
+weight: null
+topics_task_ids:
+- TSK-0219
+- TSK-0002
+- TSK-0003
+- TSK-0004
+- TSK-0005
+- TSK-0007
+- TSK-0008
+- TSK-0009
+- TSK-0010
+- TSK-0011
+- TSK-0012
+- TSK-0013
+- TSK-0015
+- TSK-0029
+- TSK-0030
+- TSK-0184
+- TSK-0185
+- TSK-0190
+- TSK-0191
+- TSK-0192
+- TSK-0193
+- TSK-0195
+- TSK-0200
+- TSK-0213
+- TSK-0217
+- TSK-0236
+- TSK-0267
+- TSK-0255
+- TSK-0260
+- TSK-0266
+- TSK-0272
+- TSK-0287
+- TSK-0288
+- TSK-0289
+- TSK-0290
+- TSK-0291
+- TSK-0292
+- TSK-0294
+- TSK-0295
+- TSK-0296
+- TSK-0297
+- TSK-0298
+- TSK-0299
+- TSK-0300
+- TSK-0301
+- TSK-0303
+- TSK-0317
+- TSK-0318
+- TSK-0323
+- TSK-0324
+- TSK-0338
+- TSK-0340
+note_ids:
+- NOTE-0294
+- NOTE-0295
+- NOTE-0296
+- NOTE-0297
+- NOTE-0298
+- NOTE-0299
+- NOTE-0300
+- NOTE-0301
+- NOTE-0302
+- NOTE-0303
+- NOTE-0304
+- NOTE-0305
+- NOTE-0306
+- NOTE-0307
+- NOTE-0308
+- NOTE-0309
+- NOTE-0310
+- NOTE-0311
+- NOTE-0312
+- NOTE-0313
+days:
+- day_number: 6
+  location_emoji: 🏖️
+  location_note: Lunes de Pascua
+  task_ids: []
+- day_number: 7
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0348
+  - TSK-0349
+  - TSK-0350
+  - TSK-0351
+- day_number: 8
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0352
+  - TSK-0353
+  - TSK-0354
+  - TSK-0355
+  - TSK-0356
+  - TSK-0357
+  - TSK-0358
+  - TSK-0359
+  - TSK-0360
+- day_number: 9
+  location_emoji: 🏠
+  location_note: null
+  task_ids:
+  - TSK-0361
+  - TSK-0362
+  - TSK-0363
+  - TSK-0364
+- day_number: 10
+  location_emoji: 🚗
+  location_note: null
+  task_ids:
+  - TSK-0365
+  - TSK-0366
+  - TSK-0367
+  - TSK-0368
+  - TSK-0369
+  - TSK-0370
+  - TSK-0371
+  - TSK-0372
