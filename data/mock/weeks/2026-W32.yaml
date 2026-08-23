@@ -45,14 +45,14 @@ topics_task_ids:
 - TSK-0678
 - TSK-0679
 note_ids:
-- NOTE-0549
-- NOTE-0550
-- NOTE-0551
-- NOTE-0552
-- NOTE-0553
-- NOTE-0554
-- NOTE-0555
-- NOTE-0556
+- NOTE-0182
+- NOTE-0183
+- NOTE-0184
+- NOTE-0185
+- NOTE-0186
+- NOTE-0187
+- NOTE-0188
+- NOTE-0189
 days:
 - day_number: 3
   location_emoji: 🏠

@@ -68,21 +68,12 @@ topics_task_ids:
 - TSK-0395
 - TSK-0396
 note_ids:
-- NOTE-0353
-- NOTE-0354
-- NOTE-0355
-- NOTE-0356
-- NOTE-0357
-- NOTE-0358
-- NOTE-0359
-- NOTE-0360
-- NOTE-0361
-- NOTE-0362
-- NOTE-0363
-- NOTE-0312
-- NOTE-0364
-- NOTE-0365
-- NOTE-0366
+- NOTE-0105
+- NOTE-0106
+- NOTE-0107
+- NOTE-0108
+- NOTE-0109
+- NOTE-0110
 days:
 - day_number: 20
   location_emoji: 🚗

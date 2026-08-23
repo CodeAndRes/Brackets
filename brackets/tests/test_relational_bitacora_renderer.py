@@ -126,8 +126,7 @@ class TestRelationalBitacoraRenderer(unittest.TestCase):
             title=f"Revisar nueva funcionalidad de pagos {jira_def.id}",
             year=2026,
             week_num=34,
-            day_number=21,
-            definition_ids=[jira_def.id]
+            day_number=21
         )
 
         # 3. Renderizar markdown
@@ -148,6 +147,49 @@ class TestRelationalBitacoraRenderer(unittest.TestCase):
 
         markdown = BitacoraRenderer.render_week(week, self.manager)
         self.assertIn("- Conclusión importante: El flujo de AMRs no requiere DXC.", markdown)
+
+    def test_structured_note_with_title_and_indented_content(self):
+        """Valida que las notas con título se rendericen con - ### Título y viñetas indentadas."""
+        week = self.manager.load_week(2026, 34)
+
+        note = self.manager.add_note(
+            title="Upgrade versión de InfluxDB 25/02/2026",
+            content=[
+                "@MarcCristany propone hacer un upgrade de la versión de InfluxDB",
+                "Tanto @FerranVallalta como @PabloMartinez están de acuerdo"
+            ],
+            year=2026,
+            week_num=34,
+            project_id="METRICS_INFLUXDB"
+        )
+
+        markdown = BitacoraRenderer.render_week(week, self.manager)
+        self.assertIn("- ### Upgrade versión de InfluxDB 25/02/2026", markdown)
+        self.assertIn("  - @MarcCristany propone hacer un upgrade de la versión de InfluxDB", markdown)
+        self.assertIn("  - Tanto @FerranVallalta como @PabloMartinez están de acuerdo", markdown)
+
+    def test_monthly_notes_persistence(self):
+        """Verifica que las notas se guarden y carguen organizadas por mes en tables/notes/YYYY-MM.yaml."""
+        # Agregar una nota en un mes específico
+        self.manager.add_note(
+            title="Nota de prueba mensual",
+            content=["Punto 1", "Punto 2"],
+            year=2026,
+            week_num=34,
+            month="2026-08",
+            project_id="ROVO_AI"
+        )
+
+        # Verificar archivo físico
+        monthly_file = os.path.join(self.manager.notes_dir, "2026-08.yaml")
+        self.assertTrue(os.path.exists(monthly_file))
+
+        # Crear nuevo manager sobre el mismo directorio para validar recarga limpia
+        new_manager = EntityManager(self.data_dir)
+        matching = [n for n in new_manager.notes.values() if n.title == "Nota de prueba mensual"]
+        self.assertEqual(len(matching), 1)
+        self.assertEqual(matching[0].month, "2026-08")
+        self.assertEqual(matching[0].project_id, "ROVO_AI")
 
 
 if __name__ == "__main__":

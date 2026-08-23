@@ -1,0 +1,214 @@
+notes:
+- id: NOTE-0182
+  title: null
+  content:
+  - Problema con el Repo de Test E2E de Koerber, no me deja hacer PR
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: KOERBER_E2E
+- id: NOTE-0183
+  title: null
+  content:
+  - Se han eliminado repos vacios de GitHub
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: GENERAL
+- id: NOTE-0184
+  title: null
+  content:
+  - '@MariaCastro me pide que haga las pruebas de los AMRs para Hector esta semana,
+    le pido a @IvanMuñoz que lo vemamos entre los dos'
+  - Al no estar @JesusRegadera.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: AMR_LOGISTICS
+- id: NOTE-0185
+  title: null
+  content:
+  - Reunión de AI Workshop con Supply
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: GENERAL
+- id: NOTE-0186
+  title: null
+  content:
+  - De momento no hay usuarios viewer para Registry pero nos mandaran un correo semanal
+    con el gasto de las API Keys
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: GENERAL
+- id: NOTE-0187
+  title: null
+  content:
+  - Inicialmente pensaba en crear un usuario viewer para la base de datos de Koerber
+    para el proyecto de E2E, pero
+  - puede que el usuario necesite ejecución de procedures y funciones y posiblemente
+    sea mas facil usar el personal de
+  - la persona que ejecutara las pruebas.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: KOERBER_E2E
+- id: NOTE-0188
+  title: null
+  content:
+  - 'Proyecto Jira Export IA, @DidacAlbi :'
+  - Se ha acordado definir y documentar un MVP de una solución propia conectada con
+    Jira, alineada con Plataforma y MLOps, que automatice progresivamente la gestión
+    de incidencias de Export, antes de iniciar cualquier desarrollo
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: JIRA_EXPORT
+- id: NOTE-0189
+  title: null
+  content:
+  - Mientras llega la plataforma definitiva, probaremos un agente de Rovo que ayude
+    a revisar y validar tickets para empezar a generar valor cuanto antes
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 32
+  project_id: ROVO_AI
+- id: NOTE-0190
+  title: null
+  content:
+  - Ya tengo permisos de creación de Agentes en Rovo.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: ROVO_AI
+- id: NOTE-0191
+  title: null
+  content:
+  - Los Flujos de AMRs funcionan pero hay que hacer mas pruebas.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: AMR_LOGISTICS
+- id: NOTE-0192
+  title: null
+  content:
+  - Problemas para reactivar usuarios de TGW, @HectorPons y @RauldelasHeras.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: AMR_LOGISTICS
+- id: NOTE-0193
+  title: null
+  content:
+  - '@HectorPons ya tiene acceso de nuevo a la red de mango'
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: GENERAL
+- id: NOTE-0194
+  title: null
+  content:
+  - Las pruebas de AMRs han ido bien pero aun hay que arrglar unos temas de mensajería
+    DXC->TOM y
+  - que para el flujo 3 no haya que definir la posición libre de destino.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: AMR_LOGISTICS
+- id: NOTE-0195
+  title: null
+  content:
+  - Parece que el problema de mensajería DXC->TOM es que TOM no reconoce algunas las
+    posiciones de destino que
+  - DXC le asigna a trasportes del flujo 2
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: GENERAL
+- id: NOTE-0196
+  title: null
+  content:
+  - Parece que es posible que Rovo pueda leer documentos de SharePoint, lo solicito!
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: ROVO_AI
+- id: NOTE-0197
+  title: null
+  content:
+  - Para poder empezar a probar automatismos de Rovo/Jira en el proyecto de Jira Export
+    IA, necesito que me den
+  - acceso al proyecto de Jira Export IA, lo solicito!
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: ROVO_AI
+- id: NOTE-0198
+  title: null
+  content:
+  - Mientras no tenga acceso al proyecto de Jira Export, puedo ir haciendo pruebas
+    de Rovo con el proyecto SOG.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 33
+  project_id: ROVO_AI
+- id: NOTE-0199
+  title: null
+  content:
+  - El problema de mensagería DXC->TOM era que no estaba mapeadas las posciones 28C-0905
+    y 28C-0906.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: GENERAL
+- id: NOTE-0200
+  title: null
+  content:
+  - El [🎫ATLM-12673] para pedir acceso al proyecto Export de Jira se cancelara @ALbertoGuerra
+    por temas de restricción.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: JIRA_EXPORT
+- id: NOTE-0201
+  title: null
+  content:
+  - El Agente [🤖Export Ticket Validator] funciona correctamente con tickets SOG
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: JIRA_EXPORT
+- id: NOTE-0202
+  title: null
+  content:
+  - Ya me han dado acceso al Sandbox de Jira para poder crear el Agente de Rovo para
+    el proyecto de Export de Jira [🎫ATLM-12682].
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: ROVO_AI
+- id: NOTE-0203
+  title: null
+  content:
+  - Ya tengo acceso al espacio de Jira de [🦒EXPORT]
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: JIRA_EXPORT
+- id: NOTE-0204
+  title: null
+  content:
+  - Dentro del Sandbox de Jira no hay acceso a Rovo, o se habilita o no nos sirve.
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: ROVO_AI
+- id: NOTE-0205
+  title: null
+  content:
+  - Prueba de Nota
+  created_at: '2026-08-01'
+  month: 2026-08
+  week: 34
+  project_id: GENERAL

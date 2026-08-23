@@ -85,17 +85,6 @@ class MonthlyGenerator:
 
         return False
 
-    def create_monthly_from_template(self, month: int, year: int) -> bool:
-        """Crea un archivo mensual desde una plantilla.
-
-        Esta ruta está deshabilitada hasta completar la implementación formal
-        del flujo de plantillas en la capa de generadores.
-        """
-        raise NotImplementedError(
-            "create_monthly_from_template no está disponible todavía. "
-            "Usa create_next_monthly_topics."
-        )
-
     def _extract_month_info_from_file(self, filepath: str) -> tuple[Optional[int], Optional[int]]:
         """Extrae información de mes del nombre del archivo."""
         import re
@@ -131,45 +120,6 @@ class MonthlyGenerator:
             filename = os.path.basename(filepath)
             print(f"  {filename} -> {month:02d}/{year}")
 
-    def clean_monthly_file(self, filepath: str) -> bool:
-        """Limpia un archivo mensual removiendo tareas completadas."""
-        content = safe_file_read(filepath)
-        if not content:
-            return False
-
-        parser = ContentParser(content)
-        cleaned_content = parser.clean_completed_tasks()
-
-        # Crear backup
-        backup_path = f"{filepath}.backup"
-        if safe_file_write(backup_path, content):
-            print(f"📄 Backup creado: {backup_path}")
-
-        # Escribir contenido limpio
-        if safe_file_write(filepath, cleaned_content):
-            print(f"🧹 Archivo limpiado: {filepath}")
-            return True
-
-        return False
-
-    def archive_monthly_file(self, filepath: str, archive_dir: str = "archived") -> bool:
-        """Archiva un archivo mensual en un directorio específico."""
-        import shutil
-
-        # Crear directorio de archivo si no existe
-        if not os.path.exists(archive_dir):
-            os.makedirs(archive_dir)
-
-        filename = os.path.basename(filepath)
-        archive_path = os.path.join(archive_dir, filename)
-
-        try:
-            shutil.move(filepath, archive_path)
-            print(f"📦 Archivo archivado: {filename} -> {archive_dir}/")
-            return True
-        except Exception as e:
-            print(f"❌ Error archivando archivo: {e}")
-            return False
 
 
 def create_monthly_interactive() -> bool:

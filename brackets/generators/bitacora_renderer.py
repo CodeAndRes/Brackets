@@ -32,7 +32,7 @@ class BitacoraRenderer:
                 if not task:
                     continue
                 lines.append(BitacoraRenderer._format_task_line(task))
-                used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title, task.definition_ids))
+                used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title))
         else:
             lines.append("  - [ ] ")
         lines.append("  ---\n")
@@ -44,9 +44,16 @@ class BitacoraRenderer:
                 note = manager.notes.get(note_id)
                 if not note:
                     continue
-                for content_line in note.content:
-                    lines.append(f"  - {content_line}")
-                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line))
+                if note.title:
+                    lines.append(f"- ### {note.title}")
+                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(note.title))
+                    for content_line in note.content:
+                        lines.append(f"  - {content_line}")
+                        used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line))
+                else:
+                    for content_line in note.content:
+                        lines.append(f"- {content_line}")
+                        used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line))
         else:
             lines.append("  - ")
         lines.append("  ---\n")
@@ -61,7 +68,7 @@ class BitacoraRenderer:
                     if not task:
                         continue
                     lines.append(BitacoraRenderer._format_task_line(task))
-                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title, task.definition_ids))
+                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title))
             else:
                 lines.append("  - ")
             lines.append("")
@@ -96,9 +103,9 @@ class BitacoraRenderer:
             return f"  - [ ] {task.title}"
 
     @staticmethod
-    def _extract_definition_ids(text: str, explicit_ids: List[str] | None = None) -> Set[str]:
+    def _extract_definition_ids(text: str) -> Set[str]:
         """Detecta automáticamente IDs de definición tipo [🎫TICKET] o [🤖Agente] en el texto."""
-        found: Set[str] = set(explicit_ids or [])
+        found: Set[str] = set()
         # Busca patrones tipo [🎫...] o [🦒...] o [🤖...]
         pattern = r'(\[(?:🎫|🦒|🤖|📺|🎫)[^\]]+\])'
         matches = re.findall(pattern, text)

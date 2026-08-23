@@ -1,0 +1,322 @@
+notes:
+- id: NOTE-0083
+  title: '@PauMartinez ha conseguido Avisos de Grafana.'
+  content:
+  - 📞 Me comenta como lo ha hecho
+  - Conector Webhook
+  - Equipo de teams -> Conectortes token Grafana contacto -> Temas token
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0084
+  title: Coordinación de Formaciones de IA en Lliça con @JosueMartinez
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0085
+  title: Demo de Chatbot de IA en Vulcan con @FranGaspar
+  content:
+  - '@FranGaspar nos presenta un chatbot de IA que ha desarrollado para Vulcan,'
+  - Esta increible
+  - Yo le he sugerido evaluar la posibilida de que use un modelo local como Gemma
+    4 31B
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0086
+  title: Ya han hecho la instalación de las tomas de corriente de las pantallas de
+    Lliçà
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0087
+  title: Ya tenemos los usuarios de la BT creados en la organización de GitHub
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0088
+  title: Ferag notificada de que necesitan usuarios de AD para dar acceso a los dashboards
+    de Grafana en la nueva organización.
+  content:
+  - Se les comenta por mail y ya nos pasaran la lista de usuarios que necesitan acceso.
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0089
+  title: Las dos nuevas organizaciones de Grafana Ferag y CDOs con acceso exclusivo
+    por AD ya están creadas.
+  content:
+  - Una para Ferag y otra para CDOs
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0090
+  title: 🚨Standar de GitHub para sistemas Multiagenticos
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0091
+  title: '@MarcCristany comentara con MSC el tema de crear un protocolo de creacion
+    de usuarios externos en Mango'
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0092
+  title: ARMs Hector dice que el miercoles 15 de 3 a 4 hay reunión de AMRs
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: AMR_LOGISTICS
+- id: NOTE-0093
+  title: Migración de repos de Bitbucket a GitHub
+  content:
+  - Ya tenemos
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 15
+  project_id: GENERAL
+- id: NOTE-0094
+  title: '@GerardCepero no me puede dar acceso al repo de la Hackathon de GitHub'
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0095
+  title: He perdido el owner de la organización de bt-supply en GitHub
+  content:
+  - Se ve que no es la manera correcta de crear repos directamente
+  - Se tendran que hacer por Terraform
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0096
+  title: Acaban de decirnos que van a desinstalar el notepad++ del servidor de Rexx
+  content:
+  - Tendriamos que mover el tema de que el software de rexx se desarrolle en local
+    y luego se despligue en el servidor
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0097
+  title: 📞Con Ray sobre la presentación del BT-Supply Impulse
+  content:
+  - Ray ha estado haciendo un gran trabajo invetigando herramientas de IA asociadas
+    a los agentes de GH Copilot
+  - Estamos bastante alineados y con los standards de Github en creación de Agentes,
+    skills y workflows
+  - Le comento que todo lo que me ha explicado lo comprima en 10-15 minutos para presentarlo
+    en el BT-Supply Impulse
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: MS_COPILOT
+- id: NOTE-0098
+  title: Reunión con @OriolValverde sobre el tema de las pantallas de Lliçà
+  content:
+  - Le comento que la petición de la siguiente tanda esta supeditada al ok de las
+    3 primeras pantallas
+  - 'He mofificado el [🎫OP-55061] de la demanda para comentar que las fases son :'
+  - 'Fase 1: 3 pantallas'
+  - 'Fase 2: 7 pantallas'
+  - 'Fase 3: 3 pantallas'
+  - El se encargara de coordinarse con @MarElgarrista para la finlalización de la
+    primera fase.
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0099
+  title: Reunión con @EsteveOria sobre la migración de repos de Bitbucket a GitHub
+  content:
+  - Me comenta que todo lo relacionado con creación de repos, permisos, etc... se
+    tiene que hacer por Terraform
+  - Me da una pincelada de como se hara la migración de repos de Bitbucket a GitHub
+    via terraform
+  - Quedamos en que me contactara para hacer el primero juntos y luego ya me enseñara
+    a hacerlo para que pueda ir haciendo el resto de repos
+  - Queda pendiente si esto lo voy a seguir llevando yo o se lo voy a pasar a alguien
+    del equipo de BT-Supply
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0100
+  title: 📞@Truji Pregunta por objetos descompilados en MNG_SILO
+  content:
+  - Le comento que he estado trabajando con BC en la creacion de package para gestión
+    de logs de pedidos
+  - Es una tarea recurrente y manual que hacen y querían automatizarla con un package
+    y un job
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0101
+  title: Al final ejecuto yo la creación del package de logs de pedidos en MNG_SILO
+  content:
+  - Se ve que lo técnicos no tienen las credenciales de MNG_SILO para hacerlo
+  - Solo queda pendiente reconvertir el [🎫SYSC-61048] que se pidan estos grants para
+    que los ejecuten ellos.
+  - '```sql'
+  - grant execute on SILO.CARGA_DATOS_CLIENTE to MNG_SILO;
+  - grant execute on SILO.INTERFAZ_FUN_COMUN to MNG_SILO;
+  - '```'
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0102
+  title: '#NCM Mejoras en el panel de visual;ización de oleadas'
+  content:
+  - Hacer que las oleadas de una misma prioridad se muestren en un inicio comun
+  - Pintar una serie de lineas o cuadriculas para guiarnos con las barras y nombres
+    de las oleadas
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: NCM_DASHBOARD
+- id: NOTE-0103
+  title: Surge la necesidad de desinstalar el notepad++ del servidor de rexx
+  content:
+  - '@MarcCrsitany propone hacer servir Samba para mapear la unidad D del servidor
+    de rexx y así poder'
+  - desarrollar en local y luego desplegar en el servidor
+  - Tengo que investigar un poco el tema de Samba para ver si es una solución viable
+    y fácil de implementar
+  - Mi propuesta es usar el Github y listo pero @XaviMartinez tendría que conectar
+    su ordenador para poder hacer pruebas
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0104
+  title: Avance en la compra de las pantallas de Lliçà
+  content:
+  - '@GemmaBonet pregunta por una cuarta pantalla que se ha comprado pero a mi no
+    me consta !'
+  - Le comento que el tema de la siguiente tanda de pantallas esta supeditada al ok
+    de las 3 primeras pantallas para asegurar que el proceso de instalación es correcto
+    y no hay ningún problema con las pantallas
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 16
+  project_id: GENERAL
+- id: NOTE-0105
+  title: '@GerardCepero ha hecho la petición del vale de descuento de Mango para la
+    Invitada del BT-Supply Impulse'
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 17
+  project_id: GENERAL
+- id: NOTE-0106
+  title: No tenia el grupo de MANGO_Bitbucket_users asi que no podía ver la mayoría
+    de Repos de Bitbucket
+  content: []
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 17
+  project_id: GENERAL
+- id: NOTE-0107
+  title: Reunión con Mantenimiento sobre instalación eléctrica de las pantallas de
+    Lliçà.
+  content:
+  - Nos vemos @DavidCardenas y @SergiGomez de mantenimiento @OriolValverde de SUPPLY
+  - Comentamos que la instalación electrica de las pantallas de Lliçà tiene un coste
+    que se escapa
+  - de la bolsa de horas que ellos manejan y hay que crearlo como un proyecto aparte.
+  - '@OriolValverde comparte el powerpoint donde aparecen todas la ubicaciones de
+    la siguiente ronda de pantallas'
+  - Mantenimiento le pasará el documento a un Industrial para que haga una valoración
+    de la instalación
+  - Cuando tengamos esa valoración, nos volveremos a reunir para decidir como proceder.
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 17
+  project_id: GENERAL
+- id: NOTE-0108
+  title: AMRs
+  content:
+  - Retomar temas
+  - '@Hector'
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 17
+  project_id: AMR_LOGISTICS
+- id: NOTE-0109
+  title: Migración de repos de Bitbucket a GitHub
+  content:
+  - Reunión con @EsteveOria para los siguientes pasos en la migración de repos de
+    Bitbucket a GitHub
+  - Crear una pagina de proyecto para la migración de repos de Bitbucket a GitHub
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 17
+  project_id: GENERAL
+- id: NOTE-0110
+  title: Se ha generado un cambio de it para la publicación de los dashboards de rampas
+  content:
+  - '-'
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 17
+  project_id: GENERAL
+- id: NOTE-0111
+  title: NCM
+  content:
+  - Queria preparar la reunión haciendo los cambios previstos
+  - Arreglar los tamaños de las barras
+  - Nueva vista para la barra de Totales inwms.V_MAN_MC_SORTER_BATCHES_GRF
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 18
+  project_id: NCM_DASHBOARD
+- id: NOTE-0112
+  title: AMRs
+  content:
+  - Se probó de activar las OMAs en las salidas del brazo robótico y se generó OMA
+    hacia una posición libre
+  - Se generó una petición de movimiento en el TOM
+  - Tenemos que pedir un manual a DXC para entender como funcionan las diferentes
+    opciones de las pistolas de los AMRs
+  - '@JesusTRegadera comentará con @JoanLlansana si ya se ha pedido el manual a DXC
+    o si lo puede pedir él.'
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 18
+  project_id: AMR_LOGISTICS
+- id: NOTE-0113
+  title: Pantallas de Lliçà
+  content:
+  - Tenemos el presupuesto de la instalación eléctrica 3600€.
+  - Ahora Supply tiene de aceptar para que inicie la instalación
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 18
+  project_id: GENERAL
+- id: NOTE-0114
+  title: Instalación de WSL
+  content:
+  - Usuario mng_03732168, pass = 'X'
+  created_at: '2026-04-01'
+  month: 2026-04
+  week: 18
+  project_id: GENERAL

@@ -42,6 +42,10 @@ from brackets.tests.test_event_log import TestEventLog
 import unittest
 from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitacoraRenderer
 from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubController
+from brackets.tests.test_file_rename_manager import test_file_rename_manager
+from brackets.tests.test_global_search_replace import test_global_search_replace
+from brackets.tests.test_manual_creation import test_manual_bitacora_generation, test_manual_weekly_creation
+from brackets.tests.test_pomodoro_timer import TestPomodoroTimer
 
 
 def run_all_tests():
@@ -237,6 +241,56 @@ def run_all_tests():
     hub_failed = len(hub_result.failures) + len(hub_result.errors)
     total_passed += hub_passed
     total_failed += hub_failed
+
+    # Tests de FileRenameManager (previamente excluidos)
+    print("\n🧪 TESTS: managers/file_rename_manager.py")
+    print("=" * 50)
+    try:
+        result = test_file_rename_manager()
+        if result:
+            total_passed += 1
+        else:
+            total_failed += 1
+    except Exception as e:
+        print(f"❌ test_file_rename_manager: {e}")
+        total_failed += 1
+
+    # Tests de Global Search Replace (previamente excluidos)
+    print("\n🧪 TESTS: managers/global_search_replace.py")
+    print("=" * 50)
+    try:
+        result = test_global_search_replace()
+        if result:
+            total_passed += 1
+        else:
+            total_failed += 1
+    except Exception as e:
+        print(f"❌ test_global_search_replace: {e}")
+        total_failed += 1
+
+    # Tests de Creación Manual (previamente excluidos)
+    print("\n🧪 TESTS: generators/manual_creation.py")
+    print("=" * 50)
+    manual_tests = [
+        ("Manual bitacora generation", test_manual_bitacora_generation),
+        ("Manual weekly creation", test_manual_weekly_creation),
+    ]
+    for test_name, test_func in manual_tests:
+        try:
+            result = test_func()
+            if result:
+                total_passed += 1
+            else:
+                total_failed += 1
+        except Exception as e:
+            print(f"❌ {test_name}: {e}")
+            total_failed += 1
+
+    # Tests de Pomodoro Timer (previamente excluidos)
+    tester = TestPomodoroTimer()
+    pomodoro_passed = tester.run_all()
+    total_passed += tester.passed
+    total_failed += tester.failed
 
     # Mostrar resumen final
     print("\n" + "=" * 60)

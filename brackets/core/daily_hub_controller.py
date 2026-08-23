@@ -102,6 +102,42 @@ class DailyHubController:
         md_path = self._get_target_md_filepath(week)
         BitacoraRenderer.render_and_save_week(week, self.manager, md_path)
 
+    def prompt_project_selection(self) -> Optional[str]:
+        """Muestra la lista de proyectos para asociar a una tarea, nota o referencia."""
+        projects = self.manager.list_projects()
+        self.print("\n📁 VINCULAR A PROYECTO:")
+        if projects:
+            for idx, p in enumerate(projects, start=1):
+                self.print(f"  [{idx}] {p.id} ({p.name})")
+        else:
+            self.print("  (No hay proyectos registrados)")
+        self.print("  [0] Ninguno / Sin vincular")
+        self.print("  [+] Crear y vincular nuevo proyecto")
+
+        p_choice = self.input("Selecciona proyecto (0 por defecto): ").strip()
+        if not p_choice or p_choice in ("0", "n", "no"):
+            return None
+
+        if p_choice == "+":
+            new_pid = self.input("Código del nuevo proyecto (ej: AMR_LOGISTICS): ").strip()
+            if new_pid:
+                new_pname = self.input(f"Nombre descriptivo para '{new_pid}': ").strip()
+                p_obj = self.manager.ensure_project(new_pid, name=new_pname)
+                return p_obj.id
+            return None
+
+        try:
+            p_idx = int(p_choice)
+            if 1 <= p_idx <= len(projects):
+                return projects[p_idx - 1].id
+        except ValueError:
+            # Si el usuario escribe directamente el nombre/código
+            for p in projects:
+                if p_choice.upper() in (p.id.upper(), p.name.upper()):
+                    return p.id
+
+        return None
+
     def render_dashboard(self, week: WeekSchedule, day: DaySchedule) -> List[str]:
         """Imprime la pantalla del Hub Diario y devuelve los IDs de tareas mostradas en orden."""
         self.clear_screen()
@@ -128,7 +164,8 @@ class DailyHubController:
             for idx, task in enumerate(today_tasks, start=1):
                 status_box = "[x]" if task.is_done else ("[ ] ~~" if task.is_cancelled else "[ ]")
                 suffix = "~~" if task.is_cancelled else ""
-                self.print(f"  [{idx}] {status_box} {task.title}{suffix}")
+                proj_tag = f" [{task.project_id}]" if task.project_id else ""
+                self.print(f"  [{idx}] {status_box} {task.title}{proj_tag}{suffix}")
         else:
             self.print("  (No hay tareas asignadas para este día)")
 
@@ -137,9 +174,15 @@ class DailyHubController:
         for nid in week.note_ids:
             note = self.manager.notes.get(nid)
             if note:
-                for line in note.content[:3]:  # Mostrar hasta 3 viñetas destacadas
-                    self.print(f"  • {line[:60]}{'...' if len(line)>60 else ''}")
-                    rendered_notes += 1
+                if note.title:
+                    proj_tag = f" [{note.project_id}]" if note.project_id else ""
+                    self.print(f"  📌 {note.title}{proj_tag}")
+                    for line in note.content[:2]:
+                        self.print(f"     • {line[:60]}{'...' if len(line)>60 else ''}")
+                else:
+                    for line in note.content[:3]:
+                        self.print(f"  • {line[:60]}{'...' if len(line)>60 else ''}")
+                rendered_notes += 1
         if rendered_notes == 0:
             self.print("  (Sin notas registradas)")
 
@@ -222,8 +265,10 @@ class DailyHubController:
                 # Nueva tarea
                 text = self.input("📝 Texto de la nueva tarea: ").strip()
                 if text:
+                    proj_id = self.prompt_project_selection()
                     self.manager.create_task(
                         title=text,
+                        project_id=proj_id,
                         year=week.year,
                         week_num=week.week_number,
                         day_number=day.day_number
@@ -235,11 +280,12 @@ class DailyHubController:
                 ticket_code = self.input("🎫 Código Jira (ej: ATLM-12703): ").strip()
                 desc = self.input("📝 Descripción de la tarea: ").strip()
                 if ticket_code and desc:
+                    proj_id = self.prompt_project_selection()
                     jira_def = self.manager.ensure_jira_definition(ticket_code)
                     full_title = f"{desc} {jira_def.id}"
                     self.manager.create_task(
                         title=full_title,
-                        definition_ids=[jira_def.id],
+                        project_id=proj_id,
                         year=week.year,
                         week_num=week.week_number,
                         day_number=day.day_number
@@ -247,11 +293,22 @@ class DailyHubController:
                     self._sync_markdown(week)
 
             elif choice == "m":
-                # Añadir nota semanal
-                note_text = self.input("📌 Nueva nota para la semana: ").strip()
-                if note_text:
+                # Añadir nota semanal estructurada (Título + Viñetas + Proyecto)
+                title = self.input("📌 Título de la nota: ").strip()
+                self.print("📝 Introduce las viñetas/contenido de la nota (línea vacía para terminar):")
+                content_lines: List[str] = []
+                while True:
+                    line = self.input("  • ").strip()
+                    if not line:
+                        break
+                    content_lines.append(line)
+
+                if title or content_lines:
+                    proj_id = self.prompt_project_selection()
                     self.manager.add_note(
-                        content=note_text,
+                        title=title if title else None,
+                        content=content_lines,
+                        project_id=proj_id,
                         year=week.year,
                         week_num=week.week_number
                     )

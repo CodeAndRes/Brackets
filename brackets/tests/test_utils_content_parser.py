@@ -127,29 +127,6 @@ class TestContentParser:
             print(f"❌ Test extract_daily_dates falló: {e}")
             self.failed += 1
 
-    def test_extract_daily_pending_tasks(self):
-        """Test que extract_daily_pending_tasks funciona."""
-        try:
-            content = """# Week 05
-
-## 🏠29
-- [ ] Task 1 from Monday
-- [ ] Task 2 from Monday
-
-## 🚗30
-- [ ] Task 1 from Tuesday
-"""
-            parser = ContentParser(content)
-            daily_tasks = parser.extract_daily_pending_tasks()
-
-            assert len(daily_tasks) > 0, "Debería extraer tareas diarias"
-
-            print("✅ Test: extract_daily_pending_tasks extrae correctamente")
-            self.passed += 1
-        except Exception as e:
-            print(f"❌ Test extract_daily_pending_tasks falló: {e}")
-            self.failed += 1
-
     def test_clean_completed_tasks(self):
         """Test que clean_completed_tasks remueve tareas completadas."""
         try:
@@ -183,7 +160,6 @@ class TestContentParser:
         self.test_extract_pending_tasks()
         self.test_extract_pending_tasks_ignores_children_of_completed_parent()
         self.test_extract_daily_dates()
-        self.test_extract_daily_pending_tasks()
         self.test_clean_completed_tasks()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")

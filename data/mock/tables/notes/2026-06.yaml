@@ -1,0 +1,321 @@
+notes:
+- id: NOTE-0134
+  title: Nuevos repos con código nuevo
+  content:
+  - Default branch develop
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 23
+  project_id: GENERAL
+- id: NOTE-0135
+  title: Petición de ApiKeys de IA
+  content:
+  - Es necesario pedirlo a traves de Registry del equipo de MLOPs
+  - No tengo acceso al Jenkins de Data donde esta la pipeline de petición de ApiKeys.
+  - Contacto con @ArnauFont pero no esta disponible,
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 23
+  project_id: GENERAL
+- id: NOTE-0136
+  title: Alta de usuarios de Grafana de CDOs
+  content:
+  - Para que usuarios externos de CDOs puedan acceder a la organización de Grafana,
+    tienen que pertenecer a un grupo de AD
+  - Este grupo de AD se tiene que configurar en Grafana para que los usuarios que
+    pertenezcan a ese grupo tengan acceso a la organización de Grafana de CDOs
+  - He pedido la creación del grupo de AD para usuarios de solo visualización Grafana
+    CDOs
+  - Peti vinculación de grupo a Grafana-CDOs
+  - '```text'
+  - Hola,
+  - Necesitamos configurar el acceso LDAP para la organización CDO en Grafana.
+  - Por favor, mapead el grupo de AD app_grafanak8s_cdo_viewer a la organización CDO
+    con rol Viewer.
+  - Los usuarios deben autenticarse únicamente con su usuario corporativo vía LDAP,
+    sin invitaciones ni contraseñas locales. Además, los miembros de este grupo no
+    deberían tener acceso a la organización principal de Grafana.
+  - ¿Podéis revisar también que no exista una autoasignación o mapeo genérico que
+    les dé acceso a la organización principal?
+  - Gracias.
+  - '```'
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 23
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0137
+  title: Asistentes de IA de Automatistas
+  content:
+  - Desde el equipo de Automatistas han creado una estructura de agentes de Lisa y
+    Rovo con nombres y funcionalidades específicas
+  - Su idea es que puedan llevar mas allá las capacidades de los agentes
+  - 'He quedado de preguntar:'
+  - Como el va el tema de que un Asistente de Lisa pueda entrar en reuniones de de
+    Teams?
+  - Podremos añadir a Rovo a teams ?
+  - Puedes los automatistas asistir a las AI Alignments?
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 23
+  project_id: ROVO_AI
+- id: NOTE-0138
+  title: ~~Parece que tenemos conectado Atlassian con GiHub!~~
+  content:
+  - No! sigue sin funcionar
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 23
+  project_id: GENERAL
+- id: NOTE-0139
+  title: Semana que viene empiezo a mirar temas de streamlites de Data
+  content: []
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 23
+  project_id: GENERAL
+- id: NOTE-0140
+  title: '@JoanAmat quiere revisar el tema del Cardinal'
+  content:
+  - Al explicarle a @JoanAmat que iba a pedir una API Key para poder poner en funcionamiento
+    el cardinal, me ha comentado quiere revisarlo
+  - Juanto con @QuimFernandez y Negocio para ver si tiene sentido ponerlo en marcha
+    !
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 24
+  project_id: CARDINAL
+- id: NOTE-0141
+  title: NCM @JoanAn no coincide la info del Koerber con la vista inwms.v_man_mc_sorter_batches
+  content:
+  - En la reunión de seguimiento del dashboard de NCM de Grafana, @MariaCastro comenta
+    que no cudran los valores ni de packs ni de prioridad
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 24
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0142
+  title: Usuarios de Grafana-CDOs
+  content:
+  - '@IraizLavado comenta que se va a cambiar la forma de gestionar el acceso a Grafana
+    en general usando EntraID'
+  - Esto afecta a todas las organizaciones dentro del Grafana corportativo
+  - Hay que esperar al cambio de sistema para añadir a los usuarios externos a Grafana-CDOs.
+  - EntraID
+  - '```'
+  - Microsoft Entra ID es el servicio de identidad en la nube de Microsoft (antes
+    llamado Azure AD) que centraliza la autenticación, autorización y gestión de accesos
+    de usuarios y aplicaciones mediante SSO, MFA y políticas de acceso condicional.
+  - '```'
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 24
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0143
+  title: Repos con Python StreamLites
+  content:
+  - '[vulcan-parachutes-front]'
+  - '[vulcan-parachutes-simulator-back]'
+  - '[vulcan-sobrestock-front]'
+  - '[vulcan-cartonization-front]'
+  - '[vulcan-sisyphe-back]'
+  - '[vulcan-parachutes-optimizer-back]'
+  - '[vulcan-ps-copilot-back]'
+  - '[vulcan-sobrestock-back]'
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 24
+  project_id: MS_COPILOT
+- id: NOTE-0144
+  title: Me piden ayudar a @ShaneDixon a crear dos repos en GitHub
+  content:
+  - Se ve que lo han dado de alta en github dentro de la organización de la bt-supply
+  - '@NicoRamirez no quiere que nosotros tengamos que gestionar a los usuarios que
+    no sean de la bt-supply'
+  - '@NicoRamirez me dice que lo comente con @AdrianCatalan para ver como lo gestionamos'
+  - Me surge la duda de si es lo mejor forzar a que les creen una organización a los
+    de Supply o si
+  - es mejor que nosotros controlemos lo que hagan.
+  - '@NicoRamirez comenta que se debe tratar igual que a los usuarios de DXC que no
+    pertenecen a la bt-supply'
+  - pero que si que pueden
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 24
+  project_id: GENERAL
+- id: NOTE-0145
+  title: Creación de nuevo grupo para usuarios de negocio en github [🎫MSCTECH-265153]
+  content:
+  - '@AdrianCatalan ha aprobado el ticket.'
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 25
+  project_id: GENERAL
+- id: NOTE-0146
+  title: 🏡🕵🏻Ya han presentado el Hogar de los Agentes en Mango
+  content:
+  - '@AdrianCatalan ha presentado la prueba de uso de AgentCore de AWS'
+  - Al fina la creación de agentes sera similar a la de creación de Repos en github.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 25
+  project_id: GENERAL
+- id: NOTE-0147
+  title: Reunión de temas con @NicoRamirez
+  content:
+  - Horas de compensación
+  - Quiero profundizar en temas de Github, Terraform, en general CICD.
+  - Profundizar en temas de gestión de agentes de la BT-Supply
+  - Gestión de usuarios a InfluxDB para Automatistas
+  - Reunión de Cardinal con @JoanAmat, @QuimFernandez y @NicoRamirez
+  - Dashboard de NCM, revisión de métricas y feedback de usuario final
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 25
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0148
+  title: Daily S^3
+  content:
+  - Gestión de acceso de @ShaneDixon a GitHub
+  - Repos de WMS de @MontseMartinez de Bitbucket a Github
+  - Acceso a ArgoCD autorización
+  - Nueva versión de Qorex, campos tipo string
+  - Incidencia con una metrica de Supply
+  - Primera sesión traspaso de tema de streamlites con @ArnauAlaman
+  - Me he añadido como TL de backend para temas de streamlites de Data
+  - Proyecto de pantallas, visita al almacén el jueves 18
+  - Array de repos excepcionados de PR's
+  - Añadirme como TL de Front
+  - Gestión del acceso a PSB desde InfluxDB
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 25
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0149
+  title: '@JesusRegadera presenta un sistema de documentación con agentes'
+  content:
+  - Le propongo que lo ponga en Github para que todo el que quiera lo pueda usar
+  - Posibilidad de crear en python un instalador para el sistema este preparado para
+    cualquira.
+  - '###'
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 25
+  project_id: GENERAL
+- id: NOTE-0150
+  title: Verificación de que @ShaneDixon ya no es parte de team-bt-llica y team-bt-cdo
+  content:
+  - Aun sigue apareciendo y he hecho un borrado manual en github
+  - hay que esperar al proximo apply de terraform para ver si desaparece definitivamente
+  - hay que verificar si sigue pudiendo accder a github y solo a su repo.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 26
+  project_id: GENERAL
+- id: NOTE-0151
+  title: Proyecto de pantallas lliça
+  content:
+  - Mantenimiento se compromete a que cuando se instalen las pantallas, ellos pondrán
+    los enchufes.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 26
+  project_id: GENERAL
+- id: NOTE-0152
+  title: Downgrade de recursos de los streamlite
+  content:
+  - '@ArnauAlaman me comenta que desde DevOps se ha pedido que se haga para aprovechar
+    mejor los recursos'
+  - Esto afecta a los streamlites de @MartinSavransky
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 26
+  project_id: GENERAL
+- id: NOTE-0153
+  title: Historificación de métricas de InfluxDB en Databricks
+  content:
+  - Lo comento en la reunión de Data BT-Supply y @llucHospital es posible pero que
+    habría que defenderlo
+  - Ante @JandroMora explicando el beneficio y el coste de hacerlo.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 26
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0154
+  title: Repos migrados automaticamente a github no respetan la rama default
+  content:
+  - me comentan desde CDOs que tienenun repo con una rama default que no es master
+  - cambio a mano a la master y verifico que en el repo de terraform esta bien
+  - ya ha pasado una aplicación de cambios en terraform y se conserva correctamente
+    la rama default.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: GENERAL
+- id: NOTE-0155
+  title: Problema de sesiones recurrentes en MNG_INFLUXDB
+  content:
+  - me comentan desde CDOs que hay un problema de sesiones recurrentes en MNG_INFLUXDB
+  - he pedido aumento de sesiones [🎫SYSC-65548]
+  - Ya me han aumentado el número de sesiones simultaneas a 15 en Koerber y SILO
+  - Y por software hay un nuevo parametro de JSON para configurar el número de sesiones
+    simultaneas y de las
+  - que pueden estar en cola.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0156
+  title: API Keys Cardinal
+  content:
+  - He pedido a @NicoRamirez que me pase el mail de petición oficial de API Keys a
+    MLOps
+  - 'Solo necsitan :'
+  - Departamento
+  - Equipo
+  - Entornos (entiendo que de momento solo dev y pre )
+  - Limite
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: CARDINAL
+- id: NOTE-0157
+  title: Pruebas E2E Koerber
+  content:
+  - Se hara con Pytest
+  - Se creara un repo de Pytest para las pruebas E2E de Koerber
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: KOERBER_E2E
+- id: NOTE-0158
+  title: Problema con el dashboard de pedidos b2c
+  content:
+  - '@PabloMartinez me ha comentado que hay un problema con la query de la tabla de
+    pedidos b2c'
+  - Parece que esta duplicando cantidades a partir del 29 de junio a las 14:55
+  - He revisado el dashboard de pedidos b2c y he visto que hay un problema con la
+    query de la tabla de pedidos
+  - Parece que el problema es de capacidada de grafana (datapoints)
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0159
+  title: Petición de acceso a Copilot para @JoanAmat
+  content:
+  - Le he pedido a @JosueMartinez que le de acceso a Copilot para @JoanAmat
+  - Parece que ya se lo han dado.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: MS_COPILOT
+- id: NOTE-0160
+  title: Push para la creación de los usuarios InfluxDB de @MarElgarrista y @ShaneDixon
+  content:
+  - He hecho un push para la creación de los usuarios InfluxDB de @MarElgarrista y
+    @ShaneDixon
+  - Me ha dicho que nos crea una Api Key por entorno.
+  created_at: '2026-06-01'
+  month: 2026-06
+  week: 27
+  project_id: METRICS_INFLUXDB

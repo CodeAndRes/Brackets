@@ -121,45 +121,6 @@ class ContentParser:
         dates_found = re.findall(DATE_SECTION_PATTERN, self.content)
         return [int(d) for d in dates_found[:5]]  # Solo los primeros 5 días
 
-    def extract_daily_pending_tasks(self) -> List[str]:
-        """Extrae las tareas pendientes de los días específicos de la semana."""
-        daily_pending = []
-
-        # Buscar secciones de días (## 🏠15, ## 🚗16, etc.)
-        day_sections = re.findall(r'## [🏠🚗](\d+)\s*(.*?)(?=^##|\Z)',
-                                  self.content, re.MULTILINE | re.DOTALL)
-
-        for day_num, day_content in day_sections:
-            lines = day_content.split('\n')
-            day_tasks = []
-            in_previous_tasks = False
-
-            for line in lines:
-                line = line.strip()
-
-                # Detectar si estamos en una sección de tareas anteriores
-                if 'Tareas pendientes' in line or 'tareas anteriores' in line.lower():
-                    in_previous_tasks = True
-                    continue
-
-                # Si encontramos ---, salimos de tareas anteriores
-                if line == '---':
-                    in_previous_tasks = False
-                    continue
-
-                # Solo extraer tareas que NO están en secciones de tareas anteriores
-                if not in_previous_tasks and re.match(r'- \[ \]', line):
-                    task_content = re.sub(r'^\s*- \[ \]', '', line).strip()
-                    if task_content:  # Solo si la tarea tiene contenido
-                        day_tasks.append(f"    - [ ] {task_content}")
-
-            # Si este día tenía tareas, agregarlas con referencia al día
-            if day_tasks:
-                daily_pending.append(f"  - **Día {day_num}:**")
-                daily_pending.extend(day_tasks)
-
-        return daily_pending
-
     def get_next_week_dates(self) -> List[datetime]:
         """Calcula las fechas de la próxima semana basándose en las fechas diarias del archivo.
 

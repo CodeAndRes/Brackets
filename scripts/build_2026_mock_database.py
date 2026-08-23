@@ -181,25 +181,49 @@ class Mock2026Builder:
         notes_match = re.search(r'## 📝Notes\s*\n(.*?)(?=\n## |\Z)', content, re.DOTALL)
         if notes_match:
             notes_content = notes_match.group(1)
-            current_note_lines = []
-            for line in notes_content.split("\n"):
-                line_str = line.strip()
-                if not line_str or line_str.startswith("---"):
+            raw_lines = notes_content.split("\n")
+            current_title = None
+            current_content = []
+
+            for line in raw_lines:
+                sline = line.strip()
+                if not sline or sline.startswith("---"):
                     continue
-                if line_str.startswith("- "):
-                    if current_note_lines:
-                        nid = self._register_note(current_note_lines, year, month, week_num)
+
+                if sline.startswith("- ### ") or sline.startswith("### "):
+                    if current_title or current_content:
+                        nid = self._register_note(current_title, current_content, year, month, week_num)
                         if nid and nid not in note_ids:
                             note_ids.append(nid)
-                        current_note_lines = []
-                    clean_l = line_str[2:].strip()
-                    current_note_lines.append(clean_l)
-                else:
-                    if current_note_lines:
-                        current_note_lines.append(line_str)
+                        current_title = None
+                        current_content = []
 
-            if current_note_lines:
-                nid = self._register_note(current_note_lines, year, month, week_num)
+                    if sline.startswith("- ### "):
+                        current_title = sline[6:].strip()
+                    else:
+                        current_title = sline[4:].strip()
+
+                elif sline.startswith("- ") or sline.startswith("• ") or sline.startswith("* "):
+                    clean_l = re.sub(r'^[-*•]\s*', '', sline).strip()
+                    if current_title is not None:
+                        current_content.append(clean_l)
+                    else:
+                        if current_content:
+                            nid = self._register_note(None, current_content, year, month, week_num)
+                            if nid and nid not in note_ids:
+                                note_ids.append(nid)
+                            current_content = []
+                        current_content.append(clean_l)
+                else:
+                    if current_content:
+                        current_content.append(sline)
+                    elif current_title:
+                        current_content.append(sline)
+                    else:
+                        current_content.append(sline)
+
+            if current_title or current_content:
+                nid = self._register_note(current_title, current_content, year, month, week_num)
                 if nid and nid not in note_ids:
                     note_ids.append(nid)
 
@@ -275,18 +299,11 @@ class Mock2026Builder:
             task_id = self.task_canonical_map[canon]
             task = self.tasks[task_id]
 
-            # Si ahora está resuelta y antes no, actualizar estado y completed_at
             if is_done:
                 task["status"] = "done"
                 task["completed_at"] = date_str
             elif is_cancelled:
                 task["status"] = "cancelled"
-
-            # Agregar nuevas definiciones si no estaban
-            for d in defs:
-                if d not in task["definition_ids"]:
-                    task["definition_ids"].append(d)
-
             return task_id
         else:
             self.task_counter += 1
@@ -299,21 +316,20 @@ class Mock2026Builder:
                 "status": status,
                 "created_at": date_str,
                 "completed_at": date_str if is_done else None,
-                "definition_ids": defs,
-                "project_id": self._infer_project(clean_text),
-                "parent_id": None,
-                "tags": []
+                "project_id": self._infer_project(clean_text)
             }
             self.task_canonical_map[canon] = task_id
             return task_id
 
-    def _register_note(self, content_lines: List[str], year: int, month: int, week_num: int) -> Optional[str]:
-        """Registra una nota deduplicada."""
-        full_text = " ".join(content_lines)
+    def _register_note(self, title: Optional[str], content_lines: List[str], year: int, month: int, week_num: int) -> Optional[str]:
+        """Registra una nota estructurada con título y contenido deduplicada."""
+        full_text = f"{title or ''} " + " ".join(content_lines)
         canon = self._canonical(full_text)
         if not canon:
             return None
 
+        if title:
+            self._extract_definitions(title)
         for line in content_lines:
             self._extract_definitions(line)
 
@@ -322,14 +338,18 @@ class Mock2026Builder:
 
         self.note_counter += 1
         note_id = f"NOTE-{self.note_counter:04d}"
+        month_str = f"{year}-{month:02d}"
         date_str = f"{year}-{month:02d}-01"
+        project_id = self._infer_project(full_text)
 
         self.notes[note_id] = {
             "id": note_id,
+            "title": title,
             "content": content_lines,
-            "title": None,
             "created_at": date_str,
-            "project_ref": self._infer_project(full_text)
+            "month": month_str,
+            "week": week_num,
+            "project_id": project_id
         }
         self.note_canonical_map[canon] = note_id
         return note_id
@@ -346,7 +366,25 @@ class Mock2026Builder:
         with open(os.path.join(self.tables_dir, "tasks.yaml"), "w", encoding="utf-8") as f:
             yaml.dump({"tasks": list(self.tasks.values())}, f, allow_unicode=True, sort_keys=False)
 
-        # 2. notes.yaml
+        # 2. notes/ {YYYY}-{MM}.yaml y notes.yaml
+        notes_dir = os.path.join(self.tables_dir, "notes")
+        os.makedirs(notes_dir, exist_ok=True)
+        for old_f in glob.glob(os.path.join(notes_dir, "*.yaml")):
+            try:
+                os.remove(old_f)
+            except Exception:
+                pass
+
+        grouped_notes: Dict[str, List[Dict[str, Any]]] = {}
+        for n in self.notes.values():
+            m = n.get("month", "general")
+            grouped_notes.setdefault(m, []).append(n)
+
+        for m_key, n_list in grouped_notes.items():
+            m_file = os.path.join(notes_dir, f"{m_key}.yaml")
+            with open(m_file, "w", encoding="utf-8") as f:
+                yaml.dump({"notes": n_list}, f, allow_unicode=True, sort_keys=False)
+
         with open(os.path.join(self.tables_dir, "notes.yaml"), "w", encoding="utf-8") as f:
             yaml.dump({"notes": list(self.notes.values())}, f, allow_unicode=True, sort_keys=False)
 
@@ -361,16 +399,8 @@ class Mock2026Builder:
             if pid not in projects_summary:
                 projects_summary[pid] = {
                     "id": pid,
-                    "name": pid.replace("_", " ").title(),
-                    "total_tasks": 0,
-                    "done_tasks": 0,
-                    "pending_tasks": 0
+                    "name": pid.replace("_", " ").title()
                 }
-            projects_summary[pid]["total_tasks"] += 1
-            if t["status"] == "done":
-                projects_summary[pid]["done_tasks"] += 1
-            elif t["status"] == "pending":
-                projects_summary[pid]["pending_tasks"] += 1
 
         with open(os.path.join(self.tables_dir, "projects.yaml"), "w", encoding="utf-8") as f:
             yaml.dump({"projects": list(projects_summary.values())}, f, allow_unicode=True, sort_keys=False)

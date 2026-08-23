@@ -7,13 +7,13 @@ topics_task_ids:
 - TSK-0548
 - TSK-0609
 note_ids:
-- NOTE-0566
-- NOTE-0567
-- NOTE-0568
-- NOTE-0569
-- NOTE-0570
-- NOTE-0571
-- NOTE-0572
+- NOTE-0199
+- NOTE-0200
+- NOTE-0201
+- NOTE-0202
+- NOTE-0203
+- NOTE-0204
+- NOTE-0205
 days:
 - day_number: 17
   location_emoji: 🚗

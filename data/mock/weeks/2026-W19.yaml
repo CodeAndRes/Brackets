@@ -74,17 +74,11 @@ topics_task_ids:
 - TSK-0423
 - TSK-0424
 note_ids:
-- NOTE-0380
-- NOTE-0381
-- NOTE-0382
-- NOTE-0383
-- NOTE-0384
-- NOTE-0385
-- NOTE-0386
-- NOTE-0387
-- NOTE-0388
-- NOTE-0389
-- NOTE-0390
+- NOTE-0115
+- NOTE-0116
+- NOTE-0117
+- NOTE-0118
+- NOTE-0119
 days:
 - day_number: 4
   location_emoji: 🚗

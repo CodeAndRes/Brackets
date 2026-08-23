@@ -1,0 +1,160 @@
+notes:
+- id: NOTE-0115
+  title: Tenemos el OK para el presupuesto de la instalación eléctrica de las pantallas
+    de Lliçà.
+  content: []
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 19
+  project_id: GENERAL
+- id: NOTE-0116
+  title: API Keys las lleva MLOPs
+  content:
+  - Entro en el grupo de Teams de MLOPs
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 19
+  project_id: GENERAL
+- id: NOTE-0117
+  title: Migración de repositorios de Bitbucket a GitHub
+  content:
+  - Me contacta @AleixMurtra para ayudarnos a configurar los plugins de Github en
+    Jenkins y el token del webhook
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 19
+  project_id: GENERAL
+- id: NOTE-0118
+  title: La password de MNG_INFLUXDB en la base de datos de TGW estaba mal
+  content:
+  - No corresponde con la que tiene los demas usuarios de INFLUXDB, es una antigua
+  - Se pide el cambio de password pero tiene que pasar por el CAB [🎫CHG-10094]
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 19
+  project_id: AMR_LOGISTICS
+- id: NOTE-0119
+  title: Strint Plan S^3
+  content:
+  - Se habla de las tareas que tenemos en marcha y de las que tenemos planeadas para
+    el futuro
+  - Se le da prioridad a la migración a Github
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 19
+  project_id: GENERAL
+- id: NOTE-0120
+  title: Nueva version de VsCode con ventana de agentes
+  content: []
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 20
+  project_id: GENERAL
+- id: NOTE-0121
+  title: Necesidad de firmar los commits para los rpositorios de GitHub
+  content: []
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 20
+  project_id: GENERAL
+- id: NOTE-0122
+  title: Ya tenemos repos y equipos creado via Terraform
+  content:
+  - Despues de las pruebas de migración automática se debería crear
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 20
+  project_id: GENERAL
+- id: NOTE-0123
+  title: Ya esta la preinstalación electrica de las pantallas de Lliçà
+  content:
+  - En cuanto se instalen las pantallas, se hara la instalación definitiva
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 20
+  project_id: GENERAL
+- id: NOTE-0124
+  title: '@JoanAmat me ha pasado el powerpoint de AI-Champion'
+  content: []
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 21
+  project_id: GENERAL
+- id: NOTE-0125
+  title: Desinstalación del Notepad++ del servidor de FakeOrders
+  content:
+  - '@MarcCristany ha iniciado el proceso de acceso remoto de la unidadad D: del servidor
+    de FakeOrders'
+  - En cuanto tengamos el acceso remoto y se haya probado, se desinstalará el Notepad++
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 21
+  project_id: GENERAL
+- id: NOTE-0126
+  title: Ha respondido PSB sobre el acceso a la bases para Grafana
+  content:
+  - Segun comentan en el pdf, entiendo que solon tiene sentido pedir acceso a la KPI
+    para el grafana
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 21
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0127
+  title: Las PR de terraform de creación de equipos deben ir separadas de las de repos
+  content:
+  - Comenta @AleixMurtra que se debe separar en dos ramas y PRs diferentes
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 21
+  project_id: GENERAL
+- id: NOTE-0128
+  title: Problemas de CPU del servidor de InluxDB
+  content:
+  - '[🎫SYSC-63074]'
+  - '-'
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 21
+  project_id: GENERAL
+- id: NOTE-0129
+  title: S^3 PostMortem
+  content:
+  - Se empezaran a usar Feature flags para poder desplegar y solo habilitar cuando
+    esten hechas las pruebas
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 22
+  project_id: GENERAL
+- id: NOTE-0130
+  title: AMRs
+  content: []
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 22
+  project_id: AMR_LOGISTICS
+- id: NOTE-0131
+  title: Repos en GitHub OK
+  content:
+  - El flujo de cualquier repo con cualquier aprobador
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 22
+  project_id: GENERAL
+- id: NOTE-0132
+  title: Organización de CDOs
+  content:
+  - Hay Retomar el tema del acceso de los usuarios externos CDOs a la organización
+    de Grafana
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 22
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0133
+  title: Migración de GitHub
+  content:
+  - Al final no era tan imperativo migrar a GitHub
+  - Bitbucket se mantendrá pero solo habrán una pocas licencias
+  created_at: '2026-05-01'
+  month: 2026-05
+  week: 22
+  project_id: GENERAL

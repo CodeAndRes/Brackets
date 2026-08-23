@@ -56,8 +56,8 @@ Cola inmediata priorizada:
 
 ## Prioridad media
 
-- [ ] Menu por tipo de vault (work/personal) con reglas de visibilidad mas finas (actualmente parcial por `context_tag`).
-- [ ] Inyeccion de contexto vivo en dashboard principal (semana actual, estado de bitacora, estado Pomodoro, tareas pendientes).
+- [x] Menu por tipo de vault (work/personal) con reglas de visibilidad mas finas (implementado con `context_tag: vault_type_work` / `vault_type_personal`).
+- [x] Inyeccion de contexto vivo en dashboard principal (implementado en `DailyHubController`: semana actual, tareas del dia, notas semanales, proyectos vinculados).
 - [x] Limpieza de pausas no esenciales en la navegacion de menus (quick-keys + flechas + Enter).
 - [ ] Añadir smoke test unico para validar vault nuevo en un comando.
 - [ ] Crear `MULTIROOT_WORKFLOW.md`.
@@ -71,8 +71,8 @@ Cola inmediata priorizada:
 - [ ] Hacer configurable por vault la pregunta de ubicacion (casa/oficina/remoto).
 - [ ] Hacer configurable por vault la duracion de semana (5 dias trabajo, 7 dias personal).
 - [ ] Definir modo opcional sin dimension temporal (solo notas/proyectos, sin bitacoras semanales).
-- [ ] Crear opcion de ejecucion diaria para traspaso de tareas entre dias.
-- [ ] Opcion interactiva para anadir tareas del dia en curso.
+- [x] Crear opcion de ejecucion diaria para traspaso de tareas entre dias (implementado en `DailyHubController`: dashboard diario con cambio de dia activo).
+- [x] Opcion interactiva para anadir tareas del dia en curso (implementado en `DailyHubController` acciones `[n]`, `[j]`).
 - [ ] Crear y usar archivo de tareas recurrentes (semanal/mensual/cuatrimestral).
 
 ## Modulos funcionales futuros
@@ -103,12 +103,12 @@ Cola inmediata priorizada:
 
 - [ ] Medicion del tiempo con asignacion de tarea (PARCIAL: hay timer, falta asignacion formal a task-id).
 - [ ] Edicion automatica de Bitacora basada en eventos de trabajo.
-- [ ] Gestion de tareas por codigo (task-id unico, estado, prioridad y relaciones).
+- [x] Gestion de tareas por codigo (task-id unico, estado, prioridad y relaciones) — implementado via `EntityManager` con IDs estables `TSK-XXXX`, estados `pending/done/cancelled`, y `project_id` como relacion.
 
 ### Motor de documentos y render
 
-- [ ] Modulo de renderizado de `.md` para aplicar cambios estructurados en archivos (ej: backlog).
-- [ ] Que `.md` sea solo render de un estado interno (modelo de datos como fuente de verdad).
+- [x] Modulo de renderizado de `.md` para aplicar cambios estructurados en archivos — implementado en `BitacoraRenderer`.
+- [x] Que `.md` sea solo render de un estado interno (modelo de datos como fuente de verdad) — implementado: YAML es fuente de verdad, `.md` se regenera desde `WeekSchedule` + `EntityManager`.
 
 ### IA y resumenes
 
@@ -117,11 +117,11 @@ Cola inmediata priorizada:
 
 ## Vision de mediano/largo plazo (Roadmap)
 
-- [ ] Fase 4: Modulo de proyectos (estructura, hitos, reporteria, integracion con bitacoras).
+- [x] Fase 4: Modulo de proyectos (estructura, hitos, reporteria, integracion con bitacoras) — implementado en `entities.py:Project`, `EntityManager.ensure_project()`, `prompt_project_selection()`.
 - [ ] Fase 5: Modulo de aprendizaje (notas estructuradas, busqueda, resumenes).
 - [ ] Fase 6: Automatizacion avanzada (predicciones de tareas, analisis de productividad).
 - [ ] Fase 7: Mejoras de interfaz (dashboard enriquecido y posibles exportaciones).
-- [ ] Fase 8: YAML-first como persistencia estructurada con modelos y generacion YAML -> Markdown.
+- [x] Fase 8: YAML-first como persistencia estructurada con modelos y generacion YAML -> Markdown — implementado en `EntityManager`, `BitacoraRenderer`, `entities.py`.
 
 ## Notas de estado
 
@@ -130,14 +130,19 @@ Cola inmediata priorizada:
 
 ## Auditoria tecnica de pendientes
 
-Ultima auditoria: 2026-05-24
+Ultima auditoria: 2026-08-23
 
 - ✅ Traspaso de tareas entre semanas: resuelto y validado en parser/tests (no migra `[x]` ni subtareas de padre completado).
 - ✅ Fallback automatico a flujo manual sin bitacoras previas: resuelto en `WeeklyGenerator.create_next_or_manual_weekly_bitacora` + `BitacoraManager.handle_weekly_creation`, validado con `brackets/tests/test_generators_weekly.py`.
 - ✅ Titulo `MonthTopics`: resuelto con formato `# {MonthName} Topics {emoji}` en `ContentGenerator.create_monthly_topics`; validado con `brackets/tests/test_utils_content_generator.py`.
 - ✅ Politica unica de versionado: resuelto con fuente unica en `brackets/version.py`, integrada en `setup.py`, `brackets.__version__` y `config.VERSION`; validado con `brackets/tests/test_version_policy.py`.
 - ✅ Visibilidad de vault local vs root: resuelto en `resolve_workspace_context` y flujo de `main`, con tests en `brackets/tests/test_cli_vault_scope.py`.
+- ✅ Limpieza de modelo de datos: eliminados campos fantasma (`definition_ids`, `parent_id`, `tags`, `project_ref`, contadores de `Project`, `Definition.project_id`). Eliminada escritura dual de notas. Validado con 118 tests al 100%.
+- ✅ Limpieza de codigo muerto: eliminadas ~186 LOC de metodos, clases y funciones sin uso. Eliminado test legado roto `test_week_calculation.py`.
+- ✅ Consolidacion de test suite: registrados 4 tests excluidos (`file_rename_manager`, `global_search_replace`, `manual_creation`, `pomodoro_timer`). Suite completa: 118 tests.
+- ✅ Correccion de bugs: fix `datetime` en `main.py`, fix `render_dashboard` duplicado, fix indexacion en `run_analyze_file`, fix regex duplicado en renderer.
 
 Regla para marcar una tarea como resuelta:
 
 - Debe existir evidencia en codigo (archivo/metodo) y una verificacion ejecutable (test o comando reproducible).
+

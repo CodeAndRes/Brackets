@@ -158,10 +158,10 @@ class FileManagementController:
         filepath = None
         try:
             choice_num = int(choice)
-            if 1 <= choice_num <= 5 and choice_num <= len(weekly_files):
-                filepath = weekly_files[choice_num - 1][0]
-            elif 6 <= choice_num <= 8 and (choice_num - 6) < len(monthly_files):
-                filepath = monthly_files[choice_num - 6][0]
+            if 1 <= choice_num <= 5 and choice_num <= len(weekly_files[-5:]):
+                filepath = weekly_files[-5:][choice_num - 1][0]
+            elif 6 <= choice_num <= 8 and (choice_num - 6) < len(monthly_files[-3:]):
+                filepath = monthly_files[-3:][choice_num - 6][0]
         except ValueError:
             if os.path.exists(choice):
                 filepath = choice

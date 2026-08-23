@@ -1,0 +1,382 @@
+notes:
+- id: NOTE-0050
+  title: Perdimos el acceso a GH-Copilot
+  content:
+  - El Sábado a la 01:00 me doy cuenta que no tengo acceso a GH-Copilot.
+  - Recibo un mail de Github como que mi cuenta ya no tiene acceso a GH-Copilot
+  - Esto ha afectado a todos los usuarios de Mango.
+  - El lunes a las 8:30 Recibimos un mail conforme volvemos a tener acceso a GH-Copilot
+    pero al intentar
+  - usarlo no funciona.
+  - Abro un ticket [🎫MSCTECH-227626] para que gestionen el problema y responden comentando
+    que la cuenta a cambiado.
+  - La cuenta de Mango de GitHub ha cambiado de `https://github.com/enterprises/mango-github`
+    a
+  - '`https://github.com/enterprises/mangomng`'
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 10
+  project_id: MS_COPILOT
+- id: NOTE-0051
+  title: Acceso a PSB BD y Fives
+  content:
+  - '@MarcCristany ha enviado un correo a PSB para preguntar si hace falta pedir acceso
+    a la BD de KPI'
+  - Respondo mail de @AlbertoMoreno comentando que de momento no hace falta pedir
+    acceso a las bases de datos de Fives
+  - Ya que aun les faltan desarrollos y que decidan como y donde van a almacenar los
+    datos provenientes de
+  - los 4 sorters (de momento solo tienen uno)
+  - '@AlbertoMoreno responde que espera a que le respondamos sobre lo que diga PSB
+    sobre el acceso a la BD de KPI.'
+  - '@PSB responde con que se lo están mirando y se pondrán en contacto con @MarcCristany.'
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 10
+  project_id: GENERAL
+- id: NOTE-0052
+  title: Adelanto de nueva version de Qorex a @PabloMartinez
+  content:
+  - Comento a @PabloMartinez que la nueva versión de Qorex ya esta en marcha y le
+    enseño la beta del dahsboard
+  - de metricas de la queries
+  - Le comento por encima las nuevas funcionalidades que se están implementando.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 10
+  project_id: QOREX_DB
+- id: NOTE-0053
+  title: Rechazo de la peti [🎫MSCTECH-228180] de añadir usuarios a GH-Copilot
+  content:
+  - Desde Workplace me comentan que los tickets de añadir usuarios al grupo de AD-MNG-Supply-Github
+    debe pasar por un
+  - aprobador de IT, que en este caso es @AdrianCatalan.
+  - Abro un nuevo ticket [🎫MSCTECH-228247] mencionando a @AdrianCatalan para que apruebe
+    la petición
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 10
+  project_id: MS_COPILOT
+- id: NOTE-0054
+  title: Petición de la Espe sobre fecha y usuario en el Dashboard de RFID
+  content:
+  - Comenta que quiere tener una tabla sobre usuario, cantidad y %RFID
+  - También que querría añadir una columna de fecha para poder agrupar por fecha para
+    datos de mas de un día.
+  - Le digo que lo del la tabla por usuario se puede hacer sin problema pero que lo
+    de la fecha aunque no es
+  - difícil, quedaría fuera del ámbito de Grafana y la prueba de traer 2 días no ha
+    ido bien.
+  - Pedirá hacer la misma query pero en Radar para ver si puede traer datos de 2 días
+    y así poder hacer la agrupación por fecha.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 10
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0055
+  title: Cambio de fecha de la
+  content: []
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 10
+  project_id: GENERAL
+- id: NOTE-0056
+  title: '@JoanAmat me comenta que de momento no se va a traspasar labores de Grafana'
+  content:
+  - Quiere ver el ratio de tareas abiertas vs cerradas del proyecto de SOG.
+  - La idea es que para argumentar la inclusión de alguien más en el proyecto de Grafana
+    se demostrar que hay mas tickets abiertos
+  - de los que se pueden gestionar con el equipo actual.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 11
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0057
+  title: Para el proyecto de ExcelOffice
+  content:
+  - Se les notifica a los @Automatistas que la solución pasara por usar PowerBI pero
+    que tiene un coste de licencia.
+  - '@MontseMartinez esta revisando las queries del Excel de reports para empezar
+    a migrar la lógica a MNG_SILO.'
+  - '@MontseMartinez va a pedir mas espacio de disco para el esquema MNG_SILO, actualmente
+    tiene muy poco.'
+  - Hay preguntar a Workplace como va el tema de la licencia de PowerBI para Programar
+    Reports
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 11
+  project_id: GENERAL
+- id: NOTE-0058
+  title: 🧔🏻‍♂️ -> @XaviMartinez creación repo local de Git para el servidor de FakesOrders
+  content:
+  - Le explico a @XaviMartinez que ya tenemos un repo con la rama Master
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 11
+  project_id: GENERAL
+- id: NOTE-0059
+  title: Proyecto ExcelOff
+  content:
+  - 💬Mensaje @PieroJaramillo
+  - '```'
+  - Hola Piero, buenas tardes.
+  - Nos han comentado que eres la persona de contacto para temas de Power BI, y queríamos
+    comentarte que estamos investigando su uso
+  - para un proyecto de migración de unos reports generados en Excel que actualmente
+    se envían manualmente por email a los responsables
+  - de Supply de Lliçà.
+  - Tenemos entendido que, para poder programar el envío de reports por email en Power
+    BI, es necesaria una licencia con coste. ¿Podrías
+  - indicarnos cómo funciona el tema de licencias y si tenemos disponibilidad?
+  - Si te parece, lo comentamos en una llamada y te doy un poco más de detalle.
+  - Gracias y un saludo,
+  - '```'
+  - '@PieroJaramillo nos comenta que con las licencias que tenemos los intyernos de
+    mango podemos crear el flujo completo de creación de report'
+  - y envío por email.
+  - La idea es empezar por una prueba de concepto con un report sencillo para luego
+    ir migrando el resto de reports.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 11
+  project_id: GENERAL
+- id: NOTE-0060
+  title: Revisión de script de @XaviNavarro
+  content:
+  - Desde BC han creado script de instalación del módulo de logging interno del esquema
+    MNG_SILO.
+  - Crea la tabla de logs SGA_LOGS, la secuencia SGA_LOGS_S y el paquete SGA_UTILS_PKG
+    para registrar eventos mediante transacciones autónomas.
+  - Añado una parte que hace que el script sea
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 11
+  project_id: GENERAL
+- id: NOTE-0061
+  title: Primer query oficial
+  content: []
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 11
+  project_id: GENERAL
+- id: NOTE-0062
+  title: '@JoanAmat da pautas del evento de BT-Supply Impuse'
+  content:
+  - Nora desayuno
+  - 9:30 Presentación de @JoanAmat sobre el estado del equipo de BT-Supply
+  - Buscar hueco para hablar con @SoniaMoran, @GerardCepero y @JoanAmant coordinar
+    con People
+  - RoadMap de proyectos @QuimFernandez y @NuriaMarin
+  - Presentación de Ray/Luis avances y experiencia con GH Copilot
+  - Posible invitado
+  - Charla sobre seguridad @QuiqueMere
+  - Video generado con Gemini NotebookLM como Presentacioón de la dinámica de team
+    building
+  - Dinámica de team building
+  - AgentWars
+  - Crear una serie de agentes que luchen entre ellos creando un torneo (similar al
+    de las artes marciales DB)
+  - Presentación de Gemini NotebookLM
+  - Ejemplo de uso del curso de inicio a la programación con IA
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: MS_COPILOT
+- id: NOTE-0063
+  title: Escribo a @AndréRibeiro para comentar la idea de copiloto de faltas picking
+    para Lisa
+  content: []
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: MS_COPILOT
+- id: NOTE-0064
+  title: Abro petición a mantenimiento de edificios para la instalación de tomas de
+    corriente en Lliçà para el proyecto de pantallas
+  content:
+  - Paso el PDF que me pasan desde el equipo de proyectos.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: GENERAL
+- id: NOTE-0065
+  title: '@AndréRibeiro responde que Lisa ahora mismo no esta disponible para incorporar
+    nuevos copilotos.'
+  content:
+  - '```'
+  - Buenas Gustavo, en estos momentos estamos rehaciendo la gestión de knowledge bases
+    por lo que tendréis que esperar hasta que
+  - tengamos el nuevo sistema montado. En estos momentos, requiere de mucho trabajo
+    manual y código por nuestra parte añadir más
+  - knowledge bases.
+  - '```'
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: MS_COPILOT
+- id: NOTE-0066
+  title: Tenemos fecha de instalación de las pantallas de Lliçà, el 31 de marzo.
+  content:
+  - De momento no hay respuesta de mantenimiento BLM-25289.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: GENERAL
+- id: NOTE-0067
+  title: Es posible crear Agentes de Rovo
+  content:
+  - 'Al crear un agente se puede :'
+  - 'Acotar la base de conocimiento a un repositorio concreto (ej: el de la documentación
+    de la BT-Supply)'
+  - Programar acciones concretas
+  - 'Definir una personalidad de agente concreta (ej: un agente experto en la documentación
+    de la BT-Supply con un tono divertido)'
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: ROVO_AI
+- id: NOTE-0068
+  title: '@PauMartinez pregunta si se puede crear una playlist pública en Grafana'
+  content:
+  - La respuesta corta es no, con la versión que tenemos
+  - Habría que hacer una modificación a nivel core que es la de permitir el acceso
+    anonimo y dudo que lo vean bien desde N1
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0069
+  title: Bt-Supply Impulse 🤖🎙️NoticIAs
+  content:
+  - Sección con los avances de IA del último mes
+  - Formato SNL con un presentador que hace de nexo entre las diferentes secciones
+    y da paso a cada una de ellas.
+  - Buscar sonido de cortinilla para la sección de noticias de IA
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 12
+  project_id: GENERAL
+- id: NOTE-0070
+  title: POC de plugin de Lisa en Office
+  content:
+  - Paso al equipo de Automatistas el link para inscribirse a la POC de plugin de
+    Lisa en Office
+  - '[📝AddOnLisaOffice]'
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 13
+  project_id: GENERAL
+- id: NOTE-0071
+  title: Opinión del OneOne con el Manager
+  content:
+  - Fue una reunión muy productiva ya que me ha hecho reflexiónar sobre la importancia
+    de ser completamente abierto en la
+  - comunicación con el manager y me ha ayudado a incentivar la petición de feedback
+    a managers y compañeros para poder mejorar continuamente.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 13
+  project_id: GENERAL
+- id: NOTE-0072
+  title: '[🎫SUPPLY-17018] UATs'
+  content:
+  - Se ha ejecutado el package de MNG_SILO pero para que pueda funcionar se le deben
+    dar grants de ejecución de un par de procedures de SILO
+  - Mas Infor en [🎫SUPPLY-17018 📄Doc]
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 13
+  project_id: GENERAL
+- id: NOTE-0073
+  title: Prueba de concepto de pagina de seguimiento de proyecto de AMRs
+  content:
+  - Pagina donde se vean el estado del proyecto y que esté en lazada con un repo donde
+    este toda la documentación técnica y de gestión del proyecto.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 13
+  project_id: AMR_LOGISTICS
+- id: NOTE-0074
+  title: Ivan me pide deshacer el cambio de la métrica OMAs [🎫SUPPLY-17062]
+  content: []
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0075
+  title: Ya tenemos plugIn de Mermaid en confluence
+  content:
+  - Ejemplo [Ejemplo 🧜🏻‍♀️]
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0076
+  title: Ya tengo permisos de creación de repositorios bitbucket en el Proyecto BTPMS
+  content: []
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0077
+  title: Se ha parado el servidor de Grafana de Ferag
+  content:
+  - Estara 15 dias parado y luego se apagara definitivamente
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0078
+  title: Agente de pruebas de regreción
+  content:
+  - Lo comentamos con @FranGaspar, @RayFernandez, @EricGarcia
+  - '@FranGaspar empezara a mirar el tema de crear un agente'
+  - Se baraja la opción de mejorar Cypress con logs y ver si con eso es suficiente
+  - Tambien se baraja la opción de crear un agente wrapper solo para la interacción
+    con Cypress y respuesta
+  - Pendiente de comentar despues de semana santa con @QuimFernandez
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0079
+  title: Ya tenemos pantallas en lliçà
+  content:
+  - Pendiente de verificar la instalación
+  - Notificado a @SergiGomez, @OriolValverde y @RogerLopez
+  - '@SergiGomez confirma que esta semana haran la instalación definitiva de las tomas
+    de corriente.'
+  - Se han entregado 3 pantallas.
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0080
+  title: '@GerardCepero pregunta por una infraestructura para crear aplicaciones personales'
+  content:
+  - Le comento que no tenemos algo como un vercel para crear aplicaciones personales
+  - Lo mas parececido es lo que han hecho los automatistas y Data con los streamlit
+  - Y si luego esto tiene sentido se pasa a Vulcan
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0081
+  title: Ya tenemos licencias de GitHub Enterprise para toda la BT
+  content:
+  - Paso la lista de usuarios de toda la BT via MSC
+  - Me han puesto como owner de la organización de [GitHub BT-Supply]
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL
+- id: NOTE-0082
+  title: 📞@MarcMarlet sobre Dashboard de pedidos
+  content:
+  - Le comento que si los datos que va a ver no son del mismo día debería historificarlos
+    y montar los dashboards e informes
+  - en Databricks o Looker
+  created_at: '2026-03-01'
+  month: 2026-03
+  week: 14
+  project_id: GENERAL

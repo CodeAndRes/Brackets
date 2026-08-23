@@ -232,21 +232,25 @@ brackets/
 ### Bitácora Semanal Generada
 
 ```markdown
-# 📅 Semana 8 - Febrero 2026 (17/02 → 23/02)
+# 🗓️Week 8 108.0
 
-## 🎯 Objetivos de la Semana
-- [ ] Objetivo 1
-- [ ] Objetivo 2
+## ✅Topics
+  - [x] Reclamar conexión de InfluxDB
+  - [ ] Empezar a construir Dashboards en Grafana
+  ---
 
-## 📆 Lunes 17/02/2026 🏠
-### ✅ Tareas Completadas
-- [x] Tarea completada la semana anterior
+## 📝Notes
+- ### Upgrade versión InfluxDB
+  - @MarcCristany propone hacer un upgrade
+  - @FerranVallalta y @PabloMartinez de acuerdo
+  ---
 
-### 📝 Tareas del Día
-- [ ] Nueva tarea
+## 🚗17 (Oficina)
+  - [ ] Revisión de base de datos
+  - [x] Reunión de coordinación
 
-### 📋 Notas
-...
+<!-- Definiciones -->
+[🎫ATLM-12682]: https://mangospain.atlassian.net/browse/ATLM-12682
 ```
 
 ### Estructura de Categorías
@@ -279,7 +283,7 @@ categories:
 
 ```
 vault/
-├── [2026][02]Week08.md              # Bitácora semanal
+├── [2026][02]Week08.md              # Bitácora semanal (renderizada)
 ├── [2026][02].md                    # Consolidado mensual
 ├── [2026].md                        # Consolidado anual
 ├── [🎓LEARNING][PYTHON]decorators.md
@@ -301,13 +305,13 @@ feature_flags:
 ```yaml
 paths:
   notes_root: "notes"       # Carpeta con archivos .md
-  data_dir: "config"        # Carpeta con YAML de configuración
+  data_dir: "data"          # Carpeta con YAML de configuración y tablas
 ```
 
 ### Horario de Trabajo
 
 ```yaml
-# En data/settings.yaml
+# En data/work_calendar.yaml
 work_pattern:
   monday:
     location: "casa"
@@ -325,12 +329,11 @@ work_pattern:
 ## 🧪 Tests
 
 ```bash
-# Ejecutar todos los tests
-cd brackets
-python -m pytest tests/
+# Ejecutar suite completa (118 tests)
+python brackets/tests/test_suite.py
 
-# Test específico
-python -m pytest tests/test_content_parser.py -v
+# En Windows (PowerShell con codificación UTF-8)
+$env:PYTHONUTF8=1; python brackets/tests/test_suite.py
 ```
 
 ## 🤝 Contribuir

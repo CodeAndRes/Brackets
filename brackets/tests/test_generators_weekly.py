@@ -157,23 +157,6 @@ class TestWeeklyGenerator:
             print(f"❌ Test create_next_weekly_uses_generator_directory falló: {e}")
             self.failed += 1
 
-    def test_create_weekly_from_template_not_implemented(self):
-        """Valida que la ruta template semanal está deshabilitada explícitamente."""
-        try:
-            try:
-                self.generator.create_weekly_from_template(week_num=10, year=2026, month=5)
-                raise AssertionError("Debe lanzar NotImplementedError")
-            except NotImplementedError as e:
-                assert "create_weekly_from_template" in str(e), (
-                    "El mensaje debe indicar claramente la operación no soportada"
-                )
-
-            print("✅ Test: template semanal deshabilitado explícitamente")
-            self.passed += 1
-        except Exception as e:
-            print(f"❌ Test create_weekly_from_template_not_implemented falló: {e}")
-            self.failed += 1
-
     def run_all(self):
         """Ejecutar todos los tests."""
         print("\n🧪 TESTS: generators/weekly.py")
@@ -185,7 +168,6 @@ class TestWeeklyGenerator:
         self.test_create_next_or_manual_fallback_when_no_recent_weekly()
         self.test_create_next_or_manual_prefers_automatic_when_recent_exists()
         self.test_create_next_weekly_uses_generator_directory()
-        self.test_create_weekly_from_template_not_implemented()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0

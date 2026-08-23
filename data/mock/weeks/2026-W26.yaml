@@ -16,17 +16,10 @@ topics_task_ids:
 - TSK-0604
 - TSK-0608
 note_ids:
-- NOTE-0488
-- NOTE-0489
-- NOTE-0490
-- NOTE-0491
-- NOTE-0492
-- NOTE-0493
-- NOTE-0494
-- NOTE-0495
-- NOTE-0496
-- NOTE-0497
-- NOTE-0498
+- NOTE-0150
+- NOTE-0151
+- NOTE-0152
+- NOTE-0153
 days:
 - day_number: 22
   location_emoji: 🚗

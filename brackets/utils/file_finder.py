@@ -119,23 +119,6 @@ class FileFinder:
         file_info.sort(key=lambda x: (x[1], x[2]))
         return file_info
     
-    def find_file_by_week(self, year: int, month: int, week: int) -> Optional[str]:
-        """Busca un archivo específico por año, mes y semana."""
-        filename = f"[{year:04d}][{month:02d}]Week{week:02d}.md"
-        filepath = os.path.join(self.directory, filename)
-        
-        if os.path.exists(filepath):
-            return filepath
-        return None
-    
-    def find_file_by_month(self, year: int, month: int) -> Optional[str]:
-        """Busca un archivo específico por año y mes."""
-        filename = f"[{year:04d}][{month:02d}]MonthTopics.md"
-        filepath = os.path.join(self.directory, filename)
-        
-        if os.path.exists(filepath):
-            return filepath
-        return None
 
 
 def debug_files_in_directory(directory: str = ".") -> None:

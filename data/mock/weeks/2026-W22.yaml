@@ -89,16 +89,11 @@ topics_task_ids:
 - TSK-0503
 - TSK-0512
 note_ids:
-- NOTE-0407
-- NOTE-0408
-- NOTE-0361
-- NOTE-0409
-- NOTE-0410
-- NOTE-0411
-- NOTE-0412
-- NOTE-0413
-- NOTE-0414
-- NOTE-0415
+- NOTE-0129
+- NOTE-0130
+- NOTE-0131
+- NOTE-0132
+- NOTE-0133
 days:
 - day_number: 25
   location_emoji: 🏖️

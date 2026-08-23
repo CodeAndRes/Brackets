@@ -99,8 +99,8 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(controller.active_day_number, 20)
 
     def test_run_add_new_task(self):
-        """Simula pulsar 'n', escribir tarea y luego 'q' para salir."""
-        inputs = ["n", "Configurar nuevo endpoint en backend", "q"]
+        """Simula pulsar 'n', escribir tarea, elegir proyecto 0 (sin vincular) y luego 'q' para salir."""
+        inputs = ["n", "Configurar nuevo endpoint en backend", "0", "q"]
 
         def mock_input(prompt=""):
             return inputs.pop(0)
@@ -120,8 +120,8 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(len(created), 1)
 
     def test_run_add_jira_task(self):
-        """Simula pulsar 'j', introducir código Jira, descripción y luego 'q'."""
-        inputs = ["j", "ATLM-88888", "Ajustar timeout de conexión", "q"]
+        """Simula pulsar 'j', introducir código Jira, descripción, proyecto 0 y luego 'q'."""
+        inputs = ["j", "ATLM-88888", "Ajustar timeout de conexión", "0", "q"]
 
         def mock_input(prompt=""):
             return inputs.pop(0)
@@ -143,8 +143,15 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(len(created), 1)
 
     def test_run_add_note(self):
-        """Simula pulsar 'm', introducir texto de nota y luego 'q'."""
-        inputs = ["m", "Revisión con equipo completada sin bloqueos", "q"]
+        """Simula pulsar 'm', introducir título, viñeta, fin de viñetas, proyecto 0 y luego 'q'."""
+        inputs = [
+            "m",
+            "Revisión de Arquitectura",
+            "Revisión con equipo completada sin bloqueos",
+            "",
+            "0",
+            "q"
+        ]
 
         def mock_input(prompt=""):
             return inputs.pop(0)
@@ -159,8 +166,9 @@ class TestCoreDailyHubController(unittest.TestCase):
         result = controller.run()
         self.assertEqual(result, "exit")
 
-        created = [n for n in self.entity_manager.notes.values() if any("Revisión con equipo" in c for c in n.content)]
+        created = [n for n in self.entity_manager.notes.values() if n.title == "Revisión de Arquitectura"]
         self.assertEqual(len(created), 1)
+        self.assertEqual(created[0].content, ["Revisión con equipo completada sin bloqueos"])
 
     def test_run_navigate_to_main_menu(self):
         """Simula pulsar 'b' para ir al menú principal."""

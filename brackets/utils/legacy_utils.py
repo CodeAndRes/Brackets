@@ -136,15 +136,6 @@ def generate_filename(
     return os.path.join(directory, filename)
 
 
-def print_work_schedule(week_number: int, dates: List[datetime]) -> None:
-    """Imprime el patrón de trabajo para la semana."""
-    print(f"🏢 Patrón de trabajo para semana {week_number}:")
-    for i, date in enumerate(dates):
-        location = get_work_location(date.weekday(), week_number, date)
-        lugar = "Casa" if location == "🏠" else ("Oficina" if location == "🚗" else "Libre")
-        print(f"  {WEEKDAYS[i]} {date.day}: {location} {lugar}")
-
-
 def print_calculated_dates(week_number: int, dates: List[datetime]) -> None:
     """Imprime las fechas calculadas para la semana."""
     print(f"📅 Fechas calculadas para semana {week_number}:")

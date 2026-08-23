@@ -9,6 +9,27 @@ from typing import List, Optional, Dict, Any
 
 
 @dataclass
+class Project:
+    """Entidad Proyecto para agrupar tareas, notas y referencias."""
+    id: str  # ej: "AMR_LOGISTICS", "ROVO_AI"
+    name: str  # ej: "Amr Logistics"
+    description: Optional[str] = None
+    status: str = "active"  # "active", "completed", "archived"
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> Project:
+        return cls(
+            id=data.get("id", ""),
+            name=data.get("name", data.get("id", "")),
+            description=data.get("description"),
+            status=data.get("status", "active")
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
 class Definition:
     """Entidad Definición / Enlace externo (Jira, Confluence, etc.)."""
     id: str  # ej: "🎫ATLM-12682" o "🦒EXPORT"
@@ -37,10 +58,7 @@ class Task:
     status: str = "pending"  # "pending", "done", "cancelled"
     created_at: str = ""  # "YYYY-MM-DD"
     completed_at: Optional[str] = None
-    definition_ids: List[str] = field(default_factory=list)
     project_id: Optional[str] = None
-    parent_id: Optional[str] = None
-    tags: List[str] = field(default_factory=list)
 
     @property
     def is_done(self) -> bool:
@@ -62,10 +80,7 @@ class Task:
             status=data.get("status", "pending"),
             created_at=data.get("created_at", ""),
             completed_at=data.get("completed_at"),
-            definition_ids=data.get("definition_ids", []),
-            project_id=data.get("project_id"),
-            parent_id=data.get("parent_id"),
-            tags=data.get("tags", [])
+            project_id=data.get("project_id")
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,12 +89,14 @@ class Task:
 
 @dataclass
 class Note:
-    """Entidad Nota de trabajo semanal."""
+    """Entidad Nota de trabajo estructurada con título y viñetas de contenido."""
     id: str
-    content: List[str] = field(default_factory=list)  # Líneas o viñetas de la nota
     title: Optional[str] = None
+    content: List[str] = field(default_factory=list)  # Líneas o viñetas de la nota
     created_at: str = ""
-    project_ref: Optional[str] = None
+    month: Optional[str] = None  # "YYYY-MM", ej: "2026-02"
+    week: Optional[int] = None
+    project_id: Optional[str] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Note:
@@ -88,12 +105,16 @@ class Note:
             content_list = [content_raw]
         else:
             content_list = list(content_raw)
+        
+        proj_id = data.get("project_id") or data.get("project_ref")
         return cls(
             id=data.get("id", ""),
-            content=content_list,
             title=data.get("title"),
+            content=content_list,
             created_at=data.get("created_at", ""),
-            project_ref=data.get("project_ref")
+            month=data.get("month"),
+            week=data.get("week"),
+            project_id=proj_id
         )
 
     def to_dict(self) -> Dict[str, Any]:

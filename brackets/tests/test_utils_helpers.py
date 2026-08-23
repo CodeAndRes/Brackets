@@ -71,9 +71,14 @@ class TestHelpers:
                         f.write(f"Content {i}")
                     files.append(filepath)
                 
-                # Borrar archivos (sin confirmación interactiva)
-                for filepath in files:
-                    os.remove(filepath)
+                # Mock confirm_yes_no para evitar prompt interactivo
+                import brackets.utils.helpers as helpers_mod
+                original_confirm = helpers_mod.confirm_yes_no
+                helpers_mod.confirm_yes_no = lambda msg: True
+                try:
+                    delete_files(files)
+                finally:
+                    helpers_mod.confirm_yes_no = original_confirm
                 
                 # Verificar que fueron borrados
                 for filepath in files:

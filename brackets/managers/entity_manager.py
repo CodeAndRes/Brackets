@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 import yaml
 
-from brackets.models.entities import Task, Note, Definition, WeekSchedule, DaySchedule
+from brackets.models.entities import Task, Note, Definition, Project, WeekSchedule, DaySchedule
 
 
 class EntityManager:
@@ -19,11 +19,14 @@ class EntityManager:
     def __init__(self, base_data_dir: str):
         self.base_data_dir = os.path.abspath(base_data_dir)
         self.tables_dir = os.path.join(self.base_data_dir, "tables")
+        self.notes_dir = os.path.join(self.tables_dir, "notes")
         self.weeks_dir = os.path.join(self.base_data_dir, "weeks")
 
         os.makedirs(self.tables_dir, exist_ok=True)
+        os.makedirs(self.notes_dir, exist_ok=True)
         os.makedirs(self.weeks_dir, exist_ok=True)
 
+        self.projects: Dict[str, Project] = {}
         self.tasks: Dict[str, Task] = {}
         self.notes: Dict[str, Note] = {}
         self.definitions: Dict[str, Definition] = {}
@@ -39,9 +42,22 @@ class EntityManager:
 
     def load_all(self) -> None:
         """Carga todas las tablas de entidades desde el disco."""
+        self.load_projects()
         self.load_definitions()
         self.load_tasks()
         self.load_notes()
+
+    def load_projects(self) -> None:
+        path = self._get_path("projects")
+        self.projects.clear()
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            items = data.get("projects", [])
+            for item in items:
+                p = Project.from_dict(item)
+                if p.id:
+                    self.projects[p.id] = p
 
     def load_definitions(self) -> None:
         path = self._get_path("definitions")
@@ -68,16 +84,36 @@ class EntityManager:
                     self.tasks[t.id] = t
 
     def load_notes(self) -> None:
-        path = self._get_path("notes")
+        """Carga notas desde archivos mensuales en tables/notes/ o fallback a tables/notes.yaml."""
+        import glob
         self.notes.clear()
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
-            items = data.get("notes", [])
-            for item in items:
-                n = Note.from_dict(item)
-                if n.id:
-                    self.notes[n.id] = n
+        monthly_files = sorted(glob.glob(os.path.join(self.notes_dir, "*.yaml")))
+        if monthly_files:
+            for mpath in monthly_files:
+                with open(mpath, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+                items = data.get("notes", [])
+                for item in items:
+                    n = Note.from_dict(item)
+                    if n.id:
+                        self.notes[n.id] = n
+        else:
+            # Fallback legacy si existe notes.yaml
+            legacy_path = self._get_path("notes")
+            if os.path.exists(legacy_path):
+                with open(legacy_path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+                items = data.get("notes", [])
+                for item in items:
+                    n = Note.from_dict(item)
+                    if n.id:
+                        self.notes[n.id] = n
+
+    def save_projects(self) -> None:
+        path = self._get_path("projects")
+        data = {"projects": [p.to_dict() for p in self.projects.values()]}
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, allow_unicode=True, sort_keys=False)
 
     def save_definitions(self) -> None:
         path = self._get_path("definitions")
@@ -92,10 +128,21 @@ class EntityManager:
             yaml.dump(data, f, allow_unicode=True, sort_keys=False)
 
     def save_notes(self) -> None:
-        path = self._get_path("notes")
-        data = {"notes": [n.to_dict() for n in self.notes.values()]}
-        with open(path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, allow_unicode=True, sort_keys=False)
+        """Guarda notas agrupadas por mes en tables/notes/{YYYY}-{MM}.yaml."""
+        os.makedirs(self.notes_dir, exist_ok=True)
+        grouped: Dict[str, List[Dict[str, Any]]] = {}
+        for note in self.notes.values():
+            m = note.month
+            if not m and note.created_at and len(note.created_at) >= 7:
+                m = note.created_at[:7]
+            if not m:
+                m = "general"
+            grouped.setdefault(m, []).append(note.to_dict())
+
+        for m_key, note_list in grouped.items():
+            m_path = os.path.join(self.notes_dir, f"{m_key}.yaml")
+            with open(m_path, "w", encoding="utf-8") as f:
+                yaml.dump({"notes": note_list}, f, allow_unicode=True, sort_keys=False)
 
     def load_week(self, year: int, week_num: int, reload: bool = False) -> Optional[WeekSchedule]:
         """Carga la estructura de una semana específica."""
@@ -123,11 +170,36 @@ class EntityManager:
 
     def save_all(self) -> None:
         """Persiste todas las tablas en disco."""
+        self.save_projects()
         self.save_definitions()
         self.save_tasks()
         self.save_notes()
         for week in self.weeks.values():
             self.save_week(week)
+
+    # -------------------------------------------------------------------------
+    # Métodos de Negocio: Proyectos
+    # -------------------------------------------------------------------------
+    def list_projects(self) -> List[Project]:
+        """Devuelve la lista de proyectos registrados ordenados por ID."""
+        return sorted(self.projects.values(), key=lambda p: p.id)
+
+    def ensure_project(
+        self,
+        project_id: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None
+    ) -> Project:
+        """Garantiza que un proyecto exista en la base de datos."""
+        pid = project_id.strip().upper().replace(" ", "_")
+        if pid in self.projects:
+            return self.projects[pid]
+
+        pname = name.strip() if name else pid.replace("_", " ").title()
+        project = Project(id=pid, name=pname, description=description)
+        self.projects[pid] = project
+        self.save_projects()
+        return project
 
     # -------------------------------------------------------------------------
     # Métodos de Negocio: Tareas
@@ -154,7 +226,6 @@ class EntityManager:
         self,
         title: str,
         status: str = "pending",
-        definition_ids: Optional[List[str]] = None,
         project_id: Optional[str] = None,
         task_id: Optional[str] = None,
         year: Optional[int] = None,
@@ -173,7 +244,6 @@ class EntityManager:
             status=status,
             created_at=today_str,
             completed_at=today_str if status == "done" else None,
-            definition_ids=definition_ids or [],
             project_id=project_id
         )
 
@@ -244,10 +314,16 @@ class EntityManager:
     # -------------------------------------------------------------------------
     # Métodos de Negocio: Definiciones
     # -------------------------------------------------------------------------
-    def ensure_definition(self, def_id: str, url: str, title: Optional[str] = None) -> Definition:
+    def ensure_definition(
+        self,
+        def_id: str,
+        url: str,
+        title: Optional[str] = None
+    ) -> Definition:
         """Garantiza que una definición exista en la tabla."""
         if def_id in self.definitions:
-            return self.definitions[def_id]
+            existing = self.definitions[def_id]
+            return existing
 
         def_obj = Definition(id=def_id, url=url, title=title)
         self.definitions[def_id] = def_obj
@@ -274,23 +350,35 @@ class EntityManager:
         year: int,
         week_num: int,
         note_id: Optional[str] = None,
-        title: Optional[str] = None
+        title: Optional[str] = None,
+        month: Optional[str] = None,
+        project_id: Optional[str] = None
     ) -> Note:
-        """Crea una nota y la asocia a la semana indicada."""
+        """Crea una nota estructurada con título y viñetas, asociada a la semana y mes indicado."""
         today_str = datetime.now().strftime("%Y-%m-%d")
         if not note_id:
             note_id = self._generate_next_note_id()
 
         if isinstance(content, str):
-            content_list = [content]
+            content_list = [content] if content else []
         else:
             content_list = list(content)
 
+        if not month:
+            week = self.load_week(year, week_num)
+            if week and week.month:
+                month = f"{year}-{week.month:02d}"
+            else:
+                month = f"{year}-{datetime.now().month:02d}"
+
         note = Note(
             id=note_id,
+            title=title.strip() if title else None,
             content=content_list,
-            title=title,
-            created_at=today_str
+            created_at=today_str,
+            month=month,
+            week=week_num,
+            project_id=project_id
         )
         self.notes[note_id] = note
         self.save_notes()

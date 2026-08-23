@@ -1,0 +1,176 @@
+notes:
+- id: NOTE-0161
+  title: null
+  content:
+  - Ya tengo acceso a Ms-Copilot
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: MS_COPILOT
+- id: NOTE-0162
+  title: null
+  content:
+  - Ya han habido formaciones de Ms-Copilot para los Ai-Champions, @FerranVallalta
+    me añadirá
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: MS_COPILOT
+- id: NOTE-0163
+  title: null
+  content:
+  - Donde esta el conocimiento de Lliça?
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0164
+  title: null
+  content:
+  - Necesito crear un chat para que una IA me ponga al día del último mes de tecnologias
+    que uso.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0165
+  title: null
+  content:
+  - He tenido problemas para acceder al Github corporativo.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0166
+  title: null
+  content:
+  - Parece que al estar fuera 3 semanas en el navegador Edge pierde el usuario.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0167
+  title: null
+  content:
+  - Con el Chrome me ha funcionado a la primera.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0168
+  title: null
+  content:
+  - Ya se pueden crear ramas desde el Github corporativo.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0169
+  title: null
+  content:
+  - Las pantallas de Lliça estan instaladas pero falta que se pongan en marcha.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0170
+  title: null
+  content:
+  - ExcelOff finalizado!
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0171
+  title: null
+  content:
+  - Pendiente la configuración del reinicio programado de Grafana -> Ya se ha programado
+    para los sábados.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0172
+  title: null
+  content:
+  - '@Martin de Data se va en Agosto :('
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0173
+  title: null
+  content:
+  - '@FerranVallalta he ha dado acceso al sharePoint donde estan los videos de las
+    [FormacionesMS-Copilot].'
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: MS_COPILOT
+- id: NOTE-0174
+  title: null
+  content:
+  - He creado unos scripts e instrucciones comunes a todos los repos locales para
+    que GH-Copilot pueda ejecutar acciones (Borrar todas las ramas locales).
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: MS_COPILOT
+- id: NOTE-0175
+  title: null
+  content:
+  - '@AdrianCatalan propone crear un [🤖Repo Agentes de IA] para cualquiera pueda crear
+    los suyos y desplegarlos en AWS.'
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0176
+  title: null
+  content:
+  - Copilot Notebooks, es el Notebook LM de Microsoft, que permite crear notebooks
+    con ayuda de la IA.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: MS_COPILOT
+- id: NOTE-0177
+  title: null
+  content:
+  - Han empezado las reuniones de projectos de IA de Supply
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0178
+  title: null
+  content:
+  - Ya nos irán involucrando
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0179
+  title: null
+  content:
+  - Si el esfuerzo es grande, se debe pasar por demanda.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: GENERAL
+- id: NOTE-0180
+  title: null
+  content:
+  - Ya tenemos las API Keys de Cardinal.
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: CARDINAL
+- id: NOTE-0181
+  title: null
+  content:
+  - '@PereGimenez propone que el proyecto de Jira Export IA lo haga un becario.'
+  created_at: '2026-07-01'
+  month: 2026-07
+  week: 31
+  project_id: JIRA_EXPORT

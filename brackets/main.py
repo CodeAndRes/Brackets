@@ -8,6 +8,7 @@ Proporciona un menú interactivo para todas las funciones.
 import sys
 import os
 from typing import Dict, Callable, Optional
+from datetime import datetime
 
 # Configurar UTF-8 para Windows
 if sys.platform == 'win32':
@@ -812,10 +813,6 @@ class BitacoraManager:
             except KeyboardInterrupt:
                 print("\n\n👋 ¡Hasta luego!")
                 break
-            except Exception as e:
-                print(f"\n❌ Error inesperado: {e}")
-                print("Por favor, reporta este error si persiste.")
-                input("Presiona Enter para continuar...")
             except Exception as e:
                 print(f"\n❌ Error inesperado: {e}")
                 print("Por favor, reporta este error si persiste.")

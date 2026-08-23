@@ -4,7 +4,6 @@ Permite navegar, seleccionar y crear nuevas categorías/subcategorías.
 """
 
 import os
-import json
 from typing import Optional, List, Dict, Any
 
 # Lazy import - no cargar yaml al importar el módulo

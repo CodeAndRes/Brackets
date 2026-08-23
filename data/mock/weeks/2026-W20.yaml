@@ -78,12 +78,10 @@ topics_task_ids:
 - TSK-0452
 - TSK-0453
 note_ids:
-- NOTE-0391
-- NOTE-0392
-- NOTE-0393
-- NOTE-0394
-- NOTE-0395
-- NOTE-0396
+- NOTE-0120
+- NOTE-0121
+- NOTE-0122
+- NOTE-0123
 days:
 - day_number: 11
   location_emoji: 🚗

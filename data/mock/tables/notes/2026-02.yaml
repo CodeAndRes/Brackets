@@ -1,0 +1,608 @@
+notes:
+- id: NOTE-0001
+  title: Llamada con @Quim sobre el Dashboard de BT-Supply
+  content:
+  - El Dashboard tiene que estar vivo, siempre actualizado y mostrando solo datos
+    relevantes para la situación actual.
+  - 'Ideas iniciales para el dashboard:'
+  - Visualizar stock actual por almacén y tipo de producto.
+  - Seguimiento de entradas y salidas de inventario en tiempo real.
+  - Alertas automáticas para niveles bajos de stock.
+  - Análisis de tendencias de consumo y predicciones futuras.
+  - Integración con sistemas de gestión existentes para actualización automática de
+    datos.
+  - Visualización geográfica de la distribución del inventario.
+  - Panel de control personalizable para diferentes roles dentro del equipo.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0002
+  title: Reunión con AI Adoption Key Users
+  content:
+  - Establecimiento del foro para colaboración continua entre los key users de IA.
+  - Propuesta de reuniones y con que frecuencia
+  - 'Objetivo: Identificar y proponer nuevas iniciativas de IA para el año 2026.'
+  - Intentar identificar que iniciativas pueden ser llevadas por los key users y no
+    key users.
+  - Fomentar la colaboración entre key users y demás miembros del equipo para maximizar
+    el impacto de las iniciativas de IA.
+  - Recopilar ideas y sugerencias de los key users para futuras implementaciones.
+  - Recordar el uso de la tarea de temas de IA [🎫SUPPLY-15402](https://mangospain.atlassian.net/browse/SUPPLY-15402)
+  - Via principal de investigación MCP propios para consumo desde Copilot y luego
+    desde Lisa.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: MS_COPILOT
+- id: NOTE-0003
+  title: Dashboard de RFID BT-Supply
+  content:
+  - '@RogerGuzman comenta que inicialmente necesita un dashboard con un panel donde
+    se vean todos los datos de la query a nivel mesa y con rojo'
+  - las mesas que no tengan conexión RFID.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0004
+  title: Charla con @JosueMartinez sobre AI Adoption
+  content:
+  - Le comento que ya que el ahora esta en un departamento exclusivamente de IA con
+    enfoque en adopción tenemos que hablar mas a menudo.
+  - 'AI Academy: Plataforma interna de formación en IA en Mango.'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0005
+  title: Petición de @JesusRegadera sobre queries de expediciones
+  content:
+  - '@MarcCristany le pide a @JesusRegadera queries sobre expediciones'
+  - Lo gestionaran @JesuRegadera y @PauMartinez
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0006
+  title: Reunión sobre NCM con @JoanLlansana
+  content:
+  - Le comento la nmecesidad de que las queries para los panales solo traigan los
+    datos necesarios.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: NCM_DASHBOARD
+- id: NOTE-0007
+  title: Reunión con @JoanAmat sobre AI Adoption
+  content:
+  - Formación con todo Lliçà
+  - Se hizo una reunión con @FerranVallalta, @RogerLopez, para definir grupos y niveles.
+  - Varios grupos y niveles de conocimiento, unas 16 horas de formación en total.
+  - ISDI impartirá la parte de la formación.
+  - Igual y nos buscar una formación practica especializada en Copilot
+  - Hay que ver como se solventa el tema de los externos
+  - Reunión con los Key Users de AI Adoption
+  - Visita de @JosueMartinez llevara un equipo dedicado en exclusiva a la adopción
+    de IA en Mango
+  - Reunión con @YaizaAlmagro encargada de IA en People
+  - Josue primero la bt-supply
+  - Los externos estarán si o si en las formaciones
+  - feedback sesión
+  - mas participativa
+  - '-'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: MS_COPILOT
+- id: NOTE-0008
+  title: Visita al almacén para definir la primera fase del proyecto de [[[📋PROJECTS][GRAFANA]📊🏭PantallasLliçà.md]]
+  content:
+  - Mirar el tema de hacer dashboards públicos en las pantallas de Lliçà
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0009
+  title: Comento con @EricGarcia el tema de hacer el Confluence de CDOs Lisa Friendly
+  content:
+  - Le comento que convocaré a los del equipo de Lisa y al El para comentar como debería
+    enfocarse el espacio de Confluence
+  - de CDOs
+  - Le explico el uso de diagramas Memaid que pueden ser útiles para diagramar y que
+    Lisa pueda entenderlo.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0010
+  title: Reunión de Herramientas BT Supply Lliçà
+  content:
+  - Se habla del acceso de bases de datos de Fibes
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0011
+  title: '@JoaquimFernandez pide que se incluya a @PabloMartinez en las reuniones
+    de seguimiento de Reporting de BT-Supply'
+  content:
+  - Ya lo había pedído la semana pasada pero al comentarlo con @ArnauVazquez me dijo
+    que no era necesario.
+  - '@JoaquimFernandez insiste en que es necesario que @PabloMartinez esté en las
+    reuniones de seguimiento de Reporting de BT-Supply'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: GENERAL
+- id: NOTE-0012
+  title: Ya no hare el tutorial de copilot dentro de VsCode,
+  content:
+  - Ya se plantea la formación práctica especializada en Copilot dentro de la formación
+    general de IA para Lliçà.
+  - '###'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 6
+  project_id: MS_COPILOT
+- id: NOTE-0013
+  title: '@GerardCepero me pasa sus notas del Master para ver que podemos aprovechar.'
+  content: []
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: GENERAL
+- id: NOTE-0014
+  title: Reunión de Estructura Confluence Lisa friendly
+  content:
+  - El equipo de AI Academy + @NicolasBernardMartinez nos comentan las pautas a seguir
+    para una primera versión de reestructuración
+  - del espacio de Confluence de CDOs.
+  - Siempre poner un titulo 1 dentro del documento con el mismo nombre del documento
+  - Crear una jerarquía de titulos y subtitulos clara y consistente.
+  - 'Inicialmente @EricGarcia comentaba la idea de dividir el espacio en 2 secciones:
+    una para flujos y otra para incidencias.'
+  - Nos comentan que lo ideal es crear una estructura donde esten las incidencias
+    asociadas a los flujos correspondientes,
+  - con esto se facilita la navegación y la búsqueda de información relacionada.
+  - '@EricGarcia hará una primera versión de estructura de archivo Confluence y nos
+    volveremos a sentar para ver que tan bien es'
+  - consumida por Lisa.
+  - Con iteraciones iremos conformando la estructura ideal para el equipo y para Lisa.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: GENERAL
+- id: NOTE-0015
+  title: Reunión con @JoanAmat para verificar el acceso de GH-Copilot
+  content:
+  - '@JoanAmat tiene acceso a GH-Copilot, se le ha dado acceso y se ha verificado
+    que ya lo tiene.'
+  - se ha instalado el VsCode el Copilot esta operativo
+  - '@JoanAmat pregunta si se puede usar el Copilot para interactuar con el paquete
+    Office que usamos.'
+  - De momento no es posible hacerlo de manera nativa via MCP oficial
+  - '@Copi sugiere montar un servidor MCP propio para poder conseguir la conexión
+    con el paquete de Office'
+  - De momento no se va a explorar esta via.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: MS_COPILOT
+- id: NOTE-0016
+  title: Reunión de presentación de primera versión de NCM Dashboard
+  content:
+  - '@JoanLlansana y Yo presentamos las diferentes opciones del dashboard de Oleadas-Prioridad'
+  - En principio le ha encajado pero ya hablaban de la necesidad de que las barras
+    de progreso
+  - arrancaran de manera escalonada y que se apreciara visualmente.
+  - Les enseño la versión que he hecho usando el plugin Bussiness Text con HTML y
+    les ha gustado mucho
+  - Aunque mi intención iunicial era dejar esto para una siguiente iteración, al haberlo
+    enseñado, tendremos
+  - que seguir por esta via.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: NCM_DASHBOARD
+- id: NOTE-0017
+  title: '@MarcCristany pregunta por la migración de dashboars de Ferag a la nueva
+    organización de Grafana.'
+  content:
+  - Se le comenta que ya se han migrado los dashboards y que se le ha dado acceso
+    al nuevo espacio.
+  - Se le comenta que se le ha pedido feedback sobre la migración para poder cerrar
+    el servidor antiguo.
+  - Y que aun no nos han dicho nada al respecto.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0018
+  title: Comento con @EricGarcia los diagramas Mermaid en Confluence
+  content:
+  - Le muestro un [ejemplo de diagrama Mermaid](https://mangospain.atlassian.net/wiki/x/BoFRNw)
+    generado por @Rovo
+  - Le comento que las posibilidades son muy amplias aplicando esta manera de documentar
+    flujos
+  - Para que un diagrama Mermaid sea visible se necesita un plugin de Confluence.
+  - '@EricGarcia comenta que va a mirar la posibilidad de pedir la instalación de
+    un plugin de'
+  - Mermaid para Confluence.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: ROVO_AI
+- id: NOTE-0019
+  title: Conectar MsList con InfluxDB
+  content:
+  - Para que los datos generados en Excel para la gestión de los camiones de los muelles
+    se puedan
+  - visualizar en Grafaana se podría automatizar la inserción en una base de datos
+    Oracle para
+  - luego llevar esos datos a InfluxDB.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0020
+  title: '@PabloMartinez ya ha hecho dashboards de prueba para las pantallas de Lliçà'
+  content:
+  - '[Dashboard](https://pappgrafana01.intranet.mango.es/d/fce612ac-adbf-4aa0-9c87-adc318ee0d3c/b2b-expediciones-r11?orgId=1&from=now-24h&to=now&timezone=browser&refresh=5m)'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0021
+  title: '@QuimFernandez quiere crear una pagina de confluence para documentar las
+    releases de Lliçà'
+  content:
+  - Inicialmente lo intentó creando un programa Python que se conectara a la API de
+    Jira para
+  - extraer la información de las releases y luego generar un documento de Confluence.
+  - Le comento que desde el Vscode con el plugin de Atlassian puede visualizar los
+    tickets de
+  - de un filtro especifico.
+  - También le comento que posiblemente enfocándolo con @Rovo pueda traer los datos
+    desde Confluence
+  - conectando con Jira.
+  - Esto le ha funcionado !!
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: ROVO_AI
+- id: NOTE-0022
+  title: Pruebo el plugin de @Rovo en Chrome
+  content:
+  - Mi intención era poder abrir un documento de word y que el @Rovo pueda leerlo
+    y crearme una
+  - version Markdown para luego pegarla en Confluence. - El plugin no me ha funcionado,
+    parece
+  - Parece que hay restricciones para que plugin pueda leer el contenido del documento.
+  - Podría ser interesante investigar la posibilidad de habilitar esta funcionalidad
+    para migrar
+  - toda la documentación que tenemos en Word a Confluence de manera automatizada.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: ROVO_AI
+- id: NOTE-0023
+  title: Comento con @PabloMartinez la reunión de seguimiento de Reporting
+  content:
+  - '@QuimFernandez insiste en que @PabloMartinez debería asistir a la reunión de
+    seguimiento de'
+  - reporting
+  - Le reenvío la invitación a la reunión y queda pendiente hablar con Arnau para
+    que lo añada a
+  - la serie completa.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: GENERAL
+- id: NOTE-0024
+  title: Comento con @RogerGuzman el Dashboard de RFID
+  content:
+  - Me comenta que va cambiar la query original para añadir los datos del tipo de
+    prenda, Colgado
+  - o Doblado y si es entrega en tienda o no.
+  - Con estos nuevos datos podremos montar paneles de control de lecturas por tipo
+    de prenda y
+  - Entrega en tienda o no.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: GENERAL
+- id: NOTE-0025
+  title: Datos de la base de datos de PSB estaban mal
+  content:
+  - Los datos que me pasó @PabloMartinez no son correctos
+  - 'El service name es : spsbs19p.intranet.mango.es'
+  - Con este service name si que he podido conectar.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 7
+  project_id: GENERAL
+- id: NOTE-0026
+  title: Upgrade versión de InfluxDB 25/02/2026
+  content:
+  - '@MarcCristany propone hacer un upgrade de la versión de InfluxDB el miércoles
+    25 de febrero'
+  - Tanto @FerranVallalta como @PabloMartinez están de acuerdo con el upgrade
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0027
+  title: Revisión médica en Mango 30/04/2026
+  content:
+  - Me proponen una revisión médica en Mango el Jueves 30 de abril a las 9:00
+  - Acepto la propuesta y respondo a la persona que me ha contactado para confirmar
+    la cita
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: GENERAL
+- id: NOTE-0028
+  title: Revisión de la base de datos de Vanderlande con @PabloMartinez 02/03/2026
+  content:
+  - Revisamos la base de datos de Vanderlande y le paso un export de las tablas con
+    datos relevantes
+  - '@PabloMartinez me pasara las queries quiera añadir al InfluxDB para montar Dashboards
+    de Vanderlande en Grafana'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0029
+  title: Reunión con @PereGimenez para conocer y dar acceso al nuevo compañero de
+    Data en lliçà 02/03/2026
+  content:
+  - Me reúno con @PereGimenez para conocer al nuevo compañero de Data en lliçà, @MartinSavransky
+  - Le doy acceso a @MartinSavransky a SILO para que pueda empezar a trabajar con
+    los datos de lliçà
+  - Comento lo que hago en Mango ofresco mi ayuda para lo que necesite en su nuevo
+    rol
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: GENERAL
+- id: NOTE-0030
+  title: '@JoanAmat me comenta el tema de la sesión de AI workshop en el 22@'
+  content:
+  - Le comento a @JoanAmat la duda de @JosueMartinez sobre la fecha de la sesión de
+    AI workshop en el 22@
+  - por la necesidad de preparar la formación de GH-Copilot.
+  - Esta un poco en el aire por el tema del parking ya que subiría a unos 800 euros
+    para todo el equipo
+  - Este jueves @JoanAmat ira al 22@ e intentará concretar el tema del parking y la
+    sesión de AI workshop
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: MS_COPILOT
+- id: NOTE-0031
+  title: 📞Con @SergiVendrell sobre la petición de la nueva organización de Grafana
+    para CDOs
+  content:
+  - '@SergiVendrell me comenta que la petición de la nueva organización de Grafana
+    para CDOs esta en proceso'
+  - Esta nueva organización tendrá un pequeño cambio ya que la idea es que los usuarios
+    que se conecten
+  - lo hagan via AD bien sea con usuario creado por Mango o por usuario externo dado
+    de alta en nuestro AD
+  - estos usuarios deben acceder a traves del vpn GlobalProtect
+  - Me pide una lista de usuarios que se conectaran a Grafana si existe
+  - También me comenta como hacer las peticiones referentes con Grafana [PetisGrafana]
+  - Le comento que hay muchos usuarios de Grafana que tienen permisos de editor que
+    no son de IT y que no
+  - deberían tener esos permisos. Me comenta que lo revisará.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0032
+  title: Necesidad de herramienta de reports para bases de datos de Lliçà
+  content:
+  - '@FerranVallalta en la reunión de seguimiento de Reporting nos comenta la necesidad
+    de una herramienta de'
+  - envíos de reports para las bases de datos de Lliçà
+  - Comenta que tienen unos reports hechos a mano con Excel que les gustaría automatizar
+    y enviar por
+  - correo a diferentes perfiles
+  - Los reports se enviarían 3 veces al día y se basarían en consultas a las bases
+    de datos de Lliçà
+  - Investigare herramientas de reports para bases de datos
+  - Se programa una reunión con @QuimFernandez, @JesúsRegadera, @PauMartinez, @MontseMartinez
+    para evaluar
+  - que opciones tenemos para esta necesidad
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: GENERAL
+- id: NOTE-0033
+  title: '@SergioNuñez me comenta que esta llevando lo de crear un espacio en le PAM
+    para toda la BT'
+  content:
+  - Le comento que yo ya había iniciado esa gestión y hay una carpeta parta la BT-Supply
+  - Le digo que sería cuestión de aprovecharla e ir creando sub-carpeta para todos
+    los equipos de la BT-Supply
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: GENERAL
+- id: NOTE-0034
+  title: La gente de la AI Alignment me animan a seguir con el plan de crear un Tutorial
+    de GH-Copilot para el equipo de BT-Supply
+  content:
+  - La idea de hacer un manual introductorio es ideal para nuevas incorporaciones
+    y para que los compañeros que
+  - recién obtengan la licencia
+  - también es interesante mantenerlo al día con la experiencia común y con versiones
+    y funcionalidades nuevas que vayan saliendo
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: MS_COPILOT
+- id: NOTE-0035
+  title: Comento con Data la posibilidad de aumentar la frecuencia de la historificación
+    de DXC & Koerber
+  content:
+  - Proveyendo que en la reunión del martes sobre la herramienta de reports para bases
+    de datos de Lliçà se vea que es necesario
+  - aunmentar la frecuencia de la historificación de DXC & Koerber pregunto para tantear
+    la posibilidad.
+  - Como los usuarios @Automatistas pueden tender a querer que se puedan generar los
+    reports desde Databricks, hago la pregunta
+  - Me comentan de ninguna manera se podría aumentar la frecuencia de la historificación
+    de DXC & Koerber ya que el proceso de
+  - historificación es muy pesado, `tardando mas de 3 horas` no hay margen!
+  - Se tendrá que buscar una alternativa.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: KOERBER_E2E
+- id: NOTE-0036
+  title: Le paso a @JoanLlansana el usuario y contraseña de la base de datos de Vanderlande
+    para la conexión con InfluxDB
+  content:
+  - Para pedir accesos a las bases de datos de Fives para la conexión con InfluxDB
+    veo claro que el usuario y password
+  - debería ser el mismo que se usa para otras bases de datos SqlServer y asi simplificar
+    la gestión en InfluxDB.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0037
+  title: Investifgar BD PSB Estatistics para la conexión con InfluxDB
+  content:
+  - Buscare alguien de PSB que me pueda explicar si vale la pena conectarnos con esta
+    base de datos.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0038
+  title: Mover formación para IT en Lliçà
+  content:
+  - Barajar la posibilidad de hacer una sentada entre BT-Supply, BC, AI-Academy y
+    Talent para definir
+  - La formación de IA en Lliçà para IT
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: GENERAL
+- id: NOTE-0039
+  title: Nueva configuración de la pizarra de Reporting
+  content:
+  - En la nueva pizarra de Reporting que engloba Lliçà y CDOs hemos creado 4 columnas
+    y Carriles similares a los
+  - que ya teníamos en el proyecto SOG.
+  - Para los tickets de @Grafana la nomenclatura debería ser la misma
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0040
+  title: Reunión Backlog de Reporting Grafana
+  content:
+  - Se comenta que el dashboard que propone Negocio (@BelenLibonati y @EspeRouco)
+    es perfectamente factible
+  - Surge la duda de a quien se le debe asignar el ticket(actualmente asignado a @JesúsRegadera)
+    seguramente @PabloMartinez va a
+  - querer hacer el dashboard el mismo y solo nos necesitara para añadir queries nuevas
+    a InfluxDB.
+  - Negocio comenta que hablaran con @FerranVallalta y @PauMartinez para definir la
+    gestión de la necesidad
+  - en general que vaya surgiendo para Grafana.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 8
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0041
+  title: Cafe con @Truji
+  content:
+  - Para el evento del 27 de marzo, el AI Adoption Workshop, @Truji propone que nos
+    organizemos para usar
+  - El mínimo número de coches posibles y que sea mas factible que nos lo paguen.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
+- id: NOTE-0042
+  title: '@JesusRegadera se ofrece para asumir las tareas y tickets de Grafana'
+  content: []
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0043
+  title: Inicio de proyecto ExcelOff
+  content:
+  - '@JesusRegadera creara la épica para empezar a organizar el proyecto de ExcelOff
+    y la migración de los dashboards de Excel a Looker.'
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
+- id: NOTE-0044
+  title: '@JosueMartinez propone una charla el 26 de marzo en el 22@'
+  content:
+  - También comenta que la idea sería hacer las formaciones de IA para la BT y BC
+    en Marzo.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
+- id: NOTE-0045
+  title: Securización del servidor de Fakes
+  content:
+  - '@XaviMartinez ha empezado a crear un modulo común para todas las conexiones que
+    se hagan desde el servidor de Fakes'
+  - Siguiente paso acceder las credenciales via PAM
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
+- id: NOTE-0046
+  title: 🎫 Origen de la demanda del [📊PantallasLliçà]
+  content:
+  - '@GemmaBonet pide que para abrir la demanda, hay que hacer referencia a un 🎫 como
+    origen de la iniciativa'
+  - Lo comento con @RogerLopez y lo buscara, si o hay ticket abrirá uno nuevo.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
+- id: NOTE-0047
+  title: Mal-entendido sobre la gestión de los dashboards de Grafana
+  content:
+  - Queda claro que @PauMartinez es el responsable de los dashboards de Grafana del
+    equipo de Automatistas.
+  - Nostros somos los responsables de los dashboards de Grafana del equipo de BT-Supply.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: METRICS_INFLUXDB
+- id: NOTE-0048
+  title: Iniciativa de @JesusPerez para tener contexto de las bases de datos
+  content:
+  - Quieren poder pasarle a una IA el contexto de las bases de datos que tenemos en
+    Lliçà para
+  - que les ayuden a crear queries.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
+- id: NOTE-0049
+  title: Pregunta de @RogerLopez sobre como se gestionaran las siguientes fases del
+    proyecto de [📊PantallasLliçà]
+  content:
+  - Le comento que la primera demanda ya esta creada y que una siguiente fase se puede
+    añadir como sub-tarea de la demanda inicial.
+  - Le pregunto si ya se quiere empezar a mover la siguiente fase.
+  - Pide añadir una pantalla mas en la primera fase.
+  created_at: '2026-02-01'
+  month: 2026-02
+  week: 9
+  project_id: GENERAL
