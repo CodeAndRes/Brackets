@@ -147,7 +147,7 @@ class TestCoreNoteCrudController(unittest.TestCase):
         self.assertEqual(len(note.content), 2)
 
     def test_controller_edit_existing_note_scoped_to_week(self):
-        """Simula editar una nota de la semana activa seleccionándola directamente por índice."""
+        """Simula editar una nota añadiendo viñetas directamente y luego cambiando metadatos opcionalmente."""
         note = self.entity_manager.add_note(
             title="Nota Base",
             content=["Viñeta 1"],
@@ -158,12 +158,11 @@ class TestCoreNoteCrudController(unittest.TestCase):
 
         inputs = [
             "1",               # Seleccionar directamente la nota 1 de la semana activa
-            "Nota Editada",    # Nuevo título
-            "s",               # Cambiar proyecto: Sí
-            "2",               # Seleccionar proyecto BETA
-            "3",               # Añadir viñetas
-            "Viñeta Extra",    # Viñeta adicional
+            "Viñeta Extra",    # Viñeta añadida directamente al final
             "",                # Fin de viñetas
+            "s",               # ¿Modificar título o proyecto? Sí
+            "Nota Editada",    # Nuevo título
+            "2",               # Seleccionar proyecto BETA
             ""                 # Enter confirmación
         ]
 

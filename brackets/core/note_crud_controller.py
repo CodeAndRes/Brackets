@@ -295,47 +295,44 @@ class NoteCrudController:
 
         self.print("\n" + "-" * 50)
         self.print(f"📝 EDITANDO NOTA: {target_note.id}")
-        self.print(f"  • Título actual:   {target_note.title or '(Sin título)'}")
-        self.print(f"  • Proyecto actual: {target_note.project_id or 'GENERAL'}")
-        self.print(f"  • Mes actual:      {target_note.month or 'general'}")
+        self.print(f"  • Título:   {target_note.title or '(Sin título)'}")
+        self.print(f"  • Proyecto: {target_note.project_id or 'GENERAL'}")
         self.print(f"  • Viñetas ({len(target_note.content)}):")
         for i, c in enumerate(target_note.content, start=1):
             self.print(f"      {i}. {c}")
         self.print("-" * 50)
 
-        # 1. Editar Título
-        new_title_in = self.input(f"Nuevo título (Enter para mantener '{target_note.title or ''}'): ").strip()
-        new_title = new_title_in if new_title_in else target_note.title
-
-        # 2. Cambiar Proyecto
-        change_proj = self.input("¿Cambiar proyecto asociado? (s/N): ").strip().lower()
-        new_proj_id = target_note.project_id
-        if change_proj in ("s", "si", "y", "yes"):
-            new_proj_id = self.prompt_project_selection()
-
-        # 3. Editar Viñetas
-        self.print("\n📋 GESTIÓN DE VIÑETAS:")
-        self.print("  [1] Mantener viñetas actuales")
-        self.print("  [2] Reemplazar todas las viñetas")
-        self.print("  [3] Añadir viñetas al final")
-        v_choice = self.input("Selecciona opción (1 por defecto): ").strip()
-
+        # 1. Por defecto: Añadir texto al final directamente
+        self.print("\n📝 Introduce las nuevas viñetas para añadir al final (Enter vacío para omitir, 'r' para reemplazar todas):")
         new_content = list(target_note.content)
-        if v_choice == "2":
+        first_line = self.input("  • ").strip()
+
+        if first_line.lower() == "r":
             new_content = []
-            self.print("Introduce las nuevas viñetas (línea vacía para terminar):")
+            self.print("Introduce las nuevas viñetas (Enter vacío para terminar):")
             while True:
                 line = self.input("  • ").strip()
                 if not line:
                     break
                 new_content.append(line)
-        elif v_choice == "3":
-            self.print("Introduce las viñetas a añadir (línea vacía para terminar):")
+        elif first_line:
+            new_content.append(first_line)
             while True:
                 line = self.input("  • ").strip()
                 if not line:
                     break
                 new_content.append(line)
+
+        # 2. Preguntar de forma rápida y no intrusiva si desea modificar título o proyecto
+        edit_meta = self.input("\n¿Deseas modificar el título o proyecto? (s/N): ").strip().lower()
+        new_title = target_note.title
+        new_proj_id = target_note.project_id
+
+        if edit_meta in ("s", "si", "y", "yes"):
+            new_title_in = self.input(f"Nuevo título (Enter para mantener '{target_note.title or ''}'): ").strip()
+            if new_title_in:
+                new_title = new_title_in
+            new_proj_id = self.prompt_project_selection()
 
         # Guardar cambios
         updated = self.manager.update_note(
