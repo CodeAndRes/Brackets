@@ -191,6 +191,98 @@ class TestRelationalBitacoraRenderer(unittest.TestCase):
         self.assertEqual(matching[0].month, "2026-08")
         self.assertEqual(matching[0].project_id, "ROVO_AI")
 
+    def test_render_ideas_grouped_by_project_without_id(self):
+        """Valida que render_ideas agrupe por proyecto, sin IDs visibles y con formato limpio."""
+        # Crear ideas en distintos proyectos
+        self.manager.create_idea(
+            title="Evaluar DuckDB para analítica",
+            content=["Soporta SQL", "Muy rápido"],
+            project_id="METRICS_INFLUXDB",
+            status="evaluating"
+        )
+        self.manager.create_idea(
+            title="Diagrama de arquitectura BT",
+            content=[],
+            project_id="GENERAL",
+            status="accepted"
+        )
+
+        md = BitacoraRenderer.render_ideas(self.manager)
+
+        # Encabezado
+        self.assertIn("# 🧠Ideas", md)
+        # Secciones por proyecto
+        self.assertIn("## 📁 METRICS_INFLUXDB", md)
+        self.assertIn("## 📁 GENERAL", md)
+        # Ideas renderizadas
+        self.assertIn("- [ ] Evaluar DuckDB para analítica", md)
+        self.assertIn("  - Soporta SQL", md)
+        self.assertIn("- [x] Diagrama de arquitectura BT", md)
+        # Sin ID técnico visible
+        self.assertNotIn("IDEA-", md)
+
+    def test_render_backlog_grouped_by_project(self):
+        """Valida que render_backlog agrupe las tareas pendientes no agendadas por proyecto."""
+        proj = self.manager.ensure_project("BACKLOG_TEST_PROJ", name="Backlog Test Proj")
+        task = self.manager.create_task(
+            title="Tarea no agendada de prueba",
+            project_id=proj.id
+        )
+
+        md = BitacoraRenderer.render_backlog(self.manager, scheduled_task_ids=set())
+
+        self.assertIn("# ✅BackLog de Proyectos", md)
+        self.assertIn(f"## 📁 {proj.id}", md)
+        self.assertIn(f"- [ ] {task.title}", md)
+
+    def test_day_rollover_tasks(self):
+        """Valida que rollover_day_tasks mueva tareas pendientes de días previos al día actual."""
+        week = self.manager.load_week(2026, 34)
+        day1 = week.days[0]  # Día previo
+        day2 = week.days[1]  # Día actual
+
+        # Crear tarea en día 1
+        task = self.manager.create_task(
+            title="Tarea pendiente del día 1",
+            year=2026,
+            week_num=34,
+            day_number=day1.day_number
+        )
+        self.assertIn(task.id, day1.task_ids)
+        self.assertNotIn(task.id, day2.task_ids)
+
+        # Ejecutar rollover sobre día 2
+        rolled = self.manager.rollover_day_tasks(week, day2.day_number)
+        self.assertGreaterEqual(rolled, 1)
+        self.assertIn(task.id, day2.task_ids)
+
+    def test_two_weeks_rollover_rule(self):
+        """Valida que una tarea arrastrada durante 2 semanas se desagenda y pasa a backlog."""
+        week1 = self.manager.load_week(2026, 31)
+        week2 = self.manager.load_week(2026, 32)
+        week3 = self.manager.load_week(2026, 33)
+
+        # Crear tarea pendiente en semana 1
+        task_old = self.manager.create_task(title="Tarea muy antigua", year=2026, week_num=31, is_topic=True)
+        task_new = self.manager.create_task(title="Tarea reciente", year=2026, week_num=32, is_topic=True)
+
+        # Añadir task_old también a week2 (como si se hubiera arrastrado de week1)
+        week2.topics_task_ids.append(task_old.id)
+        self.manager.save_week(week2)
+
+        # Rollover de week2 a week3 con prev_prev_week=week1
+        self.manager.rollover_week_to_new_week(
+            prev_week=week2,
+            new_week=week3,
+            prev_prev_week=week1
+        )
+
+        # task_new debe haberse arrastrado a week3 topics
+        self.assertIn(task_new.id, week3.topics_task_ids)
+        # task_old tiene 2 semanas de antigüedad -> se desagenda (no entra a week3 topics)
+        self.assertNotIn(task_old.id, week3.topics_task_ids)
+
 
 if __name__ == "__main__":
     unittest.main()
+

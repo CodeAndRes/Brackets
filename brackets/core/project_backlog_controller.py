@@ -87,6 +87,20 @@ class ProjectBacklogController:
 
         return None
 
+    def _sync_ideas_markdown(self) -> None:
+        """Sincroniza y regenera el archivo [🧩GENERAL]🧠Ideas.md en el vault."""
+        ideas_path = os.path.join(self.vault_root, "[🧩GENERAL]🧠Ideas.md")
+        BitacoraRenderer.render_and_save_ideas(self.manager, ideas_path)
+
+    def _sync_backlog_markdown(self) -> None:
+        """Sincroniza y regenera el archivo [📋PROJECTS]✅BackLog.md en el vault."""
+        backlog_path = os.path.join(self.vault_root, "[📋PROJECTS]✅BackLog.md")
+        BitacoraRenderer.render_and_save_backlog(
+            self.manager,
+            backlog_path,
+            scheduled_task_ids=self.manager.get_scheduled_task_ids()
+        )
+
     # -------------------------------------------------------------------------
     # Acciones del Submenú
     # -------------------------------------------------------------------------
@@ -103,6 +117,7 @@ class ProjectBacklogController:
 
         project_id = self.prompt_project_selection()
         task = self.manager.create_task(title=title, project_id=project_id)
+        self._sync_backlog_markdown()
 
         proj_label = f"[{project_id}]" if project_id else "[GENERAL]"
         self.print(f"\n✅ Tarea guardada en el Backlog de {proj_label} (ID: {task.id}).")
@@ -148,6 +163,7 @@ class ProjectBacklogController:
             project_id=project_id,
             status=status
         )
+        self._sync_ideas_markdown()
 
         proj_label = f"[{project_id}]" if project_id else "[GENERAL]"
         st_label = self.STATUS_EMOJIS.get(status, status)
@@ -195,6 +211,7 @@ class ProjectBacklogController:
                     day_number=self.current_day.day_number
                 )
                 self._sync_markdown(self.current_week)
+                self._sync_backlog_markdown()
                 self.print(f"\n✅ {chosen_task.id} ('{chosen_task.title}') asignada a las tareas de HOY ({day_label}).")
             else:
                 self.print("❌ Selección fuera de rango.")
@@ -303,6 +320,7 @@ class ProjectBacklogController:
 
                     if new_st:
                         self.manager.update_idea_status(target_idea.id, new_st)
+                        self._sync_ideas_markdown()
                         self.print(f"\n✅ Estado de {target_idea.id} actualizado a {self.STATUS_EMOJIS.get(new_st, new_st)}.")
                     else:
                         self.print("❌ Opción inválida.")

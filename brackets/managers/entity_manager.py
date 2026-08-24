@@ -531,3 +531,125 @@ class EntityManager:
             "evaluating_ideas": evaluating_ideas
         }
 
+    # -------------------------------------------------------------------------
+    # Métodos de Ciclo de Vida y Arrastre (Rollover)
+    # -------------------------------------------------------------------------
+    def add_topic_to_week(self, week: WeekSchedule, task_id: str) -> bool:
+        """Añade una tarea a los Topics semanales de la semana."""
+        if task_id not in self.tasks:
+            return False
+        if task_id not in week.topics_task_ids:
+            week.topics_task_ids.append(task_id)
+            self.save_week(week)
+        return True
+
+    def assign_topic_to_day(self, week: WeekSchedule, task_id: str, day_number: int) -> bool:
+        """Asigna un topic semanal a un día concreto de la semana."""
+        target_day = next((d for d in week.days if d.day_number == day_number), None)
+        if not target_day:
+            return False
+        if task_id not in target_day.task_ids:
+            target_day.task_ids.append(task_id)
+            self.save_week(week)
+        return True
+
+    def rollover_day_tasks(self, week: WeekSchedule, current_day_number: int) -> int:
+        """
+        Arrastra tareas pendientes de días previos de la misma semana al día actual.
+        Devuelve el número de tareas arrastradas.
+        """
+        current_day = next((d for d in week.days if d.day_number == current_day_number), None)
+        if not current_day:
+            return 0
+
+        # Encontrar el índice del día actual en la semana
+        day_indices = {d.day_number: idx for idx, d in enumerate(week.days)}
+        curr_idx = day_indices.get(current_day_number, -1)
+        if curr_idx <= 0:
+            return 0
+
+        rolled_count = 0
+        for i in range(curr_idx):
+            prev_day = week.days[i]
+            for tid in prev_day.task_ids:
+                task = self.tasks.get(tid)
+                if task and task.is_pending and tid not in current_day.task_ids:
+                    current_day.task_ids.append(tid)
+                    rolled_count += 1
+
+        if rolled_count > 0:
+            self.save_week(week)
+        return rolled_count
+
+    def get_scheduled_task_ids(self) -> Set[str]:
+        """Devuelve el conjunto de todos los IDs de tareas asignados a alguna semana/día cargado."""
+        scheduled: Set[str] = set()
+        # Escanear archivos de semanas si existen
+        if os.path.exists(self.weeks_dir):
+            for fname in os.listdir(self.weeks_dir):
+                if fname.endswith(".yaml"):
+                    try:
+                        wpath = os.path.join(self.weeks_dir, fname)
+                        with open(wpath, "r", encoding="utf-8") as f:
+                            data = yaml.safe_load(f)
+                        if data:
+                            for tid in data.get("topics_task_ids", []):
+                                scheduled.add(tid)
+                            for d in data.get("days", []):
+                                for tid in d.get("task_ids", []):
+                                    scheduled.add(tid)
+                    except Exception:
+                        pass
+        # Añadir las que estén en memoria
+        for w in self.weeks.values():
+            scheduled.update(w.topics_task_ids)
+            for d in w.days:
+                scheduled.update(d.task_ids)
+        return scheduled
+
+    def rollover_week_to_new_week(
+        self,
+        prev_week: WeekSchedule,
+        new_week: WeekSchedule,
+        prev_prev_week: Optional[WeekSchedule] = None
+    ) -> int:
+        """
+        Traspasa tareas pendientes de la semana anterior a los Topics de la nueva semana.
+        Aplica la regla de 2 semanas: si una tarea ya estuvo en prev_prev_week y sigue
+        pendiente en prev_week, se desagenda (no pasa a topics de new_week y queda en backlog).
+        """
+        two_weeks_old_ids: Set[str] = set()
+        if prev_prev_week:
+            two_weeks_old_ids.update(prev_prev_week.topics_task_ids)
+            for d in prev_prev_week.days:
+                two_weeks_old_ids.update(d.task_ids)
+
+        pending_from_prev: List[str] = []
+        # Revisar topics
+        for tid in prev_week.topics_task_ids:
+            task = self.tasks.get(tid)
+            if task and task.is_pending and tid not in pending_from_prev:
+                pending_from_prev.append(tid)
+
+        # Revisar días
+        for d in prev_week.days:
+            for tid in d.task_ids:
+                task = self.tasks.get(tid)
+                if task and task.is_pending and tid not in pending_from_prev:
+                    pending_from_prev.append(tid)
+
+        rolled_count = 0
+        for tid in pending_from_prev:
+            # Regla de 2 semanas: si ya estuvo hace 2 semanas, se desagenda
+            if tid in two_weeks_old_ids:
+                continue  # Pasa automáticamente a quedar en Backlog no agendado
+
+            if tid not in new_week.topics_task_ids:
+                new_week.topics_task_ids.append(tid)
+                rolled_count += 1
+
+        if rolled_count > 0:
+            self.save_week(new_week)
+        return rolled_count
+
+

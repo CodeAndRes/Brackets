@@ -188,8 +188,9 @@ class DailyHubController:
 
         self.print("\n" + "-" * 65)
         self.print("[c] Marcar Tarea        [n] Nueva Tarea HOY     [j] Tarea Jira HOY")
-        self.print("[d] Borrar Tarea        [m] Añadir Nota Semana  [s] Cambiar Día Activo")
-        self.print("[p] 📁 Backlog & Ideas  [b] Menú General        [q] Salir")
+        self.print("[t] +Topic Semana       [a] Agendar Topic       [s] Cambiar Día Activo")
+        self.print("[d] Borrar Tarea        [m] Añadir Nota Semana  [p] 📁 Backlog & Ideas")
+        self.print("[b] Menú General        [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -203,6 +204,10 @@ class DailyHubController:
                 self.print("   Crea una bitácora semanal primero o revisa data/weeks/.")
                 self.input("\nPresiona Enter para ir al menú principal...")
                 return "menu"
+
+            # Arrastre automático día a día de tareas pendientes previas
+            if self.manager.rollover_day_tasks(week, day.day_number) > 0:
+                self._sync_markdown(week)
 
             ordered_task_ids = self.render_dashboard(week, day)
 
@@ -288,6 +293,48 @@ class DailyHubController:
                         day_number=day.day_number
                     )
                     self._sync_markdown(week)
+
+            elif choice == "t":
+                # Añadir nuevo Topic para la semana
+                text = self.input("📝 Texto del nuevo Topic semanal: ").strip()
+                if text:
+                    proj_id = self.prompt_project_selection()
+                    task = self.manager.create_task(
+                        title=text,
+                        project_id=proj_id
+                    )
+                    self.manager.add_topic_to_week(week, task.id)
+                    self._sync_markdown(week)
+                    self.print(f"✅ Topic añadido a la semana: {task.title}")
+                    self.input("Presiona Enter para continuar...")
+
+            elif choice == "a":
+                # Agendar un Topic semanal a las tareas de HOY
+                available_topics = [
+                    self.manager.tasks[tid] for tid in week.topics_task_ids
+                    if tid in self.manager.tasks and self.manager.tasks[tid].is_pending and tid not in day.task_ids
+                ]
+                if not available_topics:
+                    self.print("\n⚠️ No hay topics pendientes disponibles para agendar a hoy.")
+                    self.input("Presiona Enter para continuar...")
+                    continue
+
+                self.print(f"\n📋 TOPICS SEMANALES DISPONIBLES PARA AGENDAR AL DÍA {day.day_number}:")
+                for idx, t in enumerate(available_topics, start=1):
+                    proj_tag = f" [{t.project_id}]" if t.project_id else ""
+                    self.print(f"  [{idx}] {t.title}{proj_tag}")
+
+                t_choice = self.input(f"Selecciona topic a agendar a HOY (1-{len(available_topics)}, 0 para cancelar): ").strip()
+                try:
+                    t_idx = int(t_choice)
+                    if 1 <= t_idx <= len(available_topics):
+                        chosen_topic = available_topics[t_idx - 1]
+                        self.manager.assign_topic_to_day(week, chosen_topic.id, day.day_number)
+                        self._sync_markdown(week)
+                        self.print(f"✅ Topic '{chosen_topic.title}' agendado para HOY (Día {day.day_number}).")
+                        self.input("Presiona Enter para continuar...")
+                except ValueError:
+                    pass
 
             elif choice == "j":
                 # Tarea con Jira Ticket

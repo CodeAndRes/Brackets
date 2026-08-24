@@ -189,6 +189,70 @@ class TestCoreDailyHubController(unittest.TestCase):
         result = controller.run()
         self.assertEqual(result, "menu")
 
+    def test_run_add_topic(self):
+        """Simula pulsar 't', crear un topic semanal y salir con 'q'."""
+        inputs = [
+            "t",
+            "Definir estrategia Q3 para métricas",
+            "0",  # Sin proyecto
+            "",   # Enter confirmación
+            "q"   # Salir
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=mock_input,
+            print_fn=self._mock_print
+        )
+        active_week, _ = controller._get_active_week_and_day()
+
+        result = controller.run()
+        self.assertEqual(result, "exit")
+
+        reloaded_week = self.entity_manager.load_week(active_week.year, active_week.week_number, reload=True)
+        matching = [tid for tid in reloaded_week.topics_task_ids if self.entity_manager.tasks[tid].title == "Definir estrategia Q3 para métricas"]
+        self.assertEqual(len(matching), 1)
+
+    def test_run_schedule_topic_to_today(self):
+        """Simula pulsar 'a', agendar un topic existente a hoy y salir con 'q'."""
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=lambda _: "",
+            print_fn=self._mock_print
+        )
+        active_week, active_day = controller._get_active_week_and_day()
+        topic_task = self.entity_manager.create_task(title="Topic para traer a hoy")
+        self.entity_manager.add_topic_to_week(active_week, topic_task.id)
+
+        available_topics = [
+            self.entity_manager.tasks[tid] for tid in active_week.topics_task_ids
+            if tid in self.entity_manager.tasks and self.entity_manager.tasks[tid].is_pending and tid not in active_day.task_ids
+        ]
+        topic_idx = [t.id for t in available_topics].index(topic_task.id) + 1
+
+        inputs = [
+            "a",
+            str(topic_idx),  # Seleccionar topic recién creado
+            "",              # Enter confirmación
+            "q"              # Salir
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller.input = mock_input
+        result = controller.run()
+        self.assertEqual(result, "exit")
+
+        reloaded_week = self.entity_manager.load_week(active_week.year, active_week.week_number, reload=True)
+        reloaded_day = next(d for d in reloaded_week.days if d.day_number == active_day.day_number)
+        self.assertIn(topic_task.id, reloaded_day.task_ids)
+
 
 if __name__ == "__main__":
     unittest.main()

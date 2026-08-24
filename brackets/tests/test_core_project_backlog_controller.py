@@ -63,6 +63,10 @@ class TestCoreProjectBacklogController(unittest.TestCase):
         output_text = "\n".join(self.output_lines)
         self.assertIn("Tarea guardada en el Backlog de [AMR_LOGISTICS]", output_text)
 
+        # Verificar sincronización automática del archivo Markdown de Backlog
+        backlog_md = os.path.join(self.tmp_dir, "[📋PROJECTS]✅BackLog.md")
+        self.assertTrue(os.path.exists(backlog_md))
+
     def test_capture_idea(self):
         """Valida que [2] capture una nueva idea con viñetas y estado inicial."""
         inputs = [
@@ -92,6 +96,10 @@ class TestCoreProjectBacklogController(unittest.TestCase):
         output_text = "\n".join(self.output_lines)
         self.assertIn("Idea registrada en [AMR_LOGISTICS]", output_text)
         self.assertIn("🟡 Evaluar", output_text)
+
+        # Verificar sincronización automática del archivo Markdown de Ideas
+        ideas_md = os.path.join(self.tmp_dir, "[🧩GENERAL]🧠Ideas.md")
+        self.assertTrue(os.path.exists(ideas_md))
 
     def test_schedule_backlog_task_to_today(self):
         """Valida que [3] asigne una tarea de backlog al día activo de la semana."""
