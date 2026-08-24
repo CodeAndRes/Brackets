@@ -1,21 +1,45 @@
 projects:
 - id: METRICS_INFLUXDB
   name: Metrics Influxdb
+  description: null
+  status: active
 - id: GENERAL
   name: General
+  description: null
+  status: active
 - id: MS_COPILOT
   name: Ms Copilot
+  description: null
+  status: active
 - id: NCM_DASHBOARD
   name: Ncm Dashboard
+  description: null
+  status: active
 - id: QOREX_DB
   name: Qorex Db
+  description: null
+  status: active
 - id: KOERBER_E2E
   name: Koerber E2E
+  description: null
+  status: active
 - id: JIRA_EXPORT
   name: Jira Export
+  description: null
+  status: active
 - id: AMR_LOGISTICS
   name: Amr Logistics
+  description: null
+  status: active
 - id: ROVO_AI
   name: Rovo Ai
+  description: null
+  status: active
 - id: CARDINAL
   name: Cardinal
+  description: null
+  status: active
+- id: BRACKETS
+  name: Sistema modular de gestión de bitácoras y notas organizadas
+  description: null
+  status: active

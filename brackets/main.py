@@ -208,6 +208,8 @@ class BitacoraManager:
             self.handle_consolidation_menu()
         elif command == "open_file_management":
             self.handle_file_management_menu()
+        elif command == "open_project_backlog":
+            self.handle_project_backlog()
         elif command == "open_tools":
             self.handle_tools_menu()
         elif command == "open_settings":
@@ -767,6 +769,22 @@ class BitacoraManager:
     def handle_daily_hub(self) -> str:
         """Ejecuta el Hub Diario interactivo."""
         return self._get_daily_hub_controller().run()
+
+    def handle_project_backlog(self) -> None:
+        """Ejecuta el submenú de gestión de proyectos, backlog e ideas."""
+        hub = self._get_daily_hub_controller()
+        week, day = hub._get_active_week_and_day()
+        from brackets.core.project_backlog_controller import ProjectBacklogController
+        ctrl = ProjectBacklogController(
+            entity_manager=hub.manager,
+            current_week=week,
+            current_day=day,
+            vault_root=self.vault_root,
+            input_fn=input,
+            print_fn=print,
+            clear_screen_fn=clear_screen,
+        )
+        ctrl.run()
 
     def run(self) -> None:
         """Ejecuta el menú principal o inicia en el Hub Diario si las bitácoras están activas."""

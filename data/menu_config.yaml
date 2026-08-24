@@ -34,21 +34,27 @@ menus:
         action: exec
         command: open_file_management
 
+      - id: project_backlog
+        label: "Proyectos, Backlog e Ideas"
+        keys: ["4", "p"]
+        action: exec
+        command: open_project_backlog
+
       - id: tools
         label: "Herramientas y Utilidades"
-        keys: ["4", "t"]
+        keys: ["5", "t"]
         action: exec
         command: open_tools
 
       - id: settings
         label: "Configuracion"
-        keys: ["5", "s"]
+        keys: ["6", "s"]
         action: exec
         command: open_settings
 
       - id: help
         label: "Ayuda"
-        keys: ["6", "h"]
+        keys: ["7", "h"]
         action: exec
         command: open_help
 

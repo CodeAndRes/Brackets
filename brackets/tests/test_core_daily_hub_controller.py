@@ -56,7 +56,8 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertIn("🗓️ BITÁCORA:", output_text)
         self.assertIn("🚗 Día 17 (Oficina)", output_text)
         self.assertIn("Pruebas de AMRs para la vuelta", output_text)
-        self.assertIn("[c] Marcar/Desmarcar", output_text)
+        self.assertIn("[c] Marcar Tarea", output_text)
+        self.assertIn("[p] 📁 Backlog & Ideas", output_text)
 
     def test_run_toggle_task(self):
         """Simula pulsar 'c', seleccionar tarea '1' y luego 'q' para salir."""
@@ -96,7 +97,8 @@ class TestCoreDailyHubController(unittest.TestCase):
 
         result = controller.run()
         self.assertEqual(result, "exit")
-        self.assertEqual(controller.active_day_number, 20)
+        week, _ = controller._get_active_week_and_day()
+        self.assertEqual(controller.active_day_number, week.days[3].day_number)
 
     def test_run_add_new_task(self):
         """Simula pulsar 'n', escribir tarea, elegir proyecto 0 (sin vincular) y luego 'q' para salir."""

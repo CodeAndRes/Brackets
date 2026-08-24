@@ -1,0 +1,101 @@
+ideas:
+- id: IDEA-0001
+  title: Iniciar un diagrama de como creo que debería ser la BT
+  content: []
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0002
+  title: Crear una app que detecte el idioma de escritura y que hábra un archivo AlwaysOnTop
+    con las hotkeys para cada idioma.
+  content: []
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0003
+  title: Profundizar en la idea de apps simples AlwaysOnTop
+  content:
+  - Posibilidad de crear un asistente al que pueda pedirle cosas en lenguaje natural.
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0004
+  title: Crear un log comun donde se refleje todos los eventos que pasan en la BT.
+  content: []
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0005
+  title: Empezar a pensar en crear un agente que pueda formatear las nostas de manera
+    automática
+  content:
+  - El agente debería poder identificar a las personas nombradas
+  - El agente debería poder identificar las tareas y/o proyectos
+  - El formato final debería parecerse a código de programación pero que sea legible
+    para cualquier persona.
+  - Debería poder funcionar con notas, transcripción de reuniones, correos y mensajes
+    de Teams
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0006
+  title: Entrenar la atención con audios generados por IA y luego la IA evalua la
+    atención de la persona y le da feedback.
+  content: []
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0007
+  title: Crear un script/web para interactuar con las bitacoras
+  content:
+  - Entrar, borrar, modificar, finalizar tareas
+  - Entrar, borrar, modificar, finalizar Definiciones
+  - Automatizar los emojis
+  - Editar los titulos de los dias (cambio de emoji)
+  - Poder crear nuevas Bitacoras.
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: BRACKETS_SYSTEM
+- id: IDEA-0008
+  title: Crear un script/web para interactuar con los documentos en Brackets
+  content:
+  - Poder escoger una categoria y que me muestre todos los documentos de esa categoria.
+  - Poder crear nuevas categorias y documentos.
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: BRACKETS_SYSTEM
+- id: IDEA-0009
+  title: Automatizar el volcado las bitacoras
+  content:
+  - Quiero que mi dia a dia este analizado por un agente que pueda proponer tareas,
+    crear reuniones incluso mandar emails
+  - Quiero analizar la mejor manera de hacerlo para integrar el uso M365 Copilot
+  - Conexión con JIra y Confluence
+  - Posible creación de un grupo de Agentes que vivan en multiples plataformas y ver
+    como pueden colaborar entre ellos.
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: BRACKETS_SYSTEM
+- id: IDEA-0010
+  title: Priorizar la creación de tareas de forma agíl y persistente.
+  content:
+  - Las tareas deben tener una estructura gerarquica cuando pertyenzcan aun proyuecto
+    y perteneces a un mes,semana y dia
+  - Si las tareas no se realizan en su tiempo, deben traspasarse al dia,semana o mes
+    siguiente
+  - Las tareas no solo deben existir en una linea en un archivo .md, deben ser una
+    entidad u objeto que debe tener sus
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: GENERAL
+- id: IDEA-0011
+  title: Conectar ticktes Jira con tasks
+  content:
+  - De alguna manera hacer que cuando se me asigne un ticket jira automaticamente
+    se cree una bracket task
+  - Tambien se debe crear a la vez la definición con el path de la tarea jira
+  - Establecer las reglas para asignar las tareas a un proyecto u otro
+  - En un futuro sincronizar los estados
+  status: evaluating
+  created_at: '2026-08-24'
+  project_id: BRACKETS

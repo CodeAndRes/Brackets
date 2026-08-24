@@ -187,9 +187,9 @@ class DailyHubController:
             self.print("  (Sin notas registradas)")
 
         self.print("\n" + "-" * 65)
-        self.print("[c] Marcar/Desmarcar Tarea   [n] Nueva Tarea Día      [j] Tarea Jira")
-        self.print("[d] Borrar Tarea             [m] Añadir Nota Semana   [s] Cambiar Día Activo")
-        self.print("[b] Menú General             [q] Salir")
+        self.print("[c] Marcar Tarea        [n] Nueva Tarea HOY     [j] Tarea Jira HOY")
+        self.print("[d] Borrar Tarea        [m] Añadir Nota Semana  [s] Cambiar Día Activo")
+        self.print("[p] 📁 Backlog & Ideas  [b] Menú General        [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -218,6 +218,20 @@ class DailyHubController:
 
             if choice in ("b", "menu"):
                 return "menu"
+
+            if choice == "p":
+                from brackets.core.project_backlog_controller import ProjectBacklogController
+                ctrl = ProjectBacklogController(
+                    entity_manager=self.manager,
+                    current_week=week,
+                    current_day=day,
+                    vault_root=self.vault_root,
+                    input_fn=self.input,
+                    print_fn=self.print,
+                    clear_screen_fn=self.clear_screen
+                )
+                ctrl.run()
+                continue
 
             if choice == "s":
                 # Cambiar día activo

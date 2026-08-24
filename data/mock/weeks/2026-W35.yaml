@@ -50,12 +50,18 @@ topics_task_ids:
 - TSK-0727
 - TSK-0728
 - TSK-0732
-note_ids: []
+note_ids:
+- NOTE-0206
 days:
 - day_number: 24
   location_emoji: 🚗
   location_note: null
-  task_ids: []
+  task_ids:
+  - TSK-0518
+  - TSK-0733
+  - TSK-0734
+  - TSK-0735
+  - TSK-0736
 - day_number: 25
   location_emoji: 🚗
   location_note: null

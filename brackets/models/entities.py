@@ -30,6 +30,37 @@ class Project:
 
 
 @dataclass
+class Idea:
+    """Entidad Idea / Propuesta para evaluar, aterrizar o descartar."""
+    id: str  # ej: "IDEA-0001"
+    title: str  # Título / Concepto de la idea
+    content: List[str] = field(default_factory=list)  # Líneas de detalle o hipótesis
+    status: str = "evaluating"  # "evaluating", "accepted", "discarded"
+    created_at: str = ""  # "YYYY-MM-DD"
+    project_id: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> Idea:
+        content_raw = data.get("content", [])
+        if isinstance(content_raw, str):
+            content_list = [content_raw]
+        else:
+            content_list = list(content_raw)
+
+        return cls(
+            id=data.get("id", ""),
+            title=data.get("title", ""),
+            content=content_list,
+            status=data.get("status", "evaluating"),
+            created_at=data.get("created_at", ""),
+            project_id=data.get("project_id")
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
 class Definition:
     """Entidad Definición / Enlace externo (Jira, Confluence, etc.)."""
     id: str  # ej: "🎫ATLM-12682" o "🦒EXPORT"

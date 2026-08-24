@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 import yaml
 
-from brackets.models.entities import Task, Note, Definition, Project, WeekSchedule, DaySchedule
+from brackets.models.entities import Task, Note, Definition, Project, Idea, WeekSchedule, DaySchedule
 
 
 class EntityManager:
@@ -29,6 +29,7 @@ class EntityManager:
         self.projects: Dict[str, Project] = {}
         self.tasks: Dict[str, Task] = {}
         self.notes: Dict[str, Note] = {}
+        self.ideas: Dict[str, Idea] = {}
         self.definitions: Dict[str, Definition] = {}
         self.weeks: Dict[str, WeekSchedule] = {}  # key: "YYYY-WXX"
 
@@ -46,6 +47,25 @@ class EntityManager:
         self.load_definitions()
         self.load_tasks()
         self.load_notes()
+        self.load_ideas()
+
+    def load_ideas(self) -> None:
+        path = self._get_path("ideas")
+        self.ideas.clear()
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            items = data.get("ideas", [])
+            for item in items:
+                i = Idea.from_dict(item)
+                if i.id:
+                    self.ideas[i.id] = i
+
+    def save_ideas(self) -> None:
+        path = self._get_path("ideas")
+        data = {"ideas": [i.to_dict() for i in self.ideas.values()]}
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, allow_unicode=True, sort_keys=False)
 
     def load_projects(self) -> None:
         path = self._get_path("projects")
@@ -174,6 +194,7 @@ class EntityManager:
         self.save_definitions()
         self.save_tasks()
         self.save_notes()
+        self.save_ideas()
         for week in self.weeks.values():
             self.save_week(week)
 
@@ -390,3 +411,123 @@ class EntityManager:
             self.save_week(week)
 
         return note
+
+    # -------------------------------------------------------------------------
+    # Métodos de Negocio: Ideas
+    # -------------------------------------------------------------------------
+    def _generate_next_idea_id(self) -> str:
+        """Calcula el siguiente ID de idea disponible evitando colisiones."""
+        max_num = 0
+        for iid in self.ideas.keys():
+            match = re.search(r'\d+', iid)
+            if match:
+                max_num = max(max_num, int(match.group()))
+        return f"IDEA-{max_num + 1:04d}"
+
+    def create_idea(
+        self,
+        title: str,
+        content: Optional[List[str] | str] = None,
+        project_id: Optional[str] = None,
+        status: str = "evaluating",
+        idea_id: Optional[str] = None
+    ) -> Idea:
+        """Crea y persiste una nueva Idea / Propuesta."""
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        if not idea_id:
+            idea_id = self._generate_next_idea_id()
+
+        if isinstance(content, str):
+            content_list = [content] if content else []
+        elif content is None:
+            content_list = []
+        else:
+            content_list = list(content)
+
+        idea = Idea(
+            id=idea_id,
+            title=title.strip(),
+            content=content_list,
+            status=status,
+            created_at=today_str,
+            project_id=project_id
+        )
+        self.ideas[idea_id] = idea
+        self.save_ideas()
+        return idea
+
+    def update_idea_status(self, idea_id: str, new_status: str) -> Optional[Idea]:
+        """Actualiza el estado de una idea ('evaluating', 'accepted', 'discarded')."""
+        idea = self.ideas.get(idea_id)
+        if not idea:
+            return None
+        idea.status = new_status
+        self.save_ideas()
+        return idea
+
+    def list_ideas(self, project_id: Optional[str] = None) -> List[Idea]:
+        """Lista ideas opcionalmente filtradas por proyecto."""
+        ideas = list(self.ideas.values())
+        if project_id is not None:
+            ideas = [i for i in ideas if i.project_id == project_id]
+        return sorted(ideas, key=lambda i: i.id)
+
+    # -------------------------------------------------------------------------
+    # Métodos de Negocio: Backlog y Planificación
+    # -------------------------------------------------------------------------
+    def list_backlog_tasks(self, project_id: Optional[str] = None, pending_only: bool = True) -> List[Task]:
+        """Devuelve las tareas registradas, filtrables por proyecto y estado pendiente."""
+        tasks = list(self.tasks.values())
+        if project_id is not None:
+            tasks = [t for t in tasks if t.project_id == project_id]
+        if pending_only:
+            tasks = [t for t in tasks if t.is_pending]
+        return sorted(tasks, key=lambda t: t.id)
+
+    def assign_task_to_day(
+        self,
+        task_id: str,
+        year: int,
+        week_num: int,
+        day_number: int
+    ) -> bool:
+        """Asigna una tarea existente al día especificado de una semana y persiste."""
+        if task_id not in self.tasks:
+            return False
+
+        week = self.load_week(year, week_num)
+        if not week:
+            return False
+
+        target_day: Optional[DaySchedule] = None
+        for d in week.days:
+            if d.day_number == day_number:
+                target_day = d
+                break
+
+        if not target_day:
+            return False
+
+        if task_id not in target_day.task_ids:
+            target_day.task_ids.append(task_id)
+            self.save_week(week)
+            return True
+
+        return True
+
+    def get_project_stats(self, project_id: str) -> Dict[str, int]:
+        """Calcula al vuelo estadísticas de tareas e ideas de un proyecto."""
+        tasks = [t for t in self.tasks.values() if t.project_id == project_id]
+        ideas = [i for i in self.ideas.values() if i.project_id == project_id]
+        total = len(tasks)
+        done = len([t for t in tasks if t.is_done])
+        pending = len([t for t in tasks if t.is_pending])
+        evaluating_ideas = len([i for i in ideas if i.status == "evaluating"])
+        return {
+            "total_tasks": total,
+            "done_tasks": done,
+            "pending_tasks": pending,
+            "total_ideas": len(ideas),
+            "evaluating_ideas": evaluating_ideas
+        }
+

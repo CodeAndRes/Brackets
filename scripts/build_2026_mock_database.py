@@ -385,9 +385,6 @@ class Mock2026Builder:
             with open(m_file, "w", encoding="utf-8") as f:
                 yaml.dump({"notes": n_list}, f, allow_unicode=True, sort_keys=False)
 
-        with open(os.path.join(self.tables_dir, "notes.yaml"), "w", encoding="utf-8") as f:
-            yaml.dump({"notes": list(self.notes.values())}, f, allow_unicode=True, sort_keys=False)
-
         # 3. definitions.yaml
         with open(os.path.join(self.tables_dir, "definitions.yaml"), "w", encoding="utf-8") as f:
             yaml.dump({"definitions": list(self.definitions.values())}, f, allow_unicode=True, sort_keys=False)
@@ -405,13 +402,59 @@ class Mock2026Builder:
         with open(os.path.join(self.tables_dir, "projects.yaml"), "w", encoding="utf-8") as f:
             yaml.dump({"projects": list(projects_summary.values())}, f, allow_unicode=True, sort_keys=False)
 
-        # 5. weeks/*.yaml
+        # 5. ideas.yaml
+        ideas_list = self._extract_ideas()
+        with open(os.path.join(self.tables_dir, "ideas.yaml"), "w", encoding="utf-8") as f:
+            yaml.dump({"ideas": ideas_list}, f, allow_unicode=True, sort_keys=False)
+
+        # 6. weeks/*.yaml
         for wkey, wdata in self.weeks.items():
             wpath = os.path.join(self.weeks_dir, f"{wkey}.yaml")
             with open(wpath, "w", encoding="utf-8") as f:
                 yaml.dump(wdata, f, allow_unicode=True, sort_keys=False)
 
         print("✅ Base de datos mock de 2026 generada con éxito.")
+
+    def _extract_ideas(self) -> List[Dict[str, Any]]:
+        """Extrae ideas desde [🧩GENERAL]🧠Ideas.md si existe, o genera ideas base."""
+        ideas = []
+        ideas_file = os.path.join(self.notes_dir, "[🧩GENERAL]🧠Ideas.md")
+        if os.path.exists(ideas_file):
+            with open(ideas_file, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            raw_items = re.findall(r'-\s+\[ \]\s+([^\n]+(?:\n\s+-[^\n]+)*)', content)
+            for idx, item in enumerate(raw_items, start=1):
+                lines = [l.strip() for l in item.split("\n") if l.strip()]
+                if not lines:
+                    continue
+                title = re.sub(r'^\s*-\s*', '', lines[0]).strip()
+                bullets = [re.sub(r'^\s*-\s*', '', l).strip() for l in lines[1:]]
+                pid = self._infer_project(title) or "GENERAL"
+                ideas.append({
+                    "id": f"IDEA-{idx:04d}",
+                    "title": title,
+                    "content": bullets,
+                    "status": "evaluating",
+                    "created_at": "2026-08-24",
+                    "project_id": pid
+                })
+        else:
+            sample_ideas = [
+                ("Evaluar motor DuckDB para analítica local", ["Soporta SQL rápido", "Sin servidor externo"], "METRICS_INFLUXDB"),
+                ("Crear exportador compacto de contexto para IA", ["Formato JSON optimizado", "Menos tokens"], "ROVO_AI"),
+                ("Automatizar transiciones de estado de Jira desde bitácora", ["Sync bidireccional"], "JIRA_EXPORT")
+            ]
+            for idx, (t, b, p) in enumerate(sample_ideas, start=1):
+                ideas.append({
+                    "id": f"IDEA-{idx:04d}",
+                    "title": t,
+                    "content": b,
+                    "status": "evaluating",
+                    "created_at": "2026-08-24",
+                    "project_id": p
+                })
+        return ideas
 
 
 if __name__ == "__main__":

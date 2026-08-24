@@ -42,6 +42,7 @@ from brackets.tests.test_event_log import TestEventLog
 import unittest
 from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitacoraRenderer
 from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubController
+from brackets.tests.test_core_project_backlog_controller import TestCoreProjectBacklogController
 from brackets.tests.test_file_rename_manager import test_file_rename_manager
 from brackets.tests.test_global_search_replace import test_global_search_replace
 from brackets.tests.test_manual_creation import test_manual_bitacora_generation, test_manual_weekly_creation
@@ -241,6 +242,17 @@ def run_all_tests():
     hub_failed = len(hub_result.failures) + len(hub_result.errors)
     total_passed += hub_passed
     total_failed += hub_failed
+
+    # Tests de ProjectBacklogController
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: ProjectBacklogController (Gestión de Proyectos, Backlog e Ideas)")
+    print("=" * 60)
+    pb_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestCoreProjectBacklogController)
+    pb_result = unittest.TextTestRunner(verbosity=1).run(pb_suite)
+    pb_passed = pb_result.testsRun - len(pb_result.failures) - len(pb_result.errors)
+    pb_failed = len(pb_result.failures) + len(pb_result.errors)
+    total_passed += pb_passed
+    total_failed += pb_failed
 
     # Tests de FileRenameManager (previamente excluidos)
     print("\n🧪 TESTS: managers/file_rename_manager.py")
