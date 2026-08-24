@@ -789,13 +789,12 @@ class BitacoraManager:
         ctrl.run()
 
     def handle_notes_crud(self) -> None:
-        """Ejecuta el módulo CRUD de gestión de notas."""
+        """Ejecuta el módulo CRUD de gestión de notas en modo global."""
         hub = self._get_daily_hub_controller()
-        week, _ = hub._get_active_week_and_day()
         from brackets.core.note_crud_controller import NoteCrudController
         ctrl = NoteCrudController(
             entity_manager=hub.manager,
-            current_week=week,
+            current_week=None,
             vault_root=self.vault_root,
             input_fn=input,
             print_fn=print,

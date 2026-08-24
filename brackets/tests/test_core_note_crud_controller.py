@@ -121,8 +121,33 @@ class TestCoreNoteCrudController(unittest.TestCase):
         self.assertEqual(note.project_id, "ALPHA")
         self.assertEqual(len(note.content), 2)
 
-    def test_controller_edit_existing_note(self):
-        """Simula editar título, proyecto y añadir viñetas con NoteCrudController."""
+    def test_controller_create_new_note(self):
+        """Simula crear una nota desde NoteCrudController."""
+        inputs = [
+            "Arquitectura del Sistema",  # Título
+            "Diseño relacional",         # Viñeta 1
+            "Renderizado unificado",     # Viñeta 2
+            "",                          # Fin de viñetas
+            "1",                         # Seleccionar proyecto ALPHA
+            ""                           # Enter confirmación
+        ]
+
+        controller = NoteCrudController(
+            entity_manager=self.entity_manager,
+            current_week=self.week,
+            vault_root=self.tmp_dir,
+            input_fn=lambda _: inputs.pop(0),
+            print_fn=self._mock_print
+        )
+
+        note = controller.create_new_note()
+        self.assertIsNotNone(note)
+        self.assertEqual(note.title, "Arquitectura del Sistema")
+        self.assertEqual(note.project_id, "ALPHA")
+        self.assertEqual(len(note.content), 2)
+
+    def test_controller_edit_existing_note_scoped_to_week(self):
+        """Simula editar una nota de la semana activa seleccionándola directamente por índice."""
         note = self.entity_manager.add_note(
             title="Nota Base",
             content=["Viñeta 1"],
@@ -132,8 +157,7 @@ class TestCoreNoteCrudController(unittest.TestCase):
         )
 
         inputs = [
-            "Nota Base",       # Buscar nota
-            "1",               # Seleccionar resultado 1
+            "1",               # Seleccionar directamente la nota 1 de la semana activa
             "Nota Editada",    # Nuevo título
             "s",               # Cambiar proyecto: Sí
             "2",               # Seleccionar proyecto BETA
@@ -158,8 +182,8 @@ class TestCoreNoteCrudController(unittest.TestCase):
         self.assertEqual(len(updated.content), 2)
         self.assertEqual(updated.content[1], "Viñeta Extra")
 
-    def test_controller_delete_note(self):
-        """Simula eliminar una nota desde NoteCrudController."""
+    def test_controller_delete_note_scoped_to_week(self):
+        """Simula eliminar una nota de la semana activa seleccionándola directamente."""
         note = self.entity_manager.add_note(
             title="Nota a Borrar",
             content=["Contenido"],
@@ -169,8 +193,7 @@ class TestCoreNoteCrudController(unittest.TestCase):
         )
 
         inputs = [
-            "Nota a Borrar",  # Buscar nota
-            "1",              # Seleccionar resultado 1
+            "1",              # Seleccionar nota 1 de la semana
             "s",              # Confirmar borrado
             ""                # Enter confirmación
         ]
@@ -187,19 +210,18 @@ class TestCoreNoteCrudController(unittest.TestCase):
         self.assertTrue(res)
         self.assertNotIn(note.id, self.entity_manager.notes)
 
-    def test_controller_query_notes(self):
-        """Simula consultar notas filtradas por texto."""
+    def test_controller_query_notes_scoped_default(self):
+        """Simula consultar notas en modo acotado (semana actual por defecto)."""
         self.entity_manager.add_note(
-            title="Nota de Prueba de Búsqueda",
-            content=["Detalle importante"],
+            title="Nota Semana Actual",
+            content=["Detalle"],
             year=2026,
             week_num=35
         )
 
         inputs = [
-            "4",           # Búsqueda por texto
-            "importante",  # Query
-            ""             # Enter continuar
+            "1",  # Notas de la semana actual por defecto
+            ""    # Enter continuar
         ]
 
         controller = NoteCrudController(
@@ -212,7 +234,7 @@ class TestCoreNoteCrudController(unittest.TestCase):
 
         notes = controller.query_notes()
         self.assertEqual(len(notes), 1)
-        self.assertEqual(notes[0].title, "Nota de Prueba de Búsqueda")
+        self.assertEqual(notes[0].title, "Nota Semana Actual")
 
     def test_controller_run_exit(self):
         """Simula abrir el menú CRUD y salir inmediatamente con '0'."""

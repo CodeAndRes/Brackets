@@ -3,6 +3,7 @@
 Controlador CRUD de Notas para Brackets.
 Permite Alta, Baja, Modificación y Consulta estructurada de Notas,
 con sincronización automática hacia la base de datos relacional y Markdown.
+Soporta contexto acotado a la semana activa (Daily Hub) o modo global (Menú Principal).
 """
 
 from __future__ import annotations
@@ -44,6 +45,16 @@ class NoteCrudController:
             directory=self.vault_root
         )
         BitacoraRenderer.render_and_save_week(self.current_week, self.manager, md_path)
+
+    def get_current_week_notes(self) -> List[Note]:
+        """Obtiene las notas asociadas a la semana activa."""
+        if not self.current_week:
+            return []
+        notes = []
+        for nid in self.current_week.note_ids:
+            if nid in self.manager.notes:
+                notes.append(self.manager.notes[nid])
+        return sorted(notes, key=lambda n: n.id)
 
     def prompt_project_selection(
         self,
@@ -90,35 +101,63 @@ class NoteCrudController:
     # 1. Consulta y Búsqueda
     # -------------------------------------------------------------------------
     def query_notes(self) -> List[Note]:
-        """[1] Permite consultar y buscar notas por texto, proyecto o mes."""
+        """[1] Permite consultar y buscar notas por semana, texto, proyecto o mes."""
         self.print("\n" + "=" * 65)
         self.print("🔍 CONSULTAR Y BUSCAR NOTAS")
         self.print("=" * 65)
-        self.print("  [1] Ver todas las notas")
-        self.print("  [2] Filtrar por Proyecto")
-        self.print("  [3] Filtrar por Mes (ej: 2026-08)")
-        self.print("  [4] Búsqueda por palabra clave o texto")
-        self.print("  [0] Cancelar")
 
-        choice = self.input("\nSelecciona tipo de consulta: ").strip()
-        if choice in ("0", ""):
-            return []
+        if self.current_week:
+            self.print(f"  [1] Ver Notas de la Semana Actual (W{self.current_week.week_number:02d}) [Por defecto]")
+            self.print("  [2] Ver todas las notas históricas (Global)")
+            self.print("  [3] Filtrar por Proyecto")
+            self.print("  [4] Filtrar por Mes (ej: 2026-08)")
+            self.print("  [5] Búsqueda por palabra clave o texto")
+            self.print("  [0] Cancelar")
 
-        notes: List[Note] = []
-        if choice == "1":
-            notes = self.manager.list_notes()
-        elif choice == "2":
-            proj_id = self.prompt_project_selection(allow_all=True)
-            notes = self.manager.list_notes(project_id=proj_id)
-        elif choice == "3":
-            month = self.input("📅 Mes a consultar (YYYY-MM): ").strip()
-            notes = self.manager.list_notes(month=month if month else None)
-        elif choice == "4":
-            query = self.input("🔎 Término de búsqueda: ").strip()
-            notes = self.manager.search_notes(query=query)
+            choice = self.input("\nSelecciona tipo de consulta (1 por defecto): ").strip()
+            if choice == "0":
+                return []
+            if choice in ("1", ""):
+                notes = self.get_current_week_notes()
+            elif choice == "2":
+                notes = self.manager.list_notes()
+            elif choice == "3":
+                proj_id = self.prompt_project_selection(allow_all=True)
+                notes = self.manager.list_notes(project_id=proj_id)
+            elif choice == "4":
+                month = self.input("📅 Mes a consultar (YYYY-MM): ").strip()
+                notes = self.manager.list_notes(month=month if month else None)
+            elif choice == "5":
+                query = self.input("🔎 Término de búsqueda: ").strip()
+                notes = self.manager.search_notes(query=query)
+            else:
+                self.print("❌ Opción inválida.")
+                return []
         else:
-            self.print("❌ Opción inválida.")
-            return []
+            self.print("  [1] Ver todas las notas registradas")
+            self.print("  [2] Filtrar por Proyecto")
+            self.print("  [3] Filtrar por Mes (ej: 2026-08)")
+            self.print("  [4] Búsqueda por palabra clave o texto")
+            self.print("  [0] Cancelar")
+
+            choice = self.input("\nSelecciona tipo de consulta: ").strip()
+            if choice in ("0", ""):
+                return []
+
+            if choice == "1":
+                notes = self.manager.list_notes()
+            elif choice == "2":
+                proj_id = self.prompt_project_selection(allow_all=True)
+                notes = self.manager.list_notes(project_id=proj_id)
+            elif choice == "3":
+                month = self.input("📅 Mes a consultar (YYYY-MM): ").strip()
+                notes = self.manager.list_notes(month=month if month else None)
+            elif choice == "4":
+                query = self.input("🔎 Término de búsqueda: ").strip()
+                notes = self.manager.search_notes(query=query)
+            else:
+                self.print("❌ Opción inválida.")
+                return []
 
         self.print(f"\n📋 Resultados encontrados ({len(notes)}):")
         if not notes:
@@ -142,7 +181,10 @@ class NoteCrudController:
     def create_new_note(self) -> Optional[Note]:
         """[2] Alta: Crea una nueva nota estructurada con título y viñetas."""
         self.print("\n" + "=" * 65)
-        self.print("➕ ALTA: CREAR NUEVA NOTA")
+        if self.current_week:
+            self.print(f"➕ ALTA: CREAR NOTA EN SEMANA W{self.current_week.week_number:02d}")
+        else:
+            self.print("➕ ALTA: CREAR NUEVA NOTA")
         self.print("=" * 65)
 
         title = self.input("📌 Título de la nota (opcional, Enter para omitir): ").strip()
@@ -184,32 +226,72 @@ class NoteCrudController:
     def edit_existing_note(self) -> Optional[Note]:
         """[3] Modificación: Edita título, proyecto, mes y viñetas de una nota existente."""
         self.print("\n" + "=" * 65)
-        self.print("✏️  MODIFICACIÓN: EDITAR NOTA EXISTENTE")
+        if self.current_week:
+            self.print(f"✏️  MODIFICACIÓN: EDITAR NOTA (Semana W{self.current_week.week_number:02d})")
+        else:
+            self.print("✏️  MODIFICACIÓN: EDITAR NOTA EXISTENTE")
         self.print("=" * 65)
 
-        query = self.input("Buscar nota a editar (título, palabra clave o ID, Enter para listar todas): ").strip()
-        notes = self.manager.search_notes(query=query if query else None)
+        notes = []
+        if self.current_week:
+            notes = self.get_current_week_notes()
+            if notes:
+                self.print(f"Notas de la Semana Actual W{self.current_week.week_number:02d} ({len(notes)}):")
+                for idx, n in enumerate(notes, start=1):
+                    proj_tag = f" [{n.project_id}]" if n.project_id else ""
+                    title_str = n.title if n.title else "(Sin título)"
+                    self.print(f"  [{idx}] {n.id}{proj_tag}: {title_str}")
+                self.print("  [s] Buscar en todo el histórico de notas (Global)")
+                self.print("  [0] Cancelar")
+
+                choice = self.input("\nSelecciona nota a editar (número o 's'): ").strip()
+                if choice in ("0", ""):
+                    return None
+                if choice.lower() == "s":
+                    query = self.input("Buscar en histórico (título, texto o ID): ").strip()
+                    notes = self.manager.search_notes(query=query if query else None)
+                else:
+                    try:
+                        n_idx = int(choice)
+                        if 1 <= n_idx <= len(notes):
+                            notes = [notes[n_idx - 1]]
+                        else:
+                            return None
+                    except ValueError:
+                        return None
+            else:
+                self.print(f"ℹ️ No hay notas registradas en la Semana W{self.current_week.week_number:02d}.")
+                search_global = self.input("¿Buscar en el histórico global? (S/n): ").strip().lower()
+                if search_global in ("n", "no"):
+                    return None
+                query = self.input("Buscar en histórico (título, texto o ID): ").strip()
+                notes = self.manager.search_notes(query=query if query else None)
+        else:
+            query = self.input("Buscar nota a editar (título, palabra clave o ID, Enter para listar todas): ").strip()
+            notes = self.manager.search_notes(query=query if query else None)
 
         if not notes:
             self.print("❌ No se encontraron notas.")
             self.input("Presiona Enter para continuar...")
             return None
 
-        self.print(f"\nSelecciona la nota a editar (1-{len(notes)}):")
-        for idx, n in enumerate(notes, start=1):
-            proj_tag = f" [{n.project_id}]" if n.project_id else ""
-            title_str = n.title if n.title else "(Sin título)"
-            self.print(f"  [{idx}] {n.id}{proj_tag}: {title_str}")
+        if len(notes) > 1:
+            self.print(f"\nSelecciona la nota a editar (1-{len(notes)}):")
+            for idx, n in enumerate(notes, start=1):
+                proj_tag = f" [{n.project_id}]" if n.project_id else ""
+                title_str = n.title if n.title else "(Sin título)"
+                self.print(f"  [{idx}] {n.id}{proj_tag}: {title_str}")
 
-        n_choice = self.input(f"\nNúmero de nota (1-{len(notes)}, 0 para cancelar): ").strip()
-        try:
-            n_idx = int(n_choice)
-            if not (1 <= n_idx <= len(notes)):
+            n_choice = self.input(f"\nNúmero de nota (1-{len(notes)}, 0 para cancelar): ").strip()
+            try:
+                n_idx = int(n_choice)
+                if not (1 <= n_idx <= len(notes)):
+                    return None
+            except ValueError:
                 return None
-        except ValueError:
-            return None
-
-        target_note = notes[n_idx - 1]
+            target_note = notes[n_idx - 1]
+        else:
+            target_note = notes[0]
 
         self.print("\n" + "-" * 50)
         self.print(f"📝 EDITANDO NOTA: {target_note.id}")
@@ -274,32 +356,73 @@ class NoteCrudController:
     def delete_note(self) -> bool:
         """[4] Baja: Elimina una nota de la base de datos y de las bitácoras."""
         self.print("\n" + "=" * 65)
-        self.print("🗑️  BAJA: ELIMINAR NOTA")
+        if self.current_week:
+            self.print(f"🗑️  BAJA: ELIMINAR NOTA (Semana W{self.current_week.week_number:02d})")
+        else:
+            self.print("🗑️  BAJA: ELIMINAR NOTA")
         self.print("=" * 65)
 
-        query = self.input("Buscar nota a eliminar (título, texto o ID): ").strip()
-        notes = self.manager.search_notes(query=query if query else None)
+        notes = []
+        if self.current_week:
+            notes = self.get_current_week_notes()
+            if notes:
+                self.print(f"Notas de la Semana Actual W{self.current_week.week_number:02d} ({len(notes)}):")
+                for idx, n in enumerate(notes, start=1):
+                    proj_tag = f" [{n.project_id}]" if n.project_id else ""
+                    title_str = n.title if n.title else "(Sin título)"
+                    self.print(f"  [{idx}] {n.id}{proj_tag}: {title_str}")
+                self.print("  [s] Buscar en todo el histórico de notas (Global)")
+                self.print("  [0] Cancelar")
+
+                choice = self.input("\nSelecciona nota a eliminar (número o 's'): ").strip()
+                if choice in ("0", ""):
+                    return False
+                if choice.lower() == "s":
+                    query = self.input("Buscar en histórico (título, texto o ID): ").strip()
+                    notes = self.manager.search_notes(query=query if query else None)
+                else:
+                    try:
+                        n_idx = int(choice)
+                        if 1 <= n_idx <= len(notes):
+                            notes = [notes[n_idx - 1]]
+                        else:
+                            return False
+                    except ValueError:
+                        return False
+            else:
+                self.print(f"ℹ️ No hay notas registradas en la Semana W{self.current_week.week_number:02d}.")
+                search_global = self.input("¿Buscar en el histórico global? (S/n): ").strip().lower()
+                if search_global in ("n", "no"):
+                    return False
+                query = self.input("Buscar en histórico (título, texto o ID): ").strip()
+                notes = self.manager.search_notes(query=query if query else None)
+        else:
+            query = self.input("Buscar nota a eliminar (título, texto o ID): ").strip()
+            notes = self.manager.search_notes(query=query if query else None)
 
         if not notes:
             self.print("❌ No se encontraron notas.")
             self.input("Presiona Enter para continuar...")
             return False
 
-        self.print(f"\nSelecciona la nota a eliminar (1-{len(notes)}):")
-        for idx, n in enumerate(notes, start=1):
-            proj_tag = f" [{n.project_id}]" if n.project_id else ""
-            title_str = n.title if n.title else "(Sin título)"
-            self.print(f"  [{idx}] {n.id}{proj_tag}: {title_str}")
+        if len(notes) > 1:
+            self.print(f"\nSelecciona la nota a eliminar (1-{len(notes)}):")
+            for idx, n in enumerate(notes, start=1):
+                proj_tag = f" [{n.project_id}]" if n.project_id else ""
+                title_str = n.title if n.title else "(Sin título)"
+                self.print(f"  [{idx}] {n.id}{proj_tag}: {title_str}")
 
-        n_choice = self.input(f"\nNúmero de nota a eliminar (1-{len(notes)}, 0 para cancelar): ").strip()
-        try:
-            n_idx = int(n_choice)
-            if not (1 <= n_idx <= len(notes)):
+            n_choice = self.input(f"\nNúmero de nota a eliminar (1-{len(notes)}, 0 para cancelar): ").strip()
+            try:
+                n_idx = int(n_choice)
+                if not (1 <= n_idx <= len(notes)):
+                    return False
+            except ValueError:
                 return False
-        except ValueError:
-            return False
+            target_note = notes[n_idx - 1]
+        else:
+            target_note = notes[0]
 
-        target_note = notes[n_idx - 1]
         confirm = self.input(f"⚠️ ¿Estás seguro de eliminar '{target_note.id}: {target_note.title or ''}'? (s/N): ").strip().lower()
         if confirm in ("s", "si", "y", "yes"):
             self.manager.delete_note_complete(target_note.id)
@@ -320,9 +443,16 @@ class NoteCrudController:
         while True:
             self.clear_screen()
             self.print("=" * 65)
-            self.print("📝 G E S T I Ó N  D E  N O T A S  ( M Ó D U L O  C R U D )")
+            if self.current_week:
+                self.print(f"📝 G E S T I Ó N  D E  N O T A S  (Semana W{self.current_week.week_number:02d} / {self.current_week.year})")
+            else:
+                self.print("📝 G E S T I Ó N  D E  N O T A S  ( M Ó D U L O  C R U D )")
             self.print("=" * 65)
-            self.print("  [1] 🔍 Consultar y Buscar Notas (Filtros por Proyecto / Mes / Texto)")
+
+            if self.current_week:
+                self.print("  [1] 🔍 Consultar Notas (Semana Actual por defecto / Filtros / Búsqueda)")
+            else:
+                self.print("  [1] 🔍 Consultar y Buscar Notas (Filtros por Proyecto / Mes / Texto)")
             self.print("  [2] ➕ Alta: Crear Nueva Nota")
             self.print("  [3] ✏️  Modificación: Editar Nota Existente")
             self.print("  [4] 🗑️  Baja: Eliminar Nota")
