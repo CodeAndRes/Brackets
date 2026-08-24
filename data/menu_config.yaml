@@ -40,21 +40,27 @@ menus:
         action: exec
         command: open_project_backlog
 
+      - id: notes_crud
+        label: "Gestion de Notas (CRUD)"
+        keys: ["5", "n"]
+        action: exec
+        command: open_notes_crud
+
       - id: tools
         label: "Herramientas y Utilidades"
-        keys: ["5", "t"]
+        keys: ["6", "t"]
         action: exec
         command: open_tools
 
       - id: settings
         label: "Configuracion"
-        keys: ["6", "s"]
+        keys: ["7", "s"]
         action: exec
         command: open_settings
 
       - id: help
         label: "Ayuda"
-        keys: ["7", "h"]
+        keys: ["8", "h"]
         action: exec
         command: open_help
 
@@ -67,7 +73,7 @@ menus:
 
       - id: quick_new_weekly
         label: "Nueva bitacora semanal (atajo)"
-        keys: ["n"]
+        keys: ["w"]
         action: exec
         command: quick_new_weekly
         context_tag: active_vault
