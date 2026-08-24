@@ -210,6 +210,8 @@ class BitacoraManager:
             self.handle_file_management_menu()
         elif command == "open_project_backlog":
             self.handle_project_backlog()
+        elif command == "open_notes_crud":
+            self.handle_notes_crud()
         elif command == "open_tools":
             self.handle_tools_menu()
         elif command == "open_settings":
@@ -779,6 +781,21 @@ class BitacoraManager:
             entity_manager=hub.manager,
             current_week=week,
             current_day=day,
+            vault_root=self.vault_root,
+            input_fn=input,
+            print_fn=print,
+            clear_screen_fn=clear_screen,
+        )
+        ctrl.run()
+
+    def handle_notes_crud(self) -> None:
+        """Ejecuta el módulo CRUD de gestión de notas."""
+        hub = self._get_daily_hub_controller()
+        week, _ = hub._get_active_week_and_day()
+        from brackets.core.note_crud_controller import NoteCrudController
+        ctrl = NoteCrudController(
+            entity_manager=hub.manager,
+            current_week=week,
             vault_root=self.vault_root,
             input_fn=input,
             print_fn=print,

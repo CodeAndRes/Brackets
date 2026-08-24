@@ -43,6 +43,7 @@ import unittest
 from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitacoraRenderer
 from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubController
 from brackets.tests.test_core_project_backlog_controller import TestCoreProjectBacklogController
+from brackets.tests.test_core_note_crud_controller import TestCoreNoteCrudController
 from brackets.tests.test_file_rename_manager import test_file_rename_manager
 from brackets.tests.test_global_search_replace import test_global_search_replace
 from brackets.tests.test_manual_creation import test_manual_bitacora_generation, test_manual_weekly_creation
@@ -253,6 +254,17 @@ def run_all_tests():
     pb_failed = len(pb_result.failures) + len(pb_result.errors)
     total_passed += pb_passed
     total_failed += pb_failed
+
+    # Tests de NoteCrudController
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: NoteCrudController (Gestión CRUD de Notas)")
+    print("=" * 60)
+    nc_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestCoreNoteCrudController)
+    nc_result = unittest.TextTestRunner(verbosity=1).run(nc_suite)
+    nc_passed = nc_result.testsRun - len(nc_result.failures) - len(nc_result.errors)
+    nc_failed = len(nc_result.failures) + len(nc_result.errors)
+    total_passed += nc_passed
+    total_failed += nc_failed
 
     # Tests de FileRenameManager (previamente excluidos)
     print("\n🧪 TESTS: managers/file_rename_manager.py")

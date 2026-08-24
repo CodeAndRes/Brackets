@@ -148,11 +148,14 @@ class TestCoreDailyHubController(unittest.TestCase):
         """Simula pulsar 'm', introducir título, viñeta, fin de viñetas, proyecto 0 y luego 'q'."""
         inputs = [
             "m",
+            "2",  # Opción [2] Alta: Crear Nueva Nota en NoteCrudController
             "Revisión de Arquitectura",
             "Revisión con equipo completada sin bloqueos",
             "",
             "0",
-            "q"
+            "",   # Enter confirmación
+            "0",  # Volver de NoteCrudController
+            "q"   # Salir de DailyHubController
         ]
 
         def mock_input(prompt=""):

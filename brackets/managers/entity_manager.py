@@ -148,7 +148,7 @@ class EntityManager:
             yaml.dump(data, f, allow_unicode=True, sort_keys=False)
 
     def save_notes(self) -> None:
-        """Guarda notas agrupadas por mes en tables/notes/{YYYY}-{MM}.yaml."""
+        """Guarda notas agrupadas por mes en tables/notes/{YYYY}-{MM}.yaml y limpia archivos vacíos."""
         os.makedirs(self.notes_dir, exist_ok=True)
         grouped: Dict[str, List[Dict[str, Any]]] = {}
         for note in self.notes.values():
@@ -159,10 +159,23 @@ class EntityManager:
                 m = "general"
             grouped.setdefault(m, []).append(note.to_dict())
 
+        # Guardar cada grupo mensual
+        saved_files = set()
         for m_key, note_list in grouped.items():
             m_path = os.path.join(self.notes_dir, f"{m_key}.yaml")
+            saved_files.add(os.path.normpath(m_path))
             with open(m_path, "w", encoding="utf-8") as f:
                 yaml.dump({"notes": note_list}, f, allow_unicode=True, sort_keys=False)
+
+        # Eliminar archivos mensuales antiguos que hayan quedado sin notas
+        for fname in os.listdir(self.notes_dir):
+            if fname.endswith(".yaml"):
+                full_p = os.path.normpath(os.path.join(self.notes_dir, fname))
+                if full_p not in saved_files:
+                    try:
+                        os.remove(full_p)
+                    except Exception:
+                        pass
 
     def load_week(self, year: int, week_num: int, reload: bool = False) -> Optional[WeekSchedule]:
         """Carga la estructura de una semana específica."""
@@ -411,6 +424,89 @@ class EntityManager:
             self.save_week(week)
 
         return note
+
+    def list_notes(
+        self,
+        month: Optional[str] = None,
+        project_id: Optional[str] = None
+    ) -> List[Note]:
+        """Devuelve la lista de notas filtradas por mes y/o proyecto."""
+        notes = list(self.notes.values())
+        if month:
+            notes = [n for n in notes if n.month == month]
+        if project_id:
+            notes = [n for n in notes if n.project_id == project_id]
+        return sorted(notes, key=lambda n: n.id)
+
+    def search_notes(
+        self,
+        query: Optional[str] = None,
+        month: Optional[str] = None,
+        project_id: Optional[str] = None
+    ) -> List[Note]:
+        """Busca notas por texto (título y viñetas), mes y/o proyecto."""
+        notes = self.list_notes(month=month, project_id=project_id)
+        if not query:
+            return notes
+
+        q = query.strip().lower()
+        matched = []
+        for n in notes:
+            # Buscar en título
+            if n.title and q in n.title.lower():
+                matched.append(n)
+                continue
+            # Buscar en viñetas de contenido
+            found_in_content = any(q in line.lower() for line in n.content)
+            if found_in_content:
+                matched.append(n)
+                continue
+            # Buscar en ID
+            if q in n.id.lower():
+                matched.append(n)
+
+        return matched
+
+    def update_note(
+        self,
+        note_id: str,
+        title: Optional[str] = None,
+        content: Optional[List[str]] = None,
+        project_id: Optional[str] = None,
+        month: Optional[str] = None
+    ) -> Optional[Note]:
+        """Actualiza una nota existente y persiste en su archivo mensual correspondiente."""
+        note = self.notes.get(note_id)
+        if not note:
+            return None
+
+        if title is not None:
+            note.title = title.strip() if title.strip() else None
+        if content is not None:
+            note.content = list(content)
+        if project_id is not None:
+            note.project_id = project_id if project_id != "" else None
+        if month is not None and month.strip():
+            note.month = month.strip()
+
+        self.save_notes()
+        return note
+
+    def delete_note_complete(self, note_id: str) -> bool:
+        """Elimina completamente una nota de las tablas y desvincula de las semanas cargadas."""
+        if note_id not in self.notes:
+            return False
+
+        del self.notes[note_id]
+        self.save_notes()
+
+        # Desvincular de semanas si está en memoria o en disco
+        for w in self.weeks.values():
+            if note_id in w.note_ids:
+                w.note_ids.remove(note_id)
+                self.save_week(w)
+
+        return True
 
     # -------------------------------------------------------------------------
     # Métodos de Negocio: Ideas

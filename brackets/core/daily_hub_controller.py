@@ -354,26 +354,17 @@ class DailyHubController:
                     self._sync_markdown(week)
 
             elif choice == "m":
-                # Añadir nota semanal estructurada (Título + Viñetas + Proyecto)
-                title = self.input("📌 Título de la nota: ").strip()
-                self.print("📝 Introduce las viñetas/contenido de la nota (línea vacía para terminar):")
-                content_lines: List[str] = []
-                while True:
-                    line = self.input("  • ").strip()
-                    if not line:
-                        break
-                    content_lines.append(line)
-
-                if title or content_lines:
-                    proj_id = self.prompt_project_selection()
-                    self.manager.add_note(
-                        title=title if title else None,
-                        content=content_lines,
-                        project_id=proj_id,
-                        year=week.year,
-                        week_num=week.week_number
-                    )
-                    self._sync_markdown(week)
+                # Abrir módulo de gestión completa (CRUD) de Notas
+                from brackets.core.note_crud_controller import NoteCrudController
+                crud = NoteCrudController(
+                    entity_manager=self.manager,
+                    current_week=week,
+                    vault_root=self.vault_root,
+                    input_fn=self.input,
+                    print_fn=self.print,
+                    clear_screen_fn=self.clear_screen
+                )
+                crud.run()
 
             elif choice == "d":
                 # Borrar tarea
