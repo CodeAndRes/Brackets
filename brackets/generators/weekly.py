@@ -17,6 +17,9 @@ from brackets.utils.legacy_utils import (
     generate_filename, print_calculated_dates
 )
 from brackets.config import WORKING_DIRECTORY
+from brackets.models.entities import WeekSchedule, DaySchedule
+from brackets.managers.entity_manager import EntityManager
+from brackets.generators.bitacora_renderer import BitacoraRenderer
 from brackets.managers.settings_manager import get_global_settings_manager
 
 
@@ -28,6 +31,11 @@ class WeeklyGenerator:
         self.settings = settings or get_global_settings_manager(directory)
         self.finder = FileFinder(directory)
         self.generator = ContentGenerator(self.settings)
+        data_dir = os.path.join(self.directory, "data")
+        if os.path.exists(data_dir):
+            self.entity_manager = EntityManager(data_dir)
+        else:
+            self.entity_manager = None
 
     def create_next_weekly_bitacora(self, ask_for_weight: bool = True) -> bool:
         """Crea la siguiente bitácora semanal basada en la más reciente."""
@@ -75,13 +83,43 @@ class WeeklyGenerator:
 
         print(f"📅 Nueva semana calculada: Semana {next_week}, {next_month:02d}/{next_year}")
 
-        # Generar contenido
-        new_content = self.generator.create_weekly_bitacora(
-            pending_tasks=pending_tasks,
-            week_num=next_week,
-            weight=new_weight,
-            dates=next_week_dates
-        )
+        # Generar contenido vía EntityManager y BitacoraRenderer si hay datos relacionales
+        if self.entity_manager and os.path.exists(self.entity_manager.tables_dir):
+            days = []
+            for d in next_week_dates:
+                loc_emoji = self.settings.get_day_location(d.day) if hasattr(self.settings, "get_day_location") else "🏠"
+                days.append(DaySchedule(day_number=d.day, location_emoji=loc_emoji, location_note=None, task_ids=[]))
+
+            new_week_schedule = WeekSchedule(
+                year=next_year,
+                month=next_month,
+                week_number=next_week,
+                weight=new_weight,
+                topics_task_ids=[],
+                note_ids=[],
+                days=days
+            )
+
+            prev_week = self.entity_manager.load_week(year, current_week)
+            if prev_week:
+                prev_prev_week_num = current_week - 1
+                prev_prev_year = year
+                if prev_prev_week_num <= 0:
+                    prev_prev_year = year - 1
+                    prev_prev_week_num = 52
+                prev_prev_week = self.entity_manager.load_week(prev_prev_year, prev_prev_week_num)
+                self.entity_manager.rollover_week_to_new_week(prev_week, new_week_schedule, prev_prev_week)
+
+            self.entity_manager.save_week(new_week_schedule)
+            new_content = BitacoraRenderer.render_week(new_week_schedule, self.entity_manager)
+        else:
+            # Fallback legacy si no hay tablas relacionales
+            new_content = self.generator.create_weekly_bitacora(
+                pending_tasks=pending_tasks,
+                week_num=next_week,
+                weight=new_weight,
+                dates=next_week_dates
+            )
 
         # Crear archivo
         new_filename = generate_filename(
