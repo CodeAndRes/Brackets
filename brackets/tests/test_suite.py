@@ -44,6 +44,7 @@ from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitac
 from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubController
 from brackets.tests.test_core_project_backlog_controller import TestCoreProjectBacklogController
 from brackets.tests.test_core_note_crud_controller import TestCoreNoteCrudController
+from brackets.tests.test_markdown_sync_service import TestMarkdownSyncService
 from brackets.tests.test_file_rename_manager import test_file_rename_manager
 from brackets.tests.test_global_search_replace import test_global_search_replace
 from brackets.tests.test_manual_creation import test_manual_bitacora_generation, test_manual_weekly_creation
@@ -265,6 +266,17 @@ def run_all_tests():
     nc_failed = len(nc_result.failures) + len(nc_result.errors)
     total_passed += nc_passed
     total_failed += nc_failed
+
+    # Tests de MarkdownSyncService (Sincronización Bidireccional)
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: MarkdownSyncService (Sincronización Bidireccional Markdown ➔ YAML)")
+    print("=" * 60)
+    sync_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestMarkdownSyncService)
+    sync_result = unittest.TextTestRunner(verbosity=1).run(sync_suite)
+    sync_passed = sync_result.testsRun - len(sync_result.failures) - len(sync_result.errors)
+    sync_failed = len(sync_result.failures) + len(sync_result.errors)
+    total_passed += sync_passed
+    total_failed += sync_failed
 
     # Tests de FileRenameManager (previamente excluidos)
     print("\n🧪 TESTS: managers/file_rename_manager.py")

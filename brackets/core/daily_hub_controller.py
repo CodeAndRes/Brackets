@@ -195,8 +195,23 @@ class DailyHubController:
 
         return ordered_task_ids
 
+    def _sync_from_markdown_if_exists(self, week: WeekSchedule) -> None:
+        """Sincroniza cambios hechos a mano en el .md de la semana activa hacia la BD YAML."""
+        from brackets.utils.legacy_utils import generate_filename
+        from brackets.managers.markdown_sync_service import MarkdownSyncService
+        md_path = generate_filename(
+            year=week.year,
+            month=week.month,
+            week=week.week_number,
+            directory=self.vault_root
+        )
+        if os.path.exists(md_path):
+            service = MarkdownSyncService(self.manager, self.vault_root)
+            service.sync_week_from_markdown(md_path, week.year, week.week_number)
+
     def run(self) -> str:
         """Bucle principal de interacción del Hub Diario. Retorna 'menu' o 'exit'."""
+        first_iteration = True
         while True:
             week, day = self._get_active_week_and_day()
             if not week or not day:
@@ -204,6 +219,11 @@ class DailyHubController:
                 self.print("   Crea una bitácora semanal primero o revisa data/weeks/.")
                 self.input("\nPresiona Enter para ir al menú principal...")
                 return "menu"
+
+            # Sincronización automática de cambios manuales en Markdown al abrir el hub
+            if first_iteration:
+                self._sync_from_markdown_if_exists(week)
+                first_iteration = False
 
             # Arrastre automático día a día de tareas pendientes previas
             if self.manager.rollover_day_tasks(week, day.day_number) > 0:
