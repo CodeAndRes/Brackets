@@ -651,7 +651,8 @@ class EntityManager:
 
     def rollover_day_tasks(self, week: WeekSchedule, current_day_number: int) -> int:
         """
-        Arrastra tareas pendientes de días previos de la misma semana al día actual.
+        Arrastra tareas pendientes de días previos de la misma semana al día actual,
+        eliminándolas del día anterior para que no queden duplicadas.
         Devuelve el número de tareas arrastradas.
         """
         current_day = next((d for d in week.days if d.day_number == current_day_number), None)
@@ -667,10 +668,12 @@ class EntityManager:
         rolled_count = 0
         for i in range(curr_idx):
             prev_day = week.days[i]
-            for tid in prev_day.task_ids:
+            for tid in list(prev_day.task_ids):
                 task = self.tasks.get(tid)
-                if task and task.is_pending and tid not in current_day.task_ids:
-                    current_day.task_ids.append(tid)
+                if task and task.is_pending:
+                    prev_day.task_ids.remove(tid)
+                    if tid not in current_day.task_ids:
+                        current_day.task_ids.append(tid)
                     rolled_count += 1
 
         if rolled_count > 0:

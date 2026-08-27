@@ -255,6 +255,7 @@ class TestRelationalBitacoraRenderer(unittest.TestCase):
         rolled = self.manager.rollover_day_tasks(week, day2.day_number)
         self.assertGreaterEqual(rolled, 1)
         self.assertIn(task.id, day2.task_ids)
+        self.assertNotIn(task.id, day1.task_ids)
 
     def test_two_weeks_rollover_rule(self):
         """Valida que una tarea arrastrada durante 2 semanas se desagenda y pasa a backlog."""
