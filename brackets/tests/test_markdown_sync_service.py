@@ -177,5 +177,30 @@ class TestMarkdownSyncService(unittest.TestCase):
         self.assertIn("Hipótesis manual", new_idea.content)
 
 
+    def test_sync_week_deduplicates_pending_tasks_across_days(self):
+        """Verifica que si un markdown contiene la misma tarea pendiente en varios días, solo se asigna al último."""
+        # Simular markdown con la misma tarea pendiente en día 24 y día 25
+        with open(self.md_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Añadir tarea pendiente en día 24 y en día 25
+        content_modified = content.replace(
+            "## 🚗25",
+            "## 🚗25\n  - [ ] Tarea Base Día 24"
+        )
+        with open(self.md_path, "w", encoding="utf-8") as f:
+            f.write(content_modified)
+
+        synced = self.sync_service.sync_week_from_markdown(self.md_path, 2026, 35)
+        self.assertTrue(synced)
+
+        day24 = next(d for d in self.week.days if d.day_number == 24)
+        day25 = next(d for d in self.week.days if d.day_number == 25)
+
+        # Debe estar en día 25 (el último) y NO en día 24
+        self.assertIn(self.task_day24.id, day25.task_ids)
+        self.assertNotIn(self.task_day24.id, day24.task_ids)
+
+
 if __name__ == "__main__":
     unittest.main()

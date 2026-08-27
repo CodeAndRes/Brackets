@@ -3,13 +3,14 @@
 Servicio de Sincronización Bidireccional: Markdown ➔ YAML Database.
 Analiza archivos Markdown editados externamente (Obsidian, VSCode, etc.)
 y reconcilia el estado de tareas, notas e ideas en la base de datos relacional YAML.
+Garantiza la no duplicidad de tareas arrastradas entre días.
 """
 
 from __future__ import annotations
 import os
 import re
 from datetime import datetime
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 
 from brackets.models.entities import Task, Note, Idea, WeekSchedule, DaySchedule
 from brackets.managers.entity_manager import EntityManager
@@ -50,12 +51,11 @@ class MarkdownSyncService:
         notes_blocks = sections.get("notes_blocks", [])
         self._reconcile_notes(week, notes_blocks, year, week_num)
 
-        # 4. Reconciliar Días (## 🏠XX, ## 🚗XX, etc.)
+        # 4. Reconciliar Días de forma holística sin duplicidades
         days_dict = sections.get("days", {})
-        for day_num, day_task_lines in days_dict.items():
-            self._reconcile_day_tasks(week, day_num, day_task_lines, year, week_num, today_str)
+        self._reconcile_all_days(week, days_dict, year, week_num, today_str)
 
-        # Guardar cambios
+        # Guardar cambios en YAML
         self.manager.save_tasks()
         self.manager.save_notes()
         self.manager.save_week(week)
@@ -133,7 +133,7 @@ class MarkdownSyncService:
         }
 
     def _parse_notes_blocks(self, raw_lines: List[str]) -> List[Dict[str, Any]]:
-        """Extrae bloques de notas con subencabezados (### Título) y sus viñetas."""
+        """Extrae bloques de notas con subencabezados (### Título o - ### Título) y sus viñetas."""
         blocks: List[Dict[str, Any]] = []
         current_title = None
         current_proj = None
@@ -228,41 +228,101 @@ class MarkdownSyncService:
                         week_num=week_num
                     )
 
-    def _reconcile_day_tasks(
+    def _reconcile_all_days(
         self,
         week: WeekSchedule,
-        day_number: int,
-        task_tuples: List[Tuple[bool, str]],
+        days_dict: Dict[int, List[Tuple[bool, str]]],
         year: int,
         week_num: int,
         today_str: str
     ) -> None:
-        """Reconcilia tareas de un día específico."""
-        day = next((d for d in week.days if d.day_number == day_number), None)
-        if not day:
-            return
+        """
+        Reconcilia tareas de todos los días de la semana de forma holística:
+        - Si una tarea está completada ([x]), se asigna al día donde se completó y se marca done.
+        - Si una tarea está pendiente ([ ]):
+            - Si aparece en múltiples días en el markdown (por haber sido arrastrada previamente),
+              SOLO se asigna al ÚLTIMO día donde aparece (o día activo).
+            - Se elimina de los días anteriores de la semana para evitar duplicidades.
+        - Se limpia cualquier ID duplicado dentro del mismo día o entre días para tareas pendientes.
+        """
+        day_by_number = {d.day_number: d for d in week.days}
+        ordered_day_numbers = [d.day_number for d in week.days]
 
-        current_day_tasks = [self.manager.tasks[tid] for tid in day.task_ids if tid in self.manager.tasks]
+        pending_task_latest_day: Dict[str, int] = {}
+        done_tasks_by_day: Dict[int, List[str]] = {d_num: [] for d_num in ordered_day_numbers}
 
-        for is_done, title in task_tuples:
-            matched_task = next((t for t in current_day_tasks if t.title == title), None)
-            if matched_task:
-                if matched_task.is_done != is_done:
-                    matched_task.status = "done" if is_done else "pending"
-                    matched_task.completed_at = today_str if is_done else None
-            else:
-                # Tarea nueva escrita a mano en el día
-                new_task = self.manager.create_task(
+        for day_num in ordered_day_numbers:
+            tuples = days_dict.get(day_num, [])
+            for is_done, title in tuples:
+                clean_title = title.strip()
+                if not clean_title:
+                    continue
+                if is_done:
+                    done_tasks_by_day.setdefault(day_num, []).append(clean_title)
+                else:
+                    # Guardar el último día donde aparece como pendiente
+                    pending_task_latest_day[clean_title] = day_num
+
+        # 1. Reconciliar tareas COMPLETADAS ([x])
+        for day_num, done_titles in done_tasks_by_day.items():
+            day = day_by_number.get(day_num)
+            if not day:
+                continue
+            for title in done_titles:
+                matched_task = next((t for t in self.manager.tasks.values() if t.title == title), None)
+                if not matched_task:
+                    matched_task = self.manager.create_task(
+                        title=title,
+                        year=year,
+                        week_num=week_num,
+                        day_number=day_num,
+                        status="done"
+                    )
+                else:
+                    matched_task.status = "done"
+                    if not matched_task.completed_at:
+                        matched_task.completed_at = today_str
+
+                if matched_task.id not in day.task_ids:
+                    day.task_ids.append(matched_task.id)
+
+        # 2. Reconciliar tareas PENDIENTES ([ ])
+        for title, latest_day_num in pending_task_latest_day.items():
+            target_day = day_by_number.get(latest_day_num)
+            if not target_day:
+                continue
+
+            matched_task = next((t for t in self.manager.tasks.values() if t.title == title), None)
+            if not matched_task:
+                matched_task = self.manager.create_task(
                     title=title,
                     year=year,
                     week_num=week_num,
-                    day_number=day_number
+                    day_number=latest_day_num,
+                    status="pending"
                 )
-                if is_done:
-                    new_task.status = "done"
-                    new_task.completed_at = today_str
-                if new_task.id not in day.task_ids:
-                    day.task_ids.append(new_task.id)
+
+            # Asegurar que esté en el latest_day
+            if matched_task.id not in target_day.task_ids:
+                target_day.task_ids.append(matched_task.id)
+
+            # ELIMINAR de todos los días distintos a latest_day_num para evitar duplicidades
+            for d_num in ordered_day_numbers:
+                if d_num != latest_day_num:
+                    other_day = day_by_number.get(d_num)
+                    if other_day and matched_task.id in other_day.task_ids:
+                        if matched_task.is_pending:
+                            other_day.task_ids.remove(matched_task.id)
+
+        # 3. Deduplicar IDs en cada día preservando orden
+        for day in week.days:
+            seen = set()
+            deduped = []
+            for tid in day.task_ids:
+                if tid not in seen and tid in self.manager.tasks:
+                    seen.add(tid)
+                    deduped.append(tid)
+            day.task_ids = deduped
 
     # -------------------------------------------------------------------------
     # Sincronización de Ideas ([🧩GENERAL]🧠Ideas.md)
