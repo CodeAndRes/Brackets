@@ -43,20 +43,25 @@ class MarkdownSyncService:
         # 1. Parsear Secciones Principales
         sections = self._parse_markdown_sections(content)
 
-        # 2. Reconciliar Topics (## ✅Topics)
+        # 2. Reconciliar Topics Generales (## 🎯Topics)
         topics_lines = sections.get("topics", [])
         self._reconcile_topics(week, topics_lines, today_str)
 
-        # 3. Reconciliar Notas (## 📝Notes)
+        # 3. Reconciliar Tareas de la Semana (## 📋Week Tasks)
+        week_tasks = sections.get("week_tasks", [])
+        self._reconcile_week_tasks(week, week_tasks, today_str)
+
+        # 4. Reconciliar Notas (## 📝Notes)
         notes_blocks = sections.get("notes_blocks", [])
         self._reconcile_notes(week, notes_blocks, year, week_num)
 
-        # 4. Reconciliar Días de forma holística sin duplicidades
+        # 5. Reconciliar Días de forma holística sin duplicidades
         days_dict = sections.get("days", {})
         days_meta = sections.get("days_meta", {})
         self._reconcile_all_days(week, days_dict, days_meta, year, week_num, today_str)
 
         # Guardar cambios en YAML
+        self.manager.save_topics()
         self.manager.save_tasks()
         self.manager.save_notes()
         self.manager.save_week(week)
@@ -68,7 +73,8 @@ class MarkdownSyncService:
         current_section = None
         current_day_num = None
 
-        topics_lines: List[Tuple[bool, str]] = []
+        topics_lines: List[str] = []
+        week_tasks_lines: List[Tuple[bool, str]] = []
         notes_raw_lines: List[str] = []
         days: Dict[int, List[Tuple[bool, str]]] = {}
         days_meta: Dict[int, Dict[str, Any]] = {}
@@ -79,12 +85,21 @@ class MarkdownSyncService:
             # Detectar encabezados nivel 2
             if stripped.startswith("## "):
                 header = stripped[3:].strip()
-                if "Topics" in header or "✅" in header:
+                if "Topics" in header or "🎯" in header:
                     current_section = "topics"
+                    current_day_num = None
+                    continue
+                elif "Week Tasks" in header or "Weekly Tasks" in header or "📋" in header or "Tareas" in header:
+                    current_section = "week_tasks"
                     current_day_num = None
                     continue
                 elif "Notes" in header or "📝" in header:
                     current_section = "notes"
+                    current_day_num = None
+                    continue
+                elif "✅" in header:
+                    # Legacy header "## ✅Topics"
+                    current_section = "week_tasks"
                     current_day_num = None
                     continue
                 else:
@@ -117,12 +132,29 @@ class MarkdownSyncService:
                 continue
 
             if current_section == "topics":
+                m_chk = re.match(r'^\s*-\s*\[([ xX])\]\s*(.*)$', line)
+                if m_chk:
+                    t_text = m_chk.group(2).strip()
+                    if t_text:
+                        week_tasks_lines.append((m_chk.group(1).lower() == 'x', t_text))
+                        topics_lines.append(t_text)
+                else:
+                    m_item = re.match(r'^\s*-\s*(.*)$', line)
+                    if m_item:
+                        t_text = m_item.group(1).strip()
+                        if t_text and not t_text.startswith("---"):
+                            topics_lines.append(t_text)
+            elif current_section == "week_tasks":
                 m = re.match(r'^\s*-\s*\[([ xX])\]\s*(.*)$', line)
                 if m:
                     is_done = m.group(1).lower() == 'x'
                     t_text = m.group(2).strip()
                     if t_text:
-                        topics_lines.append((is_done, t_text))
+                        week_tasks_lines.append((is_done, t_text))
+                elif line.strip().startswith("- "):
+                    t_text = line.strip()[2:].strip()
+                    if t_text:
+                        week_tasks_lines.append((False, t_text))
             elif current_section == "notes":
                 notes_raw_lines.append(line)
             elif current_section == "day" and current_day_num is not None:
@@ -133,7 +165,6 @@ class MarkdownSyncService:
                     if t_text:
                         days[current_day_num].append((is_done, t_text))
                 elif line.strip().startswith("- "):
-                    # Tarea sin checkbox explícito
                     t_text = line.strip()[2:].strip()
                     if t_text:
                         days[current_day_num].append((False, t_text))
@@ -143,6 +174,7 @@ class MarkdownSyncService:
 
         return {
             "topics": topics_lines,
+            "week_tasks": week_tasks_lines,
             "notes_blocks": notes_blocks,
             "days": days,
             "days_meta": days_meta
@@ -192,24 +224,69 @@ class MarkdownSyncService:
 
         return blocks
 
-    def _reconcile_topics(self, week: WeekSchedule, topic_tuples: List[Tuple[bool, str]], today_str: str) -> None:
-        """Reconcilia la lista de topics con los tasks en YAML."""
-        current_tasks = [self.manager.tasks[tid] for tid in week.topics_task_ids if tid in self.manager.tasks]
+    def _reconcile_topics(self, week: WeekSchedule, topic_lines: List[str], today_str: str) -> None:
+        """Reconcilia la lista de topics generales en YAML."""
+        current_topics = [self.manager.topics[tid] for tid in week.topic_ids if tid in self.manager.topics]
 
-        for is_done, title in topic_tuples:
-            # Buscar tarea existente por título
+        for raw_line in topic_lines:
+            clean = raw_line.strip()
+            if not clean:
+                continue
+            # Puede venir en formato "[PROYECTO] Titulo" o "Titulo"
+            proj_match = re.match(r'^\[([A-Za-z0-9_-]+)\]\s*(.*)$', clean)
+            if proj_match:
+                proj_id = proj_match.group(1).strip()
+                title = proj_match.group(2).strip()
+            else:
+                proj_id = "GENERAL"
+                title = clean
+
+            # Buscar topic existente
+            matched = next((t for t in current_topics if t.title == title), None)
+            if not matched:
+                topic = self.manager.create_topic(
+                    title=title,
+                    project_id=proj_id,
+                    year=week.year,
+                    week_num=week.week_number
+                )
+                if topic.id not in week.topic_ids:
+                    week.topic_ids.append(topic.id)
+
+    def _reconcile_week_tasks(self, week: WeekSchedule, task_tuples: List[Tuple[bool, str]], today_str: str) -> None:
+        """Reconcilia la lista de tareas semanales sin día concreto."""
+        current_tasks = [self.manager.tasks[tid] for tid in week.week_task_ids if tid in self.manager.tasks]
+        new_week_task_ids: List[str] = []
+
+        for is_done, title in task_tuples:
             matched_task = next((t for t in current_tasks if t.title == title), None)
             if matched_task:
                 if matched_task.is_done != is_done:
                     matched_task.status = "done" if is_done else "pending"
                     matched_task.completed_at = today_str if is_done else None
+                if matched_task.id not in new_week_task_ids:
+                    new_week_task_ids.append(matched_task.id)
             else:
-                # Tarea añadida a mano en Topics
-                new_task = self.manager.create_task(title=title)
+                # Extraer proyecto si viene en el texto ej: [PROJ] Tarea
+                proj_id = None
+                p_match = re.match(r'^\[([A-Za-z0-9_-]+)\]\s*(.*)$', title)
+                if p_match:
+                    proj_id = p_match.group(1).strip()
+                new_task = self.manager.create_task(
+                    title=title,
+                    project_id=proj_id,
+                    is_week_task=True,
+                    year=week.year,
+                    week_num=week.week_number
+                )
                 if is_done:
                     new_task.status = "done"
                     new_task.completed_at = today_str
-                self.manager.add_topic_to_week(week, new_task.id)
+                if new_task.id not in new_week_task_ids:
+                    new_week_task_ids.append(new_task.id)
+
+        week.week_task_ids = new_week_task_ids
+        week.topics_task_ids = new_week_task_ids
 
     def _reconcile_notes(self, week: WeekSchedule, note_blocks: List[Dict[str, Any]], year: int, week_num: int) -> None:
         """Reconcilia bloques de notas editados a mano."""
@@ -347,7 +424,7 @@ class MarkdownSyncService:
                         if matched_task.is_pending:
                             other_day.task_ids.remove(matched_task.id)
 
-        # 3. Deduplicar IDs en cada día preservando orden
+        # 3. Deduplicar IDs en cada día preservando orden y remover de tareas semanales
         for day in week.days:
             seen = set()
             deduped = []
@@ -355,6 +432,10 @@ class MarkdownSyncService:
                 if tid not in seen and tid in self.manager.tasks:
                     seen.add(tid)
                     deduped.append(tid)
+                    if tid in week.week_task_ids:
+                        week.week_task_ids.remove(tid)
+                    if tid in week.topics_task_ids:
+                        week.topics_task_ids.remove(tid)
             day.task_ids = deduped
 
     # -------------------------------------------------------------------------

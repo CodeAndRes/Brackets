@@ -55,9 +55,12 @@ class TestRelationalBitacoraRenderer(unittest.TestCase):
         self.assertIn("# 🗓️Week 34", markdown)
 
         # 2. Topics
-        self.assertIn("## ✅Topics", markdown)
+        self.assertIn("## 🎯Topics", markdown)
 
-        # 3. Notes
+        # 3. Week Tasks
+        self.assertIn("## 📋Week Tasks", markdown)
+
+        # 4. Notes
         self.assertIn("## 📝Notes", markdown)
 
         # 4. Días

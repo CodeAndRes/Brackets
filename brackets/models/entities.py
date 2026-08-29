@@ -82,6 +82,29 @@ class Definition:
 
 
 @dataclass
+class Topic:
+    """Entidad Topic / Tema general de trabajo enmarcado en un proyecto."""
+    id: str  # ej: "TOP-0001"
+    title: str  # Título / descripción general del topic
+    project_id: str  # Proyecto obligatorio al que pertenece
+    status: str = "active"  # "active", "completed", "archived"
+    created_at: str = ""  # "YYYY-MM-DD"
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> Topic:
+        return cls(
+            id=data.get("id", ""),
+            title=data.get("title", ""),
+            project_id=data.get("project_id", ""),
+            status=data.get("status", "active"),
+            created_at=data.get("created_at", "")
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
 class Task:
     """Entidad Tarea independiente con trazabilidad temporal."""
     id: str
@@ -90,6 +113,7 @@ class Task:
     created_at: str = ""  # "YYYY-MM-DD"
     completed_at: Optional[str] = None
     project_id: Optional[str] = None
+    topic_id: Optional[str] = None
 
     @property
     def is_done(self) -> bool:
@@ -111,7 +135,8 @@ class Task:
             status=data.get("status", "pending"),
             created_at=data.get("created_at", ""),
             completed_at=data.get("completed_at"),
-            project_id=data.get("project_id")
+            project_id=data.get("project_id"),
+            topic_id=data.get("topic_id")
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -128,6 +153,7 @@ class Note:
     month: Optional[str] = None  # "YYYY-MM", ej: "2026-02"
     week: Optional[int] = None
     project_id: Optional[str] = None
+    topic_id: Optional[str] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Note:
@@ -145,7 +171,8 @@ class Note:
             created_at=data.get("created_at", ""),
             month=data.get("month"),
             week=data.get("week"),
-            project_id=proj_id
+            project_id=proj_id,
+            topic_id=data.get("topic_id")
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -180,21 +207,33 @@ class WeekSchedule:
     month: int
     week_number: int
     weight: Optional[float] = None
-    topics_task_ids: List[str] = field(default_factory=list)
+    topic_ids: List[str] = field(default_factory=list)
+    week_task_ids: List[str] = field(default_factory=list)
     note_ids: List[str] = field(default_factory=list)
     days: List[DaySchedule] = field(default_factory=list)
+    topics_task_ids: List[str] = field(default_factory=list)  # Compatibilidad legacy
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> WeekSchedule:
         days_data = [DaySchedule.from_dict(d) for d in data.get("days", [])]
+        raw_topic_ids = data.get("topic_ids") or data.get("topics_ids") or []
+        raw_week_tasks = data.get("week_task_ids") or data.get("weekly_task_ids") or []
+        legacy_topics = data.get("topics_task_ids", [])
+
+        # Si no había week_task_ids pero sí topics_task_ids legacy, inicializar
+        if not raw_week_tasks and legacy_topics:
+            raw_week_tasks = list(legacy_topics)
+
         return cls(
             year=int(data.get("year", 0)),
             month=int(data.get("month", 0)),
             week_number=int(data.get("week_number", 0)),
             weight=data.get("weight"),
-            topics_task_ids=data.get("topics_task_ids", []),
+            topic_ids=list(raw_topic_ids),
+            week_task_ids=list(raw_week_tasks),
             note_ids=data.get("note_ids", []),
-            days=days_data
+            days=days_data,
+            topics_task_ids=list(legacy_topics)
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -203,7 +242,9 @@ class WeekSchedule:
             "month": self.month,
             "week_number": self.week_number,
             "weight": self.weight,
-            "topics_task_ids": self.topics_task_ids,
+            "topic_ids": self.topic_ids,
+            "week_task_ids": self.week_task_ids,
             "note_ids": self.note_ids,
-            "days": [d.to_dict() for d in self.days]
+            "days": [d.to_dict() for d in self.days],
+            "topics_task_ids": self.week_task_ids
         }

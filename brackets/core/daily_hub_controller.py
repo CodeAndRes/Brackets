@@ -144,6 +144,81 @@ class DailyHubController:
 
         return None
 
+    def prompt_topic_or_project_selection(self, week: Optional[WeekSchedule] = None) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Permite vincular a un Topic (que hereda su proyecto) o directamente a un Proyecto.
+        Devuelve (project_id, topic_id).
+        """
+        topics = []
+        if week and week.topic_ids:
+            for tid in week.topic_ids:
+                top = self.manager.topics.get(tid)
+                if top:
+                    topics.append(top)
+        if not topics:
+            topics = list(self.manager.topics.values())
+
+        projects = self.manager.list_projects()
+
+        self.print("\n🎯 ASIGNACIÓN JERÁRQUICA (Proyecto / Topic):")
+        opt_idx = 1
+        topic_map = {}
+        if topics:
+            self.print("  Topics disponibles:")
+            for top in topics:
+                self.print(f"    [{opt_idx}] 🎯 {top.title} ([{top.project_id}])")
+                topic_map[str(opt_idx)] = top
+                opt_idx += 1
+
+        proj_map = {}
+        if projects:
+            self.print("  Proyectos directos:")
+            for p in projects:
+                self.print(f"    [{opt_idx}] 📁 {p.id} ({p.name})")
+                proj_map[str(opt_idx)] = p
+                opt_idx += 1
+
+        self.print("    [0] Ninguno / Sin vincular")
+        self.print("    [+] Crear nuevo Topic o Proyecto")
+
+        choice = self.input("Selecciona opción (0 por defecto): ").strip()
+        if not choice or choice in ("0", "n", "no"):
+            return None, None
+
+        if choice == "+":
+            sub_choice = self.input("¿Crear [t] Topic o [p] Proyecto?: ").strip().lower()
+            if sub_choice.startswith("p"):
+                new_pid = self.input("Código del nuevo proyecto (ej: AMR_LOGISTICS): ").strip()
+                if new_pid:
+                    new_pname = self.input(f"Nombre descriptivo para '{new_pid}': ").strip()
+                    p_obj = self.manager.ensure_project(new_pid, name=new_pname)
+                    return p_obj.id, None
+            else:
+                top_title = self.input("Título del nuevo Topic: ").strip()
+                if top_title:
+                    pid = self.prompt_project_selection() or "GENERAL"
+                    topic = self.manager.create_topic(
+                        title=top_title,
+                        project_id=pid,
+                        year=week.year if week else None,
+                        week_num=week.week_number if week else None
+                    )
+                    return topic.project_id, topic.id
+            return None, None
+
+        if choice in topic_map:
+            chosen_topic = topic_map[choice]
+            return chosen_topic.project_id, chosen_topic.id
+        elif choice in proj_map:
+            chosen_proj = proj_map[choice]
+            return chosen_proj.id, None
+
+        for p in projects:
+            if choice.upper() in (p.id.upper(), p.name.upper()):
+                return p.id, None
+
+        return None, None
+
     def render_dashboard(self, week: WeekSchedule, day: DaySchedule) -> List[str]:
         """Imprime la pantalla del Hub Diario y devuelve los IDs de tareas mostradas en orden."""
         self.clear_screen()
@@ -165,6 +240,15 @@ class DailyHubController:
         self.print(f"🗓️ BITÁCORA: {md_filename} | HOY: {day_label}")
         self.print("=" * 65)
 
+        if week.topic_ids:
+            self.print("🎯 TOPICS DE LA SEMANA:")
+            for tid in week.topic_ids:
+                top = self.manager.topics.get(tid)
+                if top:
+                    proj_tag = f" [{top.project_id}]" if top.project_id else ""
+                    self.print(f"  • {top.title}{proj_tag}")
+            self.print("-" * 65)
+
         self.print("📋 TAREAS DE HOY:")
         if today_tasks:
             for idx, task in enumerate(today_tasks, start=1):
@@ -174,6 +258,16 @@ class DailyHubController:
                 self.print(f"  [{idx}] {status_box} {task.title}{proj_tag}{suffix}")
         else:
             self.print("  (No hay tareas asignadas para este día)")
+
+        week_pending = [
+            self.manager.tasks[tid] for tid in week.week_task_ids
+            if tid in self.manager.tasks and self.manager.tasks[tid].is_pending and tid not in day.task_ids
+        ]
+        if week_pending:
+            self.print("\n📋 TAREAS DE LA SEMANA (SIN DÍA FIJO):")
+            for t in week_pending:
+                proj_tag = f" [{t.project_id}]" if t.project_id else ""
+                self.print(f"  ⏳ {t.title}{proj_tag}")
 
         self.print("\n📝 NOTAS DE LA SEMANA:")
         rendered_notes = 0
@@ -334,7 +428,8 @@ class DailyHubController:
             MenuOption("3", "✅ Marcar Tarea (completar / reactivar)", "toggle_task", aliases=["c", "m"]),
             MenuOption("4", "🗑️  Borrar Tarea", "delete_task", aliases=["d", "b"]),
             MenuOption("5", "🎯 Crear nuevo Topic Semanal", "new_topic", aliases=["t"]),
-            MenuOption("6", "➡️  Agendar Topic Semanal a HOY", "schedule_topic", aliases=["a"]),
+            MenuOption("6", "📋 Nueva Tarea SEMANAL (sin día fijo)", "new_week_task", aliases=["w"]),
+            MenuOption("7", "➡️  Agendar Tarea Semanal / Topic a HOY", "schedule_topic", aliases=["a"]),
         ]
 
         title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
@@ -373,6 +468,9 @@ class DailyHubController:
                     return "refresh"
                 elif opt.action_id == "new_topic":
                     self._action_new_topic(week)
+                    return "refresh"
+                elif opt.action_id == "new_week_task":
+                    self._action_new_week_task(week)
                     return "refresh"
                 elif opt.action_id == "schedule_topic":
                     self._action_schedule_topic(week, day)
@@ -429,10 +527,11 @@ class DailyHubController:
     def _action_new_task(self, week: WeekSchedule, day: DaySchedule) -> None:
         text = self.input("📝 Texto de la nueva tarea: ").strip()
         if text:
-            proj_id = self.prompt_project_selection()
+            proj_id, topic_id = self.prompt_topic_or_project_selection(week)
             self.manager.create_task(
                 title=text,
                 project_id=proj_id,
+                topic_id=topic_id,
                 year=week.year,
                 week_num=week.week_number,
                 day_number=day.day_number
@@ -443,17 +542,34 @@ class DailyHubController:
         ticket_code = self.input("🎫 Código Jira (ej: ATLM-12703): ").strip()
         desc = self.input("📝 Descripción de la tarea: ").strip()
         if ticket_code and desc:
-            proj_id = self.prompt_project_selection()
+            proj_id, topic_id = self.prompt_topic_or_project_selection(week)
             jira_def = self.manager.ensure_jira_definition(ticket_code)
             full_title = f"{desc} {jira_def.id}"
             self.manager.create_task(
                 title=full_title,
                 project_id=proj_id,
+                topic_id=topic_id,
                 year=week.year,
                 week_num=week.week_number,
                 day_number=day.day_number
             )
             self._sync_markdown(week)
+
+    def _action_new_week_task(self, week: WeekSchedule) -> None:
+        text = self.input("📝 Texto de la tarea semanal (sin día fijo): ").strip()
+        if text:
+            proj_id, topic_id = self.prompt_topic_or_project_selection(week)
+            self.manager.create_task(
+                title=text,
+                project_id=proj_id,
+                topic_id=topic_id,
+                is_week_task=True,
+                year=week.year,
+                week_num=week.week_number
+            )
+            self._sync_markdown(week)
+            self.print("✅ Tarea añadida a las Tareas de la Semana.")
+            self.input("Presiona Enter para continuar...")
 
     def _action_toggle_task(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> None:
         if not ordered_task_ids:
@@ -501,18 +617,36 @@ class DailyHubController:
     def _action_new_topic(self, week: WeekSchedule) -> None:
         text = self.input("📝 Texto del nuevo Topic semanal: ").strip()
         if text:
-            proj_id = self.prompt_project_selection()
-            task = self.manager.create_task(title=text, project_id=proj_id)
-            self.manager.add_topic_to_week(week, task.id)
+            proj_id = self.prompt_project_selection() or "GENERAL"
+            topic = self.manager.create_topic(
+                title=text,
+                project_id=proj_id,
+                year=week.year,
+                week_num=week.week_number
+            )
+            task = self.manager.create_task(
+                title=text,
+                project_id=proj_id,
+                topic_id=topic.id,
+                is_week_task=True,
+                year=week.year,
+                week_num=week.week_number
+            )
             self._sync_markdown(week)
-            self.print(f"✅ Topic añadido a la semana: {task.title}")
+            self.print(f"✅ Topic añadido a la semana: [{topic.project_id}] {topic.title}")
             self.input("Presiona Enter para continuar...")
 
     def _action_schedule_topic(self, week: WeekSchedule, day: DaySchedule) -> None:
-        available_topics = [
-            self.manager.tasks[tid] for tid in week.topics_task_ids
-            if tid in self.manager.tasks and self.manager.tasks[tid].is_pending and tid not in day.task_ids
-        ]
+        available_ids = list(week.week_task_ids) + list(week.topics_task_ids)
+        seen = set()
+        available_topics = []
+        for tid in available_ids:
+            if tid not in seen and tid in self.manager.tasks:
+                seen.add(tid)
+                t = self.manager.tasks[tid]
+                if t.is_pending and tid not in day.task_ids:
+                    available_topics.append(t)
+
         if not available_topics:
             self.print("\n⚠️ No hay topics pendientes disponibles para agendar a hoy.")
             self.input("Presiona Enter para continuar...")
@@ -520,8 +654,9 @@ class DailyHubController:
 
         self.print(f"\n📋 TOPICS SEMANALES DISPONIBLES PARA AGENDAR AL DÍA {day.day_number}:")
         for idx, t in enumerate(available_topics, start=1):
+            top_tag = f" 🎯[{self.manager.topics[t.topic_id].title}]" if (t.topic_id and t.topic_id in self.manager.topics) else ""
             proj_tag = f" [{t.project_id}]" if t.project_id else ""
-            self.print(f"  [{idx}] {t.title}{proj_tag}")
+            self.print(f"  [{idx}] {t.title}{top_tag}{proj_tag}")
 
         t_choice = self.input(f"Selecciona topic a agendar a HOY (1-{len(available_topics)}, 0 para cancelar): ").strip()
         try:

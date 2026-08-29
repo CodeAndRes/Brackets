@@ -25,9 +25,24 @@ class BitacoraRenderer:
         lines.append(f"# 🗓️Week {schedule.week_number}{weight_str}\n")
 
         # 2. Sección Topics
-        lines.append("## ✅Topics")
-        if schedule.topics_task_ids:
-            for task_id in schedule.topics_task_ids:
+        lines.append("## 🎯Topics")
+        if schedule.topic_ids:
+            for top_id in schedule.topic_ids:
+                topic = manager.topics.get(top_id)
+                if not topic:
+                    continue
+                if topic.project_id:
+                    lines.append(f"  - [{topic.project_id}] {topic.title}")
+                else:
+                    lines.append(f"  - {topic.title}")
+        else:
+            lines.append("  - ")
+        lines.append("  ---\n")
+
+        # 3. Sección Week Tasks
+        lines.append("## 📋Week Tasks")
+        if schedule.week_task_ids:
+            for task_id in schedule.week_task_ids:
                 task = manager.tasks.get(task_id)
                 if not task:
                     continue
@@ -37,7 +52,7 @@ class BitacoraRenderer:
             lines.append("  - [ ] ")
         lines.append("  ---\n")
 
-        # 3. Sección Notes
+        # 4. Sección Notes
         lines.append("## 📝Notes")
         if schedule.note_ids:
             for note_id in schedule.note_ids:

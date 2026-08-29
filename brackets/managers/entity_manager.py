@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 import yaml
 
-from brackets.models.entities import Task, Note, Definition, Project, Idea, WeekSchedule, DaySchedule
+from brackets.models.entities import Task, Note, Definition, Project, Idea, Topic, WeekSchedule, DaySchedule
 
 
 class EntityManager:
@@ -27,6 +27,7 @@ class EntityManager:
         os.makedirs(self.weeks_dir, exist_ok=True)
 
         self.projects: Dict[str, Project] = {}
+        self.topics: Dict[str, Topic] = {}
         self.tasks: Dict[str, Task] = {}
         self.notes: Dict[str, Note] = {}
         self.ideas: Dict[str, Idea] = {}
@@ -44,10 +45,29 @@ class EntityManager:
     def load_all(self) -> None:
         """Carga todas las tablas de entidades desde el disco."""
         self.load_projects()
+        self.load_topics()
         self.load_definitions()
         self.load_tasks()
         self.load_notes()
         self.load_ideas()
+
+    def load_topics(self) -> None:
+        path = self._get_path("topics")
+        self.topics.clear()
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            items = data.get("topics", [])
+            for item in items:
+                t = Topic.from_dict(item)
+                if t.id:
+                    self.topics[t.id] = t
+
+    def save_topics(self) -> None:
+        path = self._get_path("topics")
+        data = {"topics": [t.to_dict() for t in self.topics.values()]}
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, allow_unicode=True, sort_keys=False)
 
     def load_ideas(self) -> None:
         path = self._get_path("ideas")
@@ -204,6 +224,7 @@ class EntityManager:
     def save_all(self) -> None:
         """Persiste todas las tablas en disco."""
         self.save_projects()
+        self.save_topics()
         self.save_definitions()
         self.save_tasks()
         self.save_notes()
@@ -236,6 +257,101 @@ class EntityManager:
         return project
 
     # -------------------------------------------------------------------------
+    # Métodos de Negocio: Topics
+    # -------------------------------------------------------------------------
+    def _generate_next_topic_id(self) -> str:
+        """Calcula el siguiente ID de topic disponible evitando colisiones."""
+        max_num = 0
+        for top_id in self.topics.keys():
+            match = re.search(r'\d+', top_id)
+            if match:
+                max_num = max(max_num, int(match.group()))
+        return f"TOP-{max_num + 1:04d}"
+
+    def list_topics(self, project_id: Optional[str] = None) -> List[Topic]:
+        """Devuelve la lista de topics, opcionalmente filtrados por proyecto."""
+        topics = list(self.topics.values())
+        if project_id:
+            topics = [t for t in topics if t.project_id == project_id]
+        return sorted(topics, key=lambda t: t.id)
+
+    def create_topic(
+        self,
+        title: str,
+        project_id: str,
+        topic_id: Optional[str] = None,
+        status: str = "active",
+        year: Optional[int] = None,
+        week_num: Optional[int] = None
+    ) -> Topic:
+        """Crea un Topic general de trabajo y lo asocia a un proyecto y opcionalmente a una semana."""
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        if not topic_id:
+            topic_id = self._generate_next_topic_id()
+
+        # Asegurar que el proyecto existe
+        self.ensure_project(project_id)
+
+        topic = Topic(
+            id=topic_id,
+            title=title.strip(),
+            project_id=project_id,
+            status=status,
+            created_at=today_str
+        )
+        self.topics[topic_id] = topic
+        self.save_topics()
+
+        if year and week_num:
+            week = self.load_week(year, week_num)
+            if week and topic_id not in week.topic_ids:
+                week.topic_ids.append(topic_id)
+                self.save_week(week)
+
+        return topic
+
+    def add_topic_to_week(self, week: WeekSchedule, topic_or_task_id: str) -> bool:
+        """Añade un topic general (o tarea legacy) a la semana."""
+        if topic_or_task_id in self.topics:
+            if topic_or_task_id not in week.topic_ids:
+                week.topic_ids.append(topic_or_task_id)
+                self.save_week(week)
+            return True
+        elif topic_or_task_id in self.tasks:
+            if topic_or_task_id not in week.week_task_ids:
+                week.week_task_ids.append(topic_or_task_id)
+            if topic_or_task_id not in week.topics_task_ids:
+                week.topics_task_ids.append(topic_or_task_id)
+            self.save_week(week)
+            return True
+        return False
+
+    def add_week_task(self, week: WeekSchedule, task_id: str) -> None:
+        """Añade una tarea a la lista de tareas de la semana (sin día concreto)."""
+        if task_id not in week.week_task_ids:
+            week.week_task_ids.append(task_id)
+        if task_id not in week.topics_task_ids:
+            week.topics_task_ids.append(task_id)
+        self.save_week(week)
+
+    def schedule_week_task_to_day(self, week: WeekSchedule, task_id: str, day_number: int) -> bool:
+        """Mueve una tarea de la lista semanal a un día concreto de la semana."""
+        target_day = next((d for d in week.days if d.day_number == day_number), None)
+        if not target_day:
+            return False
+
+        if task_id in week.week_task_ids:
+            week.week_task_ids.remove(task_id)
+        if task_id in week.topics_task_ids:
+            week.topics_task_ids.remove(task_id)
+
+        if task_id not in target_day.task_ids:
+            target_day.task_ids.append(task_id)
+
+        self.save_week(week)
+        return True
+
+    # -------------------------------------------------------------------------
     # Métodos de Negocio: Tareas
     # -------------------------------------------------------------------------
     def _generate_next_task_id(self) -> str:
@@ -265,12 +381,19 @@ class EntityManager:
         year: Optional[int] = None,
         week_num: Optional[int] = None,
         day_number: Optional[int] = None,
-        is_topic: bool = False
+        is_topic: bool = False,
+        topic_id: Optional[str] = None,
+        is_week_task: bool = False
     ) -> Task:
         """Crea una tarea, la registra en la tabla y opcionalmente la vincula a la semana/día."""
         today_str = datetime.now().strftime("%Y-%m-%d")
         if not task_id:
             task_id = self._generate_next_task_id()
+
+        # Si se especificó topic_id, heredar su project_id si no vino explícito
+        if topic_id and topic_id in self.topics:
+            if not project_id:
+                project_id = self.topics[topic_id].project_id
 
         task = Task(
             id=task_id,
@@ -278,7 +401,8 @@ class EntityManager:
             status=status,
             created_at=today_str,
             completed_at=today_str if status == "done" else None,
-            project_id=project_id
+            project_id=project_id,
+            topic_id=topic_id
         )
 
         self.tasks[task_id] = task
@@ -288,7 +412,9 @@ class EntityManager:
         if year and week_num:
             week = self.load_week(year, week_num)
             if week:
-                if is_topic:
+                if is_week_task or is_topic:
+                    if task_id not in week.week_task_ids:
+                        week.week_task_ids.append(task_id)
                     if task_id not in week.topics_task_ids:
                         week.topics_task_ids.append(task_id)
                 elif day_number:
@@ -386,7 +512,8 @@ class EntityManager:
         note_id: Optional[str] = None,
         title: Optional[str] = None,
         month: Optional[str] = None,
-        project_id: Optional[str] = None
+        project_id: Optional[str] = None,
+        topic_id: Optional[str] = None
     ) -> Note:
         """Crea una nota estructurada con título y viñetas, asociada a la semana y mes indicado."""
         today_str = datetime.now().strftime("%Y-%m-%d")
@@ -405,6 +532,11 @@ class EntityManager:
             else:
                 month = f"{year}-{datetime.now().month:02d}"
 
+        # Si se especificó topic_id y no viene project_id, heredar del topic
+        if topic_id and topic_id in self.topics:
+            if not project_id:
+                project_id = self.topics[topic_id].project_id
+
         note = Note(
             id=note_id,
             title=title.strip() if title else None,
@@ -412,7 +544,8 @@ class EntityManager:
             created_at=today_str,
             month=month,
             week=week_num,
-            project_id=project_id
+            project_id=project_id,
+            topic_id=topic_id
         )
         self.notes[note_id] = note
         self.save_notes()
@@ -630,15 +763,6 @@ class EntityManager:
     # -------------------------------------------------------------------------
     # Métodos de Ciclo de Vida y Arrastre (Rollover)
     # -------------------------------------------------------------------------
-    def add_topic_to_week(self, week: WeekSchedule, task_id: str) -> bool:
-        """Añade una tarea a los Topics semanales de la semana."""
-        if task_id not in self.tasks:
-            return False
-        if task_id not in week.topics_task_ids:
-            week.topics_task_ids.append(task_id)
-            self.save_week(week)
-        return True
-
     def assign_topic_to_day(self, week: WeekSchedule, task_id: str, day_number: int) -> bool:
         """Asigna un topic semanal a un día concreto de la semana."""
         target_day = next((d for d in week.days if d.day_number == day_number), None)
@@ -718,6 +842,8 @@ class EntityManager:
                         with open(wpath, "r", encoding="utf-8") as f:
                             data = yaml.safe_load(f)
                         if data:
+                            for tid in data.get("week_task_ids", []):
+                                scheduled.add(tid)
                             for tid in data.get("topics_task_ids", []):
                                 scheduled.add(tid)
                             for d in data.get("days", []):
@@ -727,6 +853,7 @@ class EntityManager:
                         pass
         # Añadir las que estén en memoria
         for w in self.weeks.values():
+            scheduled.update(w.week_task_ids)
             scheduled.update(w.topics_task_ids)
             for d in w.days:
                 scheduled.update(d.task_ids)
@@ -739,19 +866,20 @@ class EntityManager:
         prev_prev_week: Optional[WeekSchedule] = None
     ) -> int:
         """
-        Traspasa tareas pendientes de la semana anterior a los Topics de la nueva semana.
+        Traspasa tareas pendientes de la semana anterior a Week Tasks de la nueva semana.
         Aplica la regla de 2 semanas: si una tarea ya estuvo en prev_prev_week y sigue
-        pendiente en prev_week, se desagenda (no pasa a topics de new_week y queda en backlog).
+        pendiente en prev_week, se desagenda (no pasa a new_week y queda en backlog).
         """
         two_weeks_old_ids: Set[str] = set()
         if prev_prev_week:
+            two_weeks_old_ids.update(prev_prev_week.week_task_ids)
             two_weeks_old_ids.update(prev_prev_week.topics_task_ids)
             for d in prev_prev_week.days:
                 two_weeks_old_ids.update(d.task_ids)
 
         pending_from_prev: List[str] = []
-        # Revisar topics
-        for tid in prev_week.topics_task_ids:
+        # Revisar week_task_ids y topics_task_ids de la semana anterior
+        for tid in list(prev_week.week_task_ids) + list(prev_week.topics_task_ids):
             task = self.tasks.get(tid)
             if task and task.is_pending and tid not in pending_from_prev:
                 pending_from_prev.append(tid)
@@ -769,8 +897,10 @@ class EntityManager:
             if tid in two_weeks_old_ids:
                 continue  # Pasa automáticamente a quedar en Backlog no agendado
 
-            if tid not in new_week.topics_task_ids:
-                new_week.topics_task_ids.append(tid)
+            if tid not in new_week.week_task_ids:
+                new_week.week_task_ids.append(tid)
+                if tid not in new_week.topics_task_ids:
+                    new_week.topics_task_ids.append(tid)
                 rolled_count += 1
 
         if rolled_count > 0:
