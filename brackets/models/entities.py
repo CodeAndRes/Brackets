@@ -105,6 +105,47 @@ class Topic:
 
 
 @dataclass
+class RecurringTask:
+    """Definición de tarea o reunión recurrente."""
+    id: str  # ej: "REC-0001"
+    title: str  # ej: "Daily S^3"
+    recurrence_type: str = "weekly_days"  # "weekly_days", "interval_weeks", "week_tasks"
+    days_of_week: List[int] = field(default_factory=list)  # [0, 2, 4] para L, X, V (0=Lunes...6=Domingo)
+    interval_weeks: int = 1  # cada N semanas (ej: 4)
+    base_week: int = 1  # semana base para calcular módulo
+    day_of_week: int = 4  # Para interval_weeks: 0=Lunes, 4=Viernes, etc.
+    project_id: Optional[str] = None
+    topic_id: Optional[str] = None
+    active: bool = True
+    created_at: str = ""
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> RecurringTask:
+        raw_days = data.get("days_of_week", [])
+        if isinstance(raw_days, (int, str)):
+            days_list = [int(raw_days)]
+        else:
+            days_list = [int(x) for x in raw_days]
+
+        return cls(
+            id=data.get("id", ""),
+            title=data.get("title", ""),
+            recurrence_type=data.get("recurrence_type", "weekly_days"),
+            days_of_week=days_list,
+            interval_weeks=int(data.get("interval_weeks", 1)),
+            base_week=int(data.get("base_week", 1)),
+            day_of_week=int(data.get("day_of_week", 4)),
+            project_id=data.get("project_id"),
+            topic_id=data.get("topic_id"),
+            active=data.get("active", True),
+            created_at=data.get("created_at", "")
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
 class Task:
     """Entidad Tarea independiente con trazabilidad temporal."""
     id: str
@@ -114,6 +155,7 @@ class Task:
     completed_at: Optional[str] = None
     project_id: Optional[str] = None
     topic_id: Optional[str] = None
+    recurring_id: Optional[str] = None
 
     @property
     def is_done(self) -> bool:
@@ -136,7 +178,8 @@ class Task:
             created_at=data.get("created_at", ""),
             completed_at=data.get("completed_at"),
             project_id=data.get("project_id"),
-            topic_id=data.get("topic_id")
+            topic_id=data.get("topic_id"),
+            recurring_id=data.get("recurring_id")
         )
 
     def to_dict(self) -> Dict[str, Any]:

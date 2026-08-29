@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 import yaml
 
-from brackets.models.entities import Task, Note, Definition, Project, Idea, Topic, WeekSchedule, DaySchedule
+from brackets.models.entities import Task, Note, Definition, Project, Idea, Topic, RecurringTask, WeekSchedule, DaySchedule
 
 
 class EntityManager:
@@ -28,6 +28,7 @@ class EntityManager:
 
         self.projects: Dict[str, Project] = {}
         self.topics: Dict[str, Topic] = {}
+        self.recurring_tasks: Dict[str, RecurringTask] = {}
         self.tasks: Dict[str, Task] = {}
         self.notes: Dict[str, Note] = {}
         self.ideas: Dict[str, Idea] = {}
@@ -46,10 +47,29 @@ class EntityManager:
         """Carga todas las tablas de entidades desde el disco."""
         self.load_projects()
         self.load_topics()
+        self.load_recurring_tasks()
         self.load_definitions()
         self.load_tasks()
         self.load_notes()
         self.load_ideas()
+
+    def load_recurring_tasks(self) -> None:
+        path = self._get_path("recurring_tasks")
+        self.recurring_tasks.clear()
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            items = data.get("recurring_tasks", [])
+            for item in items:
+                r = RecurringTask.from_dict(item)
+                if r.id:
+                    self.recurring_tasks[r.id] = r
+
+    def save_recurring_tasks(self) -> None:
+        path = self._get_path("recurring_tasks")
+        data = {"recurring_tasks": [r.to_dict() for r in self.recurring_tasks.values()]}
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, allow_unicode=True, sort_keys=False)
 
     def load_topics(self) -> None:
         path = self._get_path("topics")
@@ -225,6 +245,7 @@ class EntityManager:
         """Persiste todas las tablas en disco."""
         self.save_projects()
         self.save_topics()
+        self.save_recurring_tasks()
         self.save_definitions()
         self.save_tasks()
         self.save_notes()
@@ -352,6 +373,186 @@ class EntityManager:
         return True
 
     # -------------------------------------------------------------------------
+    # Métodos de Negocio: Tareas Recurrentes
+    # -------------------------------------------------------------------------
+    def _generate_next_recurring_id(self) -> str:
+        """Calcula el siguiente ID de recurrencia disponible evitando colisiones."""
+        max_num = 0
+        for rid in self.recurring_tasks.keys():
+            match = re.search(r'\d+', rid)
+            if match:
+                max_num = max(max_num, int(match.group()))
+        return f"REC-{max_num + 1:04d}"
+
+    def list_recurring_tasks(self, active_only: bool = False) -> List[RecurringTask]:
+        """Devuelve la lista de tareas recurrentes ordenadas por ID."""
+        tasks = list(self.recurring_tasks.values())
+        if active_only:
+            tasks = [t for t in tasks if t.active]
+        return sorted(tasks, key=lambda t: t.id)
+
+    def create_recurring_task(
+        self,
+        title: str,
+        recurrence_type: str = "weekly_days",
+        days_of_week: Optional[List[int]] = None,
+        interval_weeks: int = 1,
+        base_week: int = 1,
+        day_of_week: int = 4,
+        project_id: Optional[str] = None,
+        topic_id: Optional[str] = None,
+        recurring_id: Optional[str] = None
+    ) -> RecurringTask:
+        """Registra una nueva tarea o reunión recurrente."""
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        if not recurring_id:
+            recurring_id = self._generate_next_recurring_id()
+
+        if topic_id and topic_id in self.topics and not project_id:
+            project_id = self.topics[topic_id].project_id
+
+        rec = RecurringTask(
+            id=recurring_id,
+            title=title.strip(),
+            recurrence_type=recurrence_type,
+            days_of_week=days_of_week or [],
+            interval_weeks=interval_weeks,
+            base_week=base_week,
+            day_of_week=day_of_week,
+            project_id=project_id,
+            topic_id=topic_id,
+            active=True,
+            created_at=today_str
+        )
+        self.recurring_tasks[recurring_id] = rec
+        self.save_recurring_tasks()
+        return rec
+
+    def toggle_recurring_task(self, recurring_id: str) -> Optional[RecurringTask]:
+        """Alterna el estado activo/pausado de una tarea recurrente."""
+        rec = self.recurring_tasks.get(recurring_id)
+        if not rec:
+            return None
+        rec.active = not rec.active
+        self.save_recurring_tasks()
+        return rec
+
+    def delete_recurring_task(self, recurring_id: str) -> bool:
+        """Elimina la definición de una tarea recurrente."""
+        if recurring_id in self.recurring_tasks:
+            del self.recurring_tasks[recurring_id]
+            self.save_recurring_tasks()
+            return True
+        return False
+
+    def apply_recurring_tasks(self, week: WeekSchedule) -> int:
+        """
+        Evalúa e inyecta las tareas/reuniones recurrentes activas en la semana indicada.
+        Es totalmente idempotente: no duplica tareas si ya existen en ese día o semana.
+        Devuelve el número de tareas inyectadas.
+        """
+        active_recs = self.list_recurring_tasks(active_only=True)
+        if not active_recs or not week.days:
+            return 0
+
+        # Mapear cada day.day_number a su día de la semana (0=Lunes...6=Domingo)
+        day_to_weekday: Dict[int, int] = {}
+        for iso_wday in range(1, 8):
+            try:
+                dt = datetime.fromisocalendar(week.year, week.week_number, iso_wday)
+                day_to_weekday[dt.day] = dt.weekday()
+            except Exception:
+                pass
+
+        weekday_to_day_schedule: Dict[int, DaySchedule] = {}
+        for idx, d in enumerate(week.days):
+            wday = day_to_weekday.get(d.day_number, idx % 7)
+            weekday_to_day_schedule[wday] = d
+
+        injected_count = 0
+
+        for rec in active_recs:
+            if rec.recurrence_type == "weekly_days":
+                # Días específicos (ej: [0, 2, 4] para Lunes, Miércoles, Viernes)
+                for target_wday in rec.days_of_week:
+                    target_day = weekday_to_day_schedule.get(target_wday)
+                    if not target_day:
+                        continue
+
+                    # Comprobar si ya existe en target_day
+                    already_exists = False
+                    for tid in target_day.task_ids:
+                        t = self.tasks.get(tid)
+                        if t and (t.recurring_id == rec.id or t.title == rec.title):
+                            already_exists = True
+                            break
+
+                    if not already_exists:
+                        self.create_task(
+                            title=rec.title,
+                            project_id=rec.project_id,
+                            topic_id=rec.topic_id,
+                            year=week.year,
+                            week_num=week.week_number,
+                            day_number=target_day.day_number,
+                            recurring_id=rec.id
+                        )
+                        injected_count += 1
+
+            elif rec.recurrence_type == "interval_weeks":
+                # Cada N semanas (ej: cada 4 semanas los viernes)
+                if (week.week_number - rec.base_week) % rec.interval_weeks == 0:
+                    target_day = weekday_to_day_schedule.get(rec.day_of_week)
+                    if not target_day:
+                        target_day = week.days[-1]
+
+                    already_exists = False
+                    for tid in target_day.task_ids:
+                        t = self.tasks.get(tid)
+                        if t and (t.recurring_id == rec.id or t.title == rec.title):
+                            already_exists = True
+                            break
+
+                    if not already_exists:
+                        self.create_task(
+                            title=rec.title,
+                            project_id=rec.project_id,
+                            topic_id=rec.topic_id,
+                            year=week.year,
+                            week_num=week.week_number,
+                            day_number=target_day.day_number,
+                            recurring_id=rec.id
+                        )
+                        injected_count += 1
+
+            elif rec.recurrence_type == "week_tasks":
+                # Cada N semanas en Tareas de la Semana (sin día fijo)
+                if (week.week_number - rec.base_week) % rec.interval_weeks == 0:
+                    already_exists = False
+                    for tid in week.week_task_ids:
+                        t = self.tasks.get(tid)
+                        if t and (t.recurring_id == rec.id or t.title == rec.title):
+                            already_exists = True
+                            break
+
+                    if not already_exists:
+                        self.create_task(
+                            title=rec.title,
+                            project_id=rec.project_id,
+                            topic_id=rec.topic_id,
+                            is_week_task=True,
+                            year=week.year,
+                            week_num=week.week_number,
+                            recurring_id=rec.id
+                        )
+                        injected_count += 1
+
+        if injected_count > 0:
+            self.save_week(week)
+
+        return injected_count
+
+    # -------------------------------------------------------------------------
     # Métodos de Negocio: Tareas
     # -------------------------------------------------------------------------
     def _generate_next_task_id(self) -> str:
@@ -383,7 +584,8 @@ class EntityManager:
         day_number: Optional[int] = None,
         is_topic: bool = False,
         topic_id: Optional[str] = None,
-        is_week_task: bool = False
+        is_week_task: bool = False,
+        recurring_id: Optional[str] = None
     ) -> Task:
         """Crea una tarea, la registra en la tabla y opcionalmente la vincula a la semana/día."""
         today_str = datetime.now().strftime("%Y-%m-%d")
@@ -402,7 +604,8 @@ class EntityManager:
             created_at=today_str,
             completed_at=today_str if status == "done" else None,
             project_id=project_id,
-            topic_id=topic_id
+            topic_id=topic_id,
+            recurring_id=recurring_id
         )
 
         self.tasks[task_id] = task

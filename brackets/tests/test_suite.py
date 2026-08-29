@@ -47,6 +47,7 @@ from brackets.tests.test_core_project_backlog_controller import TestCoreProjectB
 from brackets.tests.test_core_note_crud_controller import TestCoreNoteCrudController
 from brackets.tests.test_markdown_sync_service import TestMarkdownSyncService
 from brackets.tests.test_topics_and_week_tasks import TestTopicsAndWeekTasks
+from brackets.tests.test_recurring_tasks import TestRecurringTasks
 from brackets.tests.test_file_rename_manager import test_file_rename_manager
 from brackets.tests.test_global_search_replace import test_global_search_replace
 from brackets.tests.test_manual_creation import test_manual_bitacora_generation, test_manual_weekly_creation
@@ -302,6 +303,17 @@ def run_all_tests():
     tw_failed = len(tw_result.failures) + len(tw_result.errors)
     total_passed += tw_passed
     total_failed += tw_failed
+
+    # Tests de Tareas y Reuniones Recurrentes
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: Tareas y Reuniones Recurrentes (RecurringTask)")
+    print("=" * 60)
+    rec_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestRecurringTasks)
+    rec_result = unittest.TextTestRunner(verbosity=1).run(rec_suite)
+    rec_passed = rec_result.testsRun - len(rec_result.failures) - len(rec_result.errors)
+    rec_failed = len(rec_result.failures) + len(rec_result.errors)
+    total_passed += rec_passed
+    total_failed += rec_failed
 
     # Tests de FileRenameManager (previamente excluidos)
     print("\n🧪 TESTS: managers/file_rename_manager.py")

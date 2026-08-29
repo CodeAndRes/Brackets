@@ -110,6 +110,9 @@ class WeeklyGenerator:
                 prev_prev_week = self.entity_manager.load_week(prev_prev_year, prev_prev_week_num)
                 self.entity_manager.rollover_week_to_new_week(prev_week, new_week_schedule, prev_prev_week)
 
+            # Inyectar tareas y reuniones recurrentes
+            self.entity_manager.apply_recurring_tasks(new_week_schedule)
+
             self.entity_manager.save_week(new_week_schedule)
             new_content = BitacoraRenderer.render_week(new_week_schedule, self.entity_manager)
         else:

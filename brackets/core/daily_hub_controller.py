@@ -329,6 +329,8 @@ class DailyHubController:
             # Sincronización automática de cambios manuales en Markdown al abrir el hub
             if first_iteration:
                 self._sync_from_markdown_if_exists(week)
+                if self.manager.apply_recurring_tasks(week) > 0:
+                    self._sync_markdown(week)
                 first_iteration = False
 
             # Arrastre automático día a día de tareas pendientes previas
@@ -430,6 +432,7 @@ class DailyHubController:
             MenuOption("5", "🎯 Crear nuevo Topic Semanal", "new_topic", aliases=["t"]),
             MenuOption("6", "📋 Nueva Tarea SEMANAL (sin día fijo)", "new_week_task", aliases=["w"]),
             MenuOption("7", "➡️  Agendar Tarea Semanal / Topic a HOY", "schedule_topic", aliases=["a"]),
+            MenuOption("8", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
         ]
 
         title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
@@ -474,6 +477,11 @@ class DailyHubController:
                     return "refresh"
                 elif opt.action_id == "schedule_topic":
                     self._action_schedule_topic(week, day)
+                    return "refresh"
+                elif opt.action_id == "recurring_menu":
+                    res = self.manage_recurring_menu(week, day)
+                    if res in ("menu", "exit"):
+                        return res
                     return "refresh"
 
     def manage_day_menu(self, week: WeekSchedule) -> Optional[str]:
@@ -701,3 +709,186 @@ class DailyHubController:
         self._sync_markdown(week)
         self.print(f"✅ ¡Día {add_num} ({emoji} {note}) añadido con éxito a la semana!")
         self.input("Presiona Enter para continuar...")
+
+    def manage_recurring_menu(self, week: WeekSchedule, day: DaySchedule) -> Optional[str]:
+        """Subpantalla interactiva para gestionar Tareas y Reuniones Recurrentes."""
+        while True:
+            recs = self.manager.list_recurring_tasks(active_only=False)
+            options = [
+                MenuOption("1", "➕ Nueva Tarea / Reunión Recurrente", "new_rec", aliases=["n", "+"]),
+                MenuOption("2", "⏯️  Pausar / Activar Recurrencia", "toggle_rec", aliases=["p", "t"]),
+                MenuOption("3", "🗑️  Eliminar Definición Recurrente", "delete_rec", aliases=["d"]),
+                MenuOption("4", "⚡ Inyectar / Sincronizar en esta semana", "sync_rec", aliases=["s"]),
+            ]
+
+            title = "🔄 G E S T I Ó N  D E  R E C U R R E N T E S  Y  R E U N I O N E S"
+
+            self.clear_screen()
+            self.print("=" * 65)
+            self.print("🔄 TAREAS Y REUNIONES RECURRENTES CONFIGURADAS:")
+            self.print("=" * 65)
+            if recs:
+                wday_names = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
+                for idx, r in enumerate(recs, start=1):
+                    status_lbl = "✅ Activa" if r.active else "⏸️ Pausada"
+                    if r.recurrence_type == "weekly_days":
+                        days_str = ", ".join(wday_names[d] for d in r.days_of_week if 0 <= d <= 6)
+                        pat = f"Días: [{days_str}]"
+                    elif r.recurrence_type == "interval_weeks":
+                        day_lbl = wday_names[r.day_of_week] if 0 <= r.day_of_week <= 6 else "Día"
+                        pat = f"Cada {r.interval_weeks} sem ({day_lbl}, base W{r.base_week})"
+                    else:
+                        pat = "Semanal sin día fijo"
+
+                    proj_lbl = f" [{r.project_id}]" if r.project_id else ""
+                    self.print(f"  [{idx}] {r.title}{proj_lbl} ➔ {pat} | {status_lbl}")
+            else:
+                self.print("  (No hay tareas recurrentes configuradas todavía)")
+            self.print("-" * 65)
+
+            navigator = MenuNavigator(
+                title=title,
+                options=options,
+                show_back=True,
+                show_main_menu=True,
+                print_fn=self.print,
+                input_fn=self.input,
+                read_single_key_fn=self.read_single_key,
+                clear_screen_fn=lambda: None,
+            )
+
+            nav_status, opt = navigator.prompt()
+            if nav_status in ("back", "menu", "exit"):
+                return nav_status
+
+            if opt:
+                if opt.action_id == "new_rec":
+                    self._action_create_recurring(week)
+                elif opt.action_id == "toggle_rec":
+                    self._action_toggle_recurring(recs)
+                elif opt.action_id == "delete_rec":
+                    self._action_delete_recurring(recs)
+                elif opt.action_id == "sync_rec":
+                    count = self.manager.apply_recurring_tasks(week)
+                    if count > 0:
+                        self._sync_markdown(week)
+                        self.print(f"\n✅ Se han inyectado {count} tareas recurrentes en la semana.")
+                    else:
+                        self.print("\nℹ️ Todas las tareas recurrentes ya estaban presentes en la semana.")
+                    self.input("Presiona Enter para continuar...")
+
+    def _action_create_recurring(self, week: WeekSchedule) -> None:
+        title = self.input("\n📝 Título de la reunión o tarea recurrente (ej: Daily S^3): ").strip()
+        if not title:
+            return
+
+        proj_id, topic_id = self.prompt_topic_or_project_selection(week)
+
+        self.print("\nSelecciona tipo de recurrencia:")
+        self.print("  [1] Días fijos cada semana (ej: Lunes, Miércoles, Viernes)")
+        self.print("  [2] Cada N semanas en día concreto (ej: Viernes cada 4 semanas)")
+        self.print("  [3] Tareas de la Semana (sin día fijo)")
+        t_choice = self.input("Opción (1 por defecto): ").strip()
+
+        if t_choice == "2":
+            interval_str = self.input("¿Cada cuántas semanas? (ej: 4): ").strip()
+            interval = int(interval_str) if interval_str.isdigit() else 4
+            self.print("¿En qué día de la semana? [1] Lunes [2] Martes [3] Miércoles [4] Jueves [5] Viernes")
+            day_choice = self.input("Día (5 por defecto): ").strip()
+            wday_map = {"1": 0, "2": 1, "3": 2, "4": 3, "5": 4}
+            wday = wday_map.get(day_choice, 4)
+            base_w_str = self.input(f"Semana base de inicio ({week.week_number} por defecto): ").strip()
+            base_w = int(base_w_str) if base_w_str.isdigit() else week.week_number
+
+            rec = self.manager.create_recurring_task(
+                title=title,
+                recurrence_type="interval_weeks",
+                interval_weeks=interval,
+                base_week=base_w,
+                day_of_week=wday,
+                project_id=proj_id,
+                topic_id=topic_id
+            )
+        elif t_choice == "3":
+            rec = self.manager.create_recurring_task(
+                title=title,
+                recurrence_type="week_tasks",
+                project_id=proj_id,
+                topic_id=topic_id
+            )
+        else:
+            self.print("Indica los días separados por comas:")
+            self.print("  Ej: '1,3,5' o 'l,x,v' para Lunes, Miércoles y Viernes")
+            days_input = self.input("Días (1,3,5 por defecto): ").strip().lower()
+            days_list = []
+            if not days_input or "1,3,5" in days_input or "l,x,v" in days_input:
+                days_list = [0, 2, 4]
+            else:
+                for token in days_input.replace(" ", "").split(","):
+                    if token in ("1", "l", "lun", "lunes"):
+                        days_list.append(0)
+                    elif token in ("2", "m", "mar", "martes"):
+                        days_list.append(1)
+                    elif token in ("3", "x", "mie", "miercoles"):
+                        days_list.append(2)
+                    elif token in ("4", "j", "jue", "jueves"):
+                        days_list.append(3)
+                    elif token in ("5", "v", "vie", "viernes"):
+                        days_list.append(4)
+                    elif token in ("6", "s", "sab", "sabado"):
+                        days_list.append(5)
+                    elif token in ("7", "d", "dom", "domingo"):
+                        days_list.append(6)
+            if not days_list:
+                days_list = [0, 2, 4]
+
+            rec = self.manager.create_recurring_task(
+                title=title,
+                recurrence_type="weekly_days",
+                days_of_week=sorted(list(set(days_list))),
+                project_id=proj_id,
+                topic_id=topic_id
+            )
+
+        # Aplicar de inmediato a la semana en curso
+        injected = self.manager.apply_recurring_tasks(week)
+        if injected > 0:
+            self._sync_markdown(week)
+        self.print(f"\n✅ Recurrencia '{rec.title}' creada con éxito.")
+        self.input("Presiona Enter para continuar...")
+
+    def _action_toggle_recurring(self, recs: List[Any]) -> None:
+        if not recs:
+            self.print("\n⚠️ No hay recurrencias para pausar o activar.")
+            self.input("Presiona Enter para continuar...")
+            return
+        choice = self.input(f"\nSelecciona número de recurrencia (1-{len(recs)}, 0 para cancelar): ").strip()
+        try:
+            idx = int(choice)
+            if 1 <= idx <= len(recs):
+                target = recs[idx - 1]
+                updated = self.manager.toggle_recurring_task(target.id)
+                if updated:
+                    state_lbl = "activada" if updated.active else "pausada"
+                    self.print(f"✅ Recurrencia '{updated.title}' {state_lbl}.")
+                    self.input("Presiona Enter para continuar...")
+        except ValueError:
+            pass
+
+    def _action_delete_recurring(self, recs: List[Any]) -> None:
+        if not recs:
+            self.print("\n⚠️ No hay recurrencias para eliminar.")
+            self.input("Presiona Enter para continuar...")
+            return
+        choice = self.input(f"\nSelecciona número a eliminar (1-{len(recs)}, 0 para cancelar): ").strip()
+        try:
+            idx = int(choice)
+            if 1 <= idx <= len(recs):
+                target = recs[idx - 1]
+                confirm = self.input(f"¿Seguro que deseas eliminar '{target.title}'? [s/N]: ").strip().lower()
+                if confirm in ("s", "si", "y", "yes"):
+                    self.manager.delete_recurring_task(target.id)
+                    self.print(f"🗑️ Definición '{target.title}' eliminada.")
+                    self.input("Presiona Enter para continuar...")
+        except ValueError:
+            pass
