@@ -464,6 +464,7 @@ class BitacoraManager:
                 clear_screen_fn=clear_screen,
                 input_fn=input,
                 print_fn=print,
+                read_single_key_fn=read_single_key,
             )
         return self.category_management_controller
 
@@ -491,6 +492,7 @@ class BitacoraManager:
                 clear_screen_fn=clear_screen,
                 input_fn=input,
                 print_fn=print,
+                read_single_key_fn=read_single_key,
             )
         return self.file_rename_controller
 

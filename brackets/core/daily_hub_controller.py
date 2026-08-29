@@ -193,12 +193,15 @@ class DailyHubController:
             self.print(f"\n⚡ Fin de semana detectado: pulsa [+] para activar {day_name} {now.day} (Intervención/Guardia)")
 
         self.print("\n" + "-" * 65)
-        self.print("[c] Marcar Tarea        [n] Nueva Tarea HOY     [j] Tarea Jira HOY")
-        self.print("[t] +Topic Semana       [a] Agendar Topic       [s] Cambiar Día Activo")
-        self.print("[d] Borrar Tarea        [m] Añadir Nota Semana  [p] 📁 Backlog & Ideas")
-        if is_weekend_missing:
-            self.print("[+] 🛠️ Activar Intervención Fin de Semana")
-        self.print("[0/b/Esc] Menú General        [q] Salir")
+        self.print("📋 TAREAS HOY:")
+        self.print("  [n] Nueva Tarea        [j] Tarea Jira         [c] Marcar Tarea       [d] Borrar Tarea")
+        self.print("\n📅 DÍA Y PLANIFICACIÓN:")
+        guardia_item = "[+] 🛠️ Guardia Finde   " if is_weekend_missing else "[+] 🛠️ Añadir Día     "
+        self.print(f"  [s] Cambiar Día Activo   {guardia_item}[t] +Topic Semana      [a] Agendar Topic")
+        self.print("\n📁 PROYECTOS Y NOTAS:")
+        self.print("  [p] 📁 Backlog & Ideas  [m] Añadir Nota Semana")
+        self.print("-" * 65)
+        self.print("  [0/b/Esc] Menú General                         [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids

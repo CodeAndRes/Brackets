@@ -242,5 +242,4 @@ class MenuNavigator:
                     return ("action", opt)
 
             # Si no coincide
-            self.print("❌ Opción no reconocida.")
-            self.input("Presiona Enter para continuar...")
+            self.print("❌ Opción inválida.")
