@@ -59,18 +59,19 @@ Este documento contiene un resumen estratégico y técnico detallado de **Bracke
 
 ---
 
-## ⏳ 5. Tareas Pendientes y Próximos Pasos Prioritarios
+## ⏳ 5. Estado de Implementación y Próximos Pasos
 
-En base a la visión estratégica acordada, los próximos desarrollos a abordar son:
+### ✅ Completado Recientemente:
+1.  **Project Hub (Vista por Proyecto y Backlog)**: Implementado en `ProjectBacklogController` y accesible desde el Hub Diario (`[p] Proyectos`).
+2.  **Rollover Relacional Inteligente con Regla de 2 Semanas**: Implementado en `EntityManager.rollover_week_to_new_week()`, traspasando tareas pendientes a `## 📋Week Tasks` y desasignando tareas de más de 2 semanas al Backlog de Proyecto.
+3.  **Jerarquía `Proyecto ➔ Topic ➔ Tarea / Nota`**: Topics semanales persistidos en `topics.yaml` con asignación en cascada.
+4.  **Motor de Tareas y Reuniones Recurrentes**: Persistencia única en `recurring_tasks.yaml` con soporte de días semanales (L-X-V) e intervalos periódicos (cada 4 semanas).
 
-1.  **Project Hub (Vista por Proyecto)**:
-    *   Habilitar un comando en consola o un generador para visualizar rápidamente el resumen de tareas pendientes y completadas agrupadas por cada proyecto activo.
-2.  **Exportador "AI-Context Pack" (`--export-ai`)**:
-    *   Crear una opción que genere un único documento consolidado sin ruido que sirva de contexto inmediato a IAs externas (pegado manual o exportación directa a OneNote/Teams).
-3.  **Rollover Relacional Inteligente**:
-    *   Modificar el flujo de generación semanal para que recupere las tareas pendientes del archivo de tareas centralizado sin duplicarlas físicamente de forma recursiva en múltiples archivos semanales Markdown.
-4.  **Revisión de Backlogs pendientes**:
-    *   Revisar los archivos [`✅BackLog.md`](file:///c:/Projects/brackets-workspace/MyJobNotes/%5B%F0%9F%93%8BPROJECTS%5D%5B%F0%9F%97%83%EF%B8%8FBRACKETS%5D%5B%F0%9F%93%8BPLANIFICACION%5D%E2%9C%85BackLog.md) en MyJobNotes para priorizar bugs locales del menú interactivo.
+### 🚀 Próximos Pasos Prioritarios:
+1.  **Exportador "AI-Context Pack" (`--export-ai`)**:
+    *   Generar un documento consolidado sin ruido que sirva de contexto inmediato a IAs externas (pegado manual o exportación a OneNote/Teams).
+2.  **Smoke test único para validar vault nuevo en un comando**:
+    *   Verificación automática de creación de vault con tablas base.
 
 ---
 

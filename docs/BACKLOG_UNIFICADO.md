@@ -45,6 +45,13 @@ Cola inmediata priorizada:
 - [x] VaultManager con selector de vaults, creacion de vault y flujo de entrada interactivo.
 - [x] Configuracion viva de patron laboral, festivos y vacaciones en menu de configuracion.
 - [x] Separacion fisica core/vault (repo `brackets` desacoplado de vaults).
+- [x] Motor de Base de Datos Relacional YAML-first (`data/tables/`) con proyectos, topics, tareas, notas, definiciones y recurrencias.
+- [x] Sincronización Bidireccional Markdown ➔ YAML (`MarkdownSyncService`) y renderizador unificado (`BitacoraRenderer`).
+- [x] Hub Diario interactivo (Opción B) con dashboard en vivo, subpantallas temáticas (`[t]`, `[n]`, `[p]`, `[d]`, `[8]`) y footer limpio.
+- [x] Entidad `Topic` y jerarquía relacional `Proyecto ➔ Topic ➔ Tarea / Nota` con herencia automática de atributos.
+- [x] Sección `## 📋Week Tasks` en bitácoras para tareas semanales sin día fijo y ciclo de vida de rollover con regla de 2 semanas hacia el Backlog del Proyecto.
+- [x] Motor de Tareas y Reuniones Recurrentes (`RecurringTask`) para días fijos (L-X-V) e intervalos de semanas (cada 4 semanas) con inyección automática e idempotente.
+- [x] Controlador y vista de Backlog de Proyectos (`ProjectBacklogController`).
 
 ## Alta prioridad
 
@@ -73,13 +80,13 @@ Cola inmediata priorizada:
 - [ ] Definir modo opcional sin dimension temporal (solo notas/proyectos, sin bitacoras semanales).
 - [x] Crear opcion de ejecucion diaria para traspaso de tareas entre dias (implementado en `DailyHubController`: dashboard diario con cambio de dia activo).
 - [x] Opcion interactiva para anadir tareas del dia en curso (implementado en `DailyHubController` acciones `[n]`, `[j]`).
-- [ ] Crear y usar archivo de tareas recurrentes (semanal/mensual/cuatrimestral).
+- [x] Crear y usar archivo de tareas recurrentes (semanal/mensual/cuatrimestral) (implementado en `data/tables/recurring_tasks.yaml`).
 
 ## Modulos funcionales futuros
 
 - [ ] Sistema de tipos de entrada por documento (Topic, Note, Task, Def) con orden configurable.
 - [ ] Asistente "siempre escuchando" para crear entradas en dia correcto y en cualquier vault.
-- [ ] Crear categoria de tareas programadas y lista de tareas recurrentes autoinsertadas cada semana.
+- [x] Crear categoria de tareas programadas y lista de tareas recurrentes autoinsertadas cada semana (implementado con `RecurringTask` y `apply_recurring_tasks`).
 - [ ] Posibilidad de cuentas atras para eventos al inicio de semana.
 - [ ] Consulta de prevision meteorologica semanal.
 - [ ] Plantilla editable de bitacora semanal con secciones predefinidas.

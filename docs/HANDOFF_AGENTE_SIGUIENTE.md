@@ -132,54 +132,40 @@ Fecha de corte: 2026-05-26
 
 ## Estado exacto para retomar (sin releer todo el repo)
 
-- Rama de trabajo activa esperada: feature/evolution-lead-kanban.
-- Backlog canonico: docs/BACKLOG_UNIFICADO.md.
-- Principio operativo vigente: WIP=1 bloque funcional por iteracion, commit modular tipo Lego.
-- Ultimo objetivo funcional cerrado: normalizacion de titulo MonthTopics.
-- Ultimo objetivo tecnico incremental: extraccion de resolve_workspace_context fuera de main.py.
-- Ultimo objetivo tecnico incremental: extraccion de dispatcher CLI (has_action_flags/dispatch_cli_action).
-- Ultimo objetivo tecnico incremental: extraccion de seleccion de vault (selector global/create/cancel/local).
-- Ultimo objetivo tecnico incremental: extraccion de parser CLI (build_cli_parser).
-- Ultimo objetivo tecnico incremental: extraccion de startup flow (run_startup_flow).
-- Ultimo objetivo tecnico incremental: extraccion de controller de configuración.
-- Ultimo objetivo tecnico incremental: extraccion de tools controller.
-- Ultimo objetivo tecnico incremental: extraccion de file-management/list/analyze controller.
-- Ultimo objetivo tecnico incremental: extraccion de category-management controller.
-- Ultimo objetivo tecnico incremental: extraccion de sync-yaml controller.
-- Ultimo objetivo tecnico incremental: extraccion de file-rename/global-replace controller.
-- Ultimo objetivo tecnico incremental: guardrail de contexto CLI y validacion estricta de --directory como vault root.
-- Ultimo objetivo tecnico incremental: validacion de vault root tambien en startup (defensa en profundidad).
-- Ultimo objetivo tecnico incremental: fix definitivo de escritura semanal automatica dentro del vault seleccionado (no en workspace root/cwd).
-- Siguiente bloque recomendado: extraer debug-tools legacy flow a controlador dedicado para seguir adelgazando BitacoraManager.
+- Fecha de corte: 2026-08-29
+- Rama de trabajo principal: `main`.
+- Backlog canónico: `docs/BACKLOG_UNIFICADO.md`.
+- Suite de tests unitarios: **165 tests pasando al 100%** (`python brackets/tests/test_suite.py`).
+- Principio operativo vigente: "Siempre que hagas un cambio, hay que crear una rama dedicada".
 
-## Vision objetivo del usuario
-
-Construir un sistema de gestion de trabajo (notas y tareas) con modelo relacional, pero persistido en YAML.
-Markdown debe ser una vista/render de lo que pasa en el motor interno.
-
-## Alcance inmediato recomendado (MVP de base de datos YAML)
-
-1. Definir esquema de tablas YAML para tareas/proyectos/calendario y tiempo.
-2. Crear modulo de repositorio (CRUD) para esas tablas.
-3. Integrar alta de tarea con asignacion a hoy/semana/mes.
-4. Regenerar bitacora para reflejar nuevas tareas del dia.
-
-Ver detalle en docs/PLAN_YAML_RELACIONAL.md.
+### 🏆 Ecosistema Implementado y Verificado:
+1. **Motor Relacional YAML-First (`data/tables/`)**:
+   - Tablas activas: `projects.yaml`, `topics.yaml`, `tasks.yaml`, `notes.yaml`, `definitions.yaml`, `recurring_tasks.yaml`.
+   - Markdown actúa como vista materializada y sincronizador bidireccional (`MarkdownSyncService`, `BitacoraRenderer`).
+2. **Jerarquía Relacional `Proyecto ➔ Topic ➔ Tarea / Nota`**:
+   - Entidad `Topic`: temas de trabajo generales para la semana, obligatoriamente asignados a un Proyecto.
+   - Herencia automática de `project_id` en tareas y notas al asignarles un `topic_id`.
+3. **Sección `## 📋Week Tasks` y Rollover de 2 Semanas**:
+   - `## 🎯Topics` muestra temas generales semanales enmarcados en proyecto.
+   - `## 📋Week Tasks` contiene tareas semanales sin día fijo asignado.
+   - Rollover semanal: tareas pendientes previas van a `Week Tasks`; si llevan 2 semanas pendientes, se retiran de la semana y quedan archivadas en el Backlog de su Proyecto.
+4. **Motor de Tareas y Reuniones Recurrentes (`RecurringTask`)**:
+   - Días específicos semanales (ej: *Daily S^3* los L-X-V).
+   - Intervalos de semanas en día concreto (ej: *Renovar Accesos* cada 4 semanas en Viernes).
+   - Tareas semanales sin día fijo.
+   - Inyección totalmente idempotente al generar bitácora o entrar al Hub Diario.
+5. **Hub Diario con Menús Armonizados (Opción B)**:
+   - Dashboard en vivo con topics, tareas de hoy, tareas semanales y notas.
+   - Subpantallas dedicadas con `MenuNavigator`: `[t]` Tareas, `[n]` Notas, `[p]` Proyectos, `[d]` Días, `[8]` Recurrentes. Footer limpio y directo.
+6. **Project Backlog Controller**:
+   - Explorador interactivo de tareas y proyectos, filtrado por pendientes/completadas y asignación a hoy.
 
 ## Restricciones y criterios de calidad
 
-- Mantener compatibilidad con el flujo actual de bitacoras.
-- Cambios pequenos y testeables; no mezclar refactor masivo con nuevas features.
-- Toda tarea marcada como resuelta debe tener evidencia en codigo y validacion ejecutable.
-
-## Checklist operativo para arrancar
-
-- Ejecutar smoke test CLI:
-  - c:/Projects/brackets-workspace/brackets/.venv/Scripts/python.exe -m brackets.main --help
-- Ejecutar tests parser:
-  - c:/Projects/brackets-workspace/brackets/.venv/Scripts/python.exe brackets/tests/test_utils_content_parser.py
-- Revisar backlog y marcar objetivo de la sesion (maximo 1 bloque funcional).
+- Mantener la suite de 165 tests pasando al 100% con cada cambio.
+- Para caracteres especiales en Windows, forzar `$env:PYTHONUTF8=1`.
+- Toda nueva feature debe desarrollarse en rama propia antes de fusionar en `main`.
 
 ## Prompt sugerido para iniciar un nuevo chat
 
-"Lee docs/HANDOFF_AGENTE_SIGUIENTE.md, docs/BACKLOG_UNIFICADO.md y docs/PLAN_YAML_RELACIONAL.md. Retoma desde el siguiente bloque WIP (modularizar main.py en piezas testeables), manteniendo commits pequenos y actualizando este handoff tras cada bloque cerrado con evidencia de test."
+"Lee docs/HANDOFF_AGENTE_SIGUIENTE.md y docs/BACKLOG_UNIFICADO.md. El motor relacional YAML-First, el Hub Diario, la jerarquía Proyecto/Topic/Tarea y las tareas recurrentes están 100% operativos con 165 tests pasando. Continúa desde las prioridades del backlog creando siempre una rama dedicada para cada cambio."

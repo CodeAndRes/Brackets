@@ -30,6 +30,21 @@ Brackets es un sistema Python que combina **gestión temporal con organización 
 
 ## ✨ Características
 
+### 🖥️ Hub Diario y Navegación Interactiva
+- **Dashboard en tiempo real**: Visualiza la semana activa, topics en curso, tareas de hoy, tareas semanales sin día fijo y notas.
+- **Navegación ágil por categorías (Opción B)**: Menú armonizado con accesos directos (`[t]` Tareas, `[n]` Notas, `[p]` Proyectos, `[d]` Días) y footer limpio.
+- **Sincronización Bidireccional Markdown ➔ YAML**: Edita tus archivos `.md` en cualquier editor y Brackets reconcilia los cambios automáticamente sin duplicidades.
+
+### 🗃️ Base de Datos Relacional YAML-First
+- **Fuente de verdad estructurada**: Todas las entidades viven en `data/tables/` (`projects.yaml`, `topics.yaml`, `tasks.yaml`, `notes.yaml`, `definitions.yaml`, `recurring_tasks.yaml`).
+- **Jerarquía `Proyecto ➔ Topic ➔ Tarea / Nota`**: Tópicos semanales enmarcados en proyectos, con asignación y herencia relacional directa.
+- **Backlog de Proyecto**: Gestión interactiva de tareas por proyecto, con filtros pendientes/completadas y reactivación.
+
+### 🔄 Tareas Recurrentes y Ciclo de Vida Semanal
+- **Reuniones y rutinas programadas**: Configuración de tareas para días específicos (ej: *Daily S^3* los L-X-V) o intervalos (ej: *Renovar accesos* cada 4 semanas). Inyección idempotente.
+- **Sección `## 📋Week Tasks`**: Tareas de la semana sin día fijo.
+- **Rollover con regla de 2 semanas**: Las tareas pendientes de la semana previa se traspasan a la nueva semana; si cumplen 2 semanas sin resolverse, se retiran de la semana y quedan archivadas en el Backlog de su Proyecto.
+
 ### 📝 Generación de Bitácoras
 - **Bitácoras semanales automáticas**: Calcula fechas y transfiere tareas pendientes
 - **Creación manual**: Para vaults nuevos o control total de fechas
@@ -42,54 +57,24 @@ Brackets es un sistema Python que combina **gestión temporal con organización 
 - **Orden inverso**: Contenido más reciente primero
 - **Jerarquía clara**: Año > Meses > Semanas > Días
 
-### 📂 Gestión de Documentos
+### 📂 Gestión de Documentos y Categorías
 - **Categorías jerárquicas**: Anidación infinita (Categoría → Sub → Sub → ...)
 - **Nomenclatura automática**: `[CATEGORIA][SUBCATEGORIA]nombre.ext`
 - **Múltiples extensiones**: `.md`, `.py`, `.sql`, `.yaml`, etc.
 - **Navegación interactiva**: Menú guiado para crear documentos
 
 ### 🔧 Herramientas
+- **Timer Pomodoro v1**: Gestión de sesiones de foco y descanso integrada en CLI
 - **Búsqueda y reemplazo global**: En contenido y nombres de archivo
 - **Renombrado inteligente**: Actualiza referencias automáticamente
 - **Sincronización YAML**: Mantiene `categories.yaml` actualizado con el repo
-- **Vista previa completa**: Simula cambios antes de aplicarlos
 
-### ⚙️ Configuración Avanzada
-- **Feature flags**: Activa/desactiva funcionalidades por vault
-- **Paths configurables**: Separa código de datos
-- **Horarios y festivos**: Gestión de calendario laboral
-- **Modo sin bitácoras**: Úsalo solo como gestor de notas
+---
 
-## 🚀 Instalación
+## 🛠️ Requisitos e Instalación
 
-### Requisitos
-- Python 3.9+
-- PyYAML
-
-### Opción 1: Clonar y usar directamente
-
-```
-brackets/
-├── brackets/              # 🎯 Código principal
-│   ├── core/             # Clases base
-│   ├── utils/            # Utilidades compartidas
-│   ├── managers/         # Gestores de alto nivel
-│   ├── consolidators/    # Consolidación mensual/anual
-│   ├── generators/       # Generación de bitácoras
-│   ├── models/           # Modelos de datos
-│   └── tools/            # Herramientas auxiliares
-├── run_brackets.py       # Punto de entrada principal
-├── requirements.txt      # Dependencias
-├── setup.py             # Instalación pip
-└── README.md            # Esta documentación
-```
-
-## 🛠️ Requisitos
-
-- Python 3.9+
-- PyYAML (único requisito externo)
-
-## 📦 Instalación
+- **Python 3.9+**
+- **PyYAML** (único requisito externo)
 
 ### Opción 1: Clonar y usar directamente
 
