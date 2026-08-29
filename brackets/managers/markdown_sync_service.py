@@ -53,7 +53,8 @@ class MarkdownSyncService:
 
         # 4. Reconciliar Días de forma holística sin duplicidades
         days_dict = sections.get("days", {})
-        self._reconcile_all_days(week, days_dict, year, week_num, today_str)
+        days_meta = sections.get("days_meta", {})
+        self._reconcile_all_days(week, days_dict, days_meta, year, week_num, today_str)
 
         # Guardar cambios en YAML
         self.manager.save_tasks()
@@ -70,6 +71,7 @@ class MarkdownSyncService:
         topics_lines: List[Tuple[bool, str]] = []
         notes_raw_lines: List[str] = []
         days: Dict[int, List[Tuple[bool, str]]] = {}
+        days_meta: Dict[int, Dict[str, Any]] = {}
 
         for line in lines:
             stripped = line.strip()
@@ -86,12 +88,25 @@ class MarkdownSyncService:
                     current_day_num = None
                     continue
                 else:
-                    # Buscar número de día en el encabezado (ej: "🏠24", "🚗 25", "26")
+                    # Buscar número de día en el encabezado (ej: "🏠24", "🚗 25", "26", "🛠️29 (Intervención)")
                     match = re.search(r'\b(\d{1,2})\b', header)
                     if match:
                         current_section = "day"
                         current_day_num = int(match.group(1))
                         days.setdefault(current_day_num, [])
+
+                        # Extraer emoji si existe antes o junto al número (incluyendo variation selectors como \ufe0f)
+                        emoji_match = re.search(r'^([^\w\s\d()]+?)\s*\b\d{1,2}\b', header)
+                        emoji = emoji_match.group(1).strip() if emoji_match else "🏠"
+
+                        # Extraer nota entre paréntesis si existe
+                        note_match = re.search(r'\(([^)]+)\)', header)
+                        note = note_match.group(1).strip() if note_match else None
+
+                        days_meta[current_day_num] = {
+                            "emoji": emoji,
+                            "note": note
+                        }
                         continue
                     else:
                         current_section = None
@@ -129,7 +144,8 @@ class MarkdownSyncService:
         return {
             "topics": topics_lines,
             "notes_blocks": notes_blocks,
-            "days": days
+            "days": days,
+            "days_meta": days_meta
         }
 
     def _parse_notes_blocks(self, raw_lines: List[str]) -> List[Dict[str, Any]]:
@@ -232,12 +248,14 @@ class MarkdownSyncService:
         self,
         week: WeekSchedule,
         days_dict: Dict[int, List[Tuple[bool, str]]],
+        days_meta: Dict[int, Dict[str, Any]],
         year: int,
         week_num: int,
         today_str: str
     ) -> None:
         """
         Reconcilia tareas de todos los días de la semana de forma holística:
+        - Si un día adicional (ej: guardia/intervención de fin de semana) aparece en el markdown, se añade a week.days.
         - Si una tarea está completada ([x]), se asigna al día donde se completó y se marca done.
         - Si una tarea está pendiente ([ ]):
             - Si aparece en múltiples días en el markdown (por haber sido arrastrada previamente),
@@ -246,6 +264,21 @@ class MarkdownSyncService:
         - Se limpia cualquier ID duplicado dentro del mismo día o entre días para tareas pendientes.
         """
         day_by_number = {d.day_number: d for d in week.days}
+
+        # Asegurar que cualquier día presente en el markdown esté registrado en la semana
+        for day_num in sorted(days_dict.keys()):
+            if day_num not in day_by_number:
+                meta = days_meta.get(day_num, {})
+                emoji = meta.get("emoji", "🛠️")
+                note = meta.get("note", "Intervención" if emoji == "🛠️" else None)
+                new_day = self.manager.add_day_to_week(
+                    week,
+                    day_number=day_num,
+                    location_emoji=emoji,
+                    location_note=note
+                )
+                day_by_number[day_num] = new_day
+
         ordered_day_numbers = [d.day_number for d in week.days]
 
         pending_task_latest_day: Dict[str, int] = {}

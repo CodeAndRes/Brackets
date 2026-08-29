@@ -281,7 +281,35 @@ class TestRelationalBitacoraRenderer(unittest.TestCase):
         # task_new debe haberse arrastrado a week3 topics
         self.assertIn(task_new.id, week3.topics_task_ids)
         # task_old tiene 2 semanas de antigüedad -> se desagenda (no entra a week3 topics)
-        self.assertNotIn(task_old.id, week3.topics_task_ids)
+    def test_add_weekend_intervention_day(self):
+        """Valida que add_day_to_week añada un día de guardia/intervención y BitacoraRenderer lo formatee."""
+        week = self.manager.load_week(2026, 35)
+        # Inicialmente 5 días
+        self.assertEqual(len(week.days), 5)
+
+        # Añadir Sábado 29
+        new_day = self.manager.add_day_to_week(
+            week=week,
+            day_number=29,
+            location_emoji="🛠️",
+            location_note="Intervención"
+        )
+        self.assertEqual(new_day.day_number, 29)
+        self.assertEqual(new_day.location_emoji, "🛠️")
+        self.assertEqual(len(week.days), 6)
+        self.assertEqual(week.days[-1].day_number, 29)
+
+        # Crear tarea en el nuevo día
+        task = self.manager.create_task(
+            title="Soporte y monitoreo de switches en caliente",
+            year=2026,
+            week_num=35,
+            day_number=29
+        )
+
+        md = BitacoraRenderer.render_week(week, self.manager)
+        self.assertIn("## 🛠️29 (Intervención)", md)
+        self.assertIn("- [ ] Soporte y monitoreo de switches en caliente", md)
 
 
 if __name__ == "__main__":

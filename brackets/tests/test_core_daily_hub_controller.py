@@ -256,6 +256,40 @@ class TestCoreDailyHubController(unittest.TestCase):
         reloaded_day = next(d for d in reloaded_week.days if d.day_number == active_day.day_number)
         self.assertIn(topic_task.id, reloaded_day.task_ids)
 
+    def test_run_add_weekend_intervention_day(self):
+        """Simula seleccionar 's' y luego '+' para añadir un día de guardia/intervención a la semana."""
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=lambda _: "",
+            print_fn=self._mock_print
+        )
+        active_week, active_day = controller._get_active_week_and_day()
+        initial_day_count = len(active_week.days)
+
+        inputs = [
+            "s",             # Cambiar día activo
+            "+",             # Añadir día de guardia
+            "29",            # Número de día
+            "1",             # 🛠️ Guardia / Intervención
+            "",              # Enter confirmación
+            "q"              # Salir
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller.input = mock_input
+        result = controller.run()
+        self.assertEqual(result, "exit")
+
+        reloaded_week = self.entity_manager.load_week(active_week.year, active_week.week_number, reload=True)
+        self.assertEqual(len(reloaded_week.days), initial_day_count + 1)
+        added_day = next((d for d in reloaded_week.days if d.day_number == 29), None)
+        self.assertIsNotNone(added_day)
+        self.assertEqual(added_day.location_emoji, "🛠️")
+        self.assertEqual(added_day.location_note, "Intervención")
+
 
 if __name__ == "__main__":
     unittest.main()

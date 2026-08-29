@@ -680,6 +680,32 @@ class EntityManager:
             self.save_week(week)
         return rolled_count
 
+    def add_day_to_week(
+        self,
+        week: WeekSchedule,
+        day_number: int,
+        location_emoji: str = "🛠️",
+        location_note: Optional[str] = "Intervención"
+    ) -> DaySchedule:
+        """
+        Añade un día adicional (ej: sábado o domingo de guardia/intervención) a la semana.
+        Si el día ya existe, devuelve el DaySchedule existente.
+        """
+        existing = next((d for d in week.days if d.day_number == day_number), None)
+        if existing:
+            return existing
+
+        new_day = DaySchedule(
+            day_number=day_number,
+            location_emoji=location_emoji,
+            location_note=location_note,
+            task_ids=[]
+        )
+        week.days.append(new_day)
+        week.days.sort(key=lambda d: d.day_number)
+        self.save_week(week)
+        return new_day
+
     def get_scheduled_task_ids(self) -> Set[str]:
         """Devuelve el conjunto de todos los IDs de tareas asignados a alguna semana/día cargado."""
         scheduled: Set[str] = set()

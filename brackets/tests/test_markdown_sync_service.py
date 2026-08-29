@@ -201,6 +201,28 @@ class TestMarkdownSyncService(unittest.TestCase):
         self.assertIn(self.task_day24.id, day25.task_ids)
         self.assertNotIn(self.task_day24.id, day24.task_ids)
 
+    def test_sync_week_automatically_registers_new_weekend_day(self):
+        """Verifica que si se añade un día de intervención a mano en el markdown, se registre en el YAML."""
+        with open(self.md_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Añadir día 29 al final del markdown
+        content += "\n## 🛠️29 (Intervención)\n  - [ ] Tarea de guardia el sábado\n"
+        with open(self.md_path, "w", encoding="utf-8") as f:
+            f.write(content)
+
+        synced = self.sync_service.sync_week_from_markdown(self.md_path, 2026, 35)
+        self.assertTrue(synced)
+
+        day29 = next((d for d in self.week.days if d.day_number == 29), None)
+        self.assertIsNotNone(day29)
+        self.assertEqual(day29.location_emoji, "🛠️")
+        self.assertEqual(day29.location_note, "Intervención")
+        self.assertEqual(len(day29.task_ids), 1)
+
+        task_obj = self.manager.tasks[day29.task_ids[0]]
+        self.assertEqual(task_obj.title, "Tarea de guardia el sábado")
+
 
 if __name__ == "__main__":
     unittest.main()

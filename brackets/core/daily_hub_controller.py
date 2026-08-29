@@ -186,10 +186,18 @@ class DailyHubController:
         if rendered_notes == 0:
             self.print("  (Sin notas registradas)")
 
+        now = datetime.now()
+        is_weekend_missing = now.weekday() in (5, 6) and not any(d.day_number == now.day for d in week.days)
+        if is_weekend_missing:
+            day_name = "Sábado" if now.weekday() == 5 else "Domingo"
+            self.print(f"\n⚡ Fin de semana detectado: pulsa [+] para activar {day_name} {now.day} (Intervención/Guardia)")
+
         self.print("\n" + "-" * 65)
         self.print("[c] Marcar Tarea        [n] Nueva Tarea HOY     [j] Tarea Jira HOY")
         self.print("[t] +Topic Semana       [a] Agendar Topic       [s] Cambiar Día Activo")
         self.print("[d] Borrar Tarea        [m] Añadir Nota Semana  [p] 📁 Backlog & Ideas")
+        if is_weekend_missing:
+            self.print("[+] 🛠️ Activar Intervención Fin de Semana")
         self.print("[b] Menú General        [q] Salir")
         self.print("=" * 65)
 
@@ -257,18 +265,83 @@ class DailyHubController:
                     clear_screen_fn=self.clear_screen
                 )
                 ctrl.run()
+            if choice == "+":
+                now = datetime.now()
+                def_day = now.day if now.weekday() in (5, 6) else (week.days[-1].day_number + 1)
+                num_input = self.input(f"Número de día a añadir ({def_day} por defecto): ").strip()
+                try:
+                    add_num = int(num_input) if num_input else def_day
+                except ValueError:
+                    add_num = def_day
+
+                self.print("\nSelecciona ubicación/tipo:")
+                self.print("  [1] 🛠️ Guardia / Intervención")
+                self.print("  [2] 🏠 Teletrabajo")
+                self.print("  [3] 🚗 Oficina / Presencial")
+                loc_opt = self.input("Opción (1 por defecto): ").strip()
+                if loc_opt == "2":
+                    emoji, note = "🏠", "Teletrabajo"
+                elif loc_opt == "3":
+                    emoji, note = "🚗", "Oficina"
+                else:
+                    emoji, note = "🛠️", "Intervención"
+
+                new_day = self.manager.add_day_to_week(
+                    week=week,
+                    day_number=add_num,
+                    location_emoji=emoji,
+                    location_note=note
+                )
+                self.active_day_number = new_day.day_number
+                self._sync_markdown(week)
+                self.print(f"✅ ¡Día {add_num} ({emoji} {note}) añadido con éxito a la semana!")
+                self.input("Presiona Enter para continuar...")
                 continue
 
             if choice == "s":
-                # Cambiar día activo
+                # Cambiar día activo o añadir día
                 self.print("\n📅 DÍAS DE LA SEMANA:")
                 for idx, d in enumerate(week.days, start=1):
                     current_marker = " 👈 (Activo)" if d.day_number == day.day_number else ""
                     note_str = f" ({d.location_note})" if d.location_note else ""
                     task_count = len(d.task_ids)
                     self.print(f"  [{idx}] {d.location_emoji} Día {d.day_number}{note_str} - {task_count} tarea(s){current_marker}")
+                self.print("  [+] Añadir día de guardia / intervención de fin de semana")
 
-                day_choice_str = self.input(f"\nSelecciona día (1-{len(week.days)}): ").strip()
+                day_choice_str = self.input(f"\nSelecciona día (1-{len(week.days)} o +): ").strip()
+                if day_choice_str == "+":
+                    now = datetime.now()
+                    def_day = now.day if now.weekday() in (5, 6) else (week.days[-1].day_number + 1)
+                    num_input = self.input(f"Número de día a añadir ({def_day} por defecto): ").strip()
+                    try:
+                        add_num = int(num_input) if num_input else def_day
+                    except ValueError:
+                        add_num = def_day
+
+                    self.print("\nSelecciona ubicación/tipo:")
+                    self.print("  [1] 🛠️ Guardia / Intervención")
+                    self.print("  [2] 🏠 Teletrabajo")
+                    self.print("  [3] 🚗 Oficina / Presencial")
+                    loc_opt = self.input("Opción (1 por defecto): ").strip()
+                    if loc_opt == "2":
+                        emoji, note = "🏠", "Teletrabajo"
+                    elif loc_opt == "3":
+                        emoji, note = "🚗", "Oficina"
+                    else:
+                        emoji, note = "🛠️", "Intervención"
+
+                    new_day = self.manager.add_day_to_week(
+                        week=week,
+                        day_number=add_num,
+                        location_emoji=emoji,
+                        location_note=note
+                    )
+                    self.active_day_number = new_day.day_number
+                    self._sync_markdown(week)
+                    self.print(f"✅ ¡Día {add_num} ({emoji} {note}) añadido con éxito a la semana!")
+                    self.input("Presiona Enter para continuar...")
+                    continue
+
                 try:
                     d_idx = int(day_choice_str)
                     if 1 <= d_idx <= len(week.days):
