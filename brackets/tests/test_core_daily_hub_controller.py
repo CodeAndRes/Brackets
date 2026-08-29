@@ -56,8 +56,8 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertIn("🗓️ BITÁCORA:", output_text)
         self.assertIn("🚗 Día 17 (Oficina)", output_text)
         self.assertIn("Pruebas de AMRs para la vuelta", output_text)
-        self.assertIn("[c] Marcar Tarea", output_text)
-        self.assertIn("[p] 📁 Backlog & Ideas", output_text)
+        self.assertIn("[t] 📋 Tareas", output_text)
+        self.assertIn("[p] 📁 Proyectos", output_text)
 
     def test_run_toggle_task(self):
         """Simula pulsar 'c', seleccionar tarea '1' y luego 'q' para salir."""
@@ -101,8 +101,8 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(controller.active_day_number, week.days[3].day_number)
 
     def test_run_add_new_task(self):
-        """Simula pulsar 'n', escribir tarea, elegir proyecto 0 (sin vincular) y luego 'q' para salir."""
-        inputs = ["n", "Configurar nuevo endpoint en backend", "0", "q"]
+        """Simula pulsar 't' (menú tareas), '1' (nueva tarea), escribir tarea, elegir proyecto 0 y salir."""
+        inputs = ["t", "1", "Configurar nuevo endpoint en backend", "0", "q"]
 
         def mock_input(prompt=""):
             return inputs.pop(0)
@@ -193,9 +193,10 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(result, "menu")
 
     def test_run_add_topic(self):
-        """Simula pulsar 't', crear un topic semanal y salir con 'q'."""
+        """Simula pulsar 't' (menú tareas), '5' (crear topic), definir texto y salir con 'q'."""
         inputs = [
             "t",
+            "5",
             "Definir estrategia Q3 para métricas",
             "0",  # Sin proyecto
             "",   # Enter confirmación

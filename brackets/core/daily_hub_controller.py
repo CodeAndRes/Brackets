@@ -13,6 +13,7 @@ from brackets.models.entities import WeekSchedule, DaySchedule, Task, Note
 from brackets.managers.entity_manager import EntityManager
 from brackets.generators.bitacora_renderer import BitacoraRenderer
 from brackets.utils.legacy_utils import generate_filename
+from brackets.core.menu_navigator import MenuNavigator, MenuOption
 
 
 class DailyHubController:
@@ -32,7 +33,12 @@ class DailyHubController:
         self.notes_root = self.vault_root
         self.input = input_fn
         self.print = print_fn
-        self.read_single_key = read_single_key_fn
+        if read_single_key_fn is not None:
+            self.read_single_key = read_single_key_fn
+        elif input_fn is not None and input_fn is not input:
+            self.read_single_key = lambda prompt="": self.input(prompt)
+        else:
+            self.read_single_key = None
         self.clear_screen = clear_screen_fn or (lambda: None)
 
         self.active_day_number: Optional[int] = None
@@ -192,14 +198,8 @@ class DailyHubController:
             day_name = "Sábado" if now.weekday() == 5 else "Domingo"
             self.print(f"\n⚡ Fin de semana detectado: pulsa [+] para activar {day_name} {now.day} (Intervención/Guardia)")
 
-        self.print("\n" + "-" * 65)
-        self.print("📋 TAREAS HOY:")
-        self.print("  [n] Nueva Tarea        [j] Tarea Jira         [c] Marcar Tarea       [d] Borrar Tarea")
-        self.print("\n📅 DÍA Y PLANIFICACIÓN:")
-        guardia_item = "[+] 🛠️ Guardia Finde   " if is_weekend_missing else "[+] 🛠️ Añadir Día     "
-        self.print(f"  [s] Cambiar Día Activo   {guardia_item}[t] +Topic Semana      [a] Agendar Topic")
-        self.print("\n📁 PROYECTOS Y NOTAS:")
-        self.print("  [p] 📁 Backlog & Ideas  [m] Añadir Nota Semana")
+        self.print("\n" + "=" * 65)
+        self.print("  [t] 📋 Tareas      [n] 📝 Notas      [p] 📁 Proyectos      [d] 📅 Día")
         self.print("-" * 65)
         self.print("  [0/b/Esc] Menú General                         [q] Salir")
         self.print("=" * 65)
@@ -256,6 +256,32 @@ class DailyHubController:
             if choice in ("0", "b", "menu", "back", "volver", "__ESC__", "\x1b"):
                 return "menu"
 
+            if choice == "t":
+                res = self.manage_tasks_menu(week, day, ordered_task_ids)
+                if res == "menu":
+                    return "menu"
+                if res == "exit":
+                    return "exit"
+                continue
+
+            if choice in ("n", "m"):
+                from brackets.core.note_crud_controller import NoteCrudController
+                crud = NoteCrudController(
+                    entity_manager=self.manager,
+                    current_week=week,
+                    vault_root=self.vault_root,
+                    input_fn=self.input,
+                    print_fn=self.print,
+                    clear_screen_fn=self.clear_screen,
+                    read_single_key_fn=self.read_single_key
+                )
+                res = crud.run()
+                if res == "menu":
+                    return "menu"
+                if res == "exit":
+                    return "exit"
+                continue
+
             if choice == "p":
                 from brackets.core.project_backlog_controller import ProjectBacklogController
                 ctrl = ProjectBacklogController(
@@ -271,228 +297,272 @@ class DailyHubController:
                 res = ctrl.run()
                 if res == "menu":
                     return "menu"
+                if res == "exit":
+                    return "exit"
+                continue
+
+            if choice in ("d", "s"):
+                res = self.manage_day_menu(week)
+                if res == "menu":
+                    return "menu"
+                if res == "exit":
+                    return "exit"
+                continue
+
+            # Atajos directos para compatibilidad y rapidez
+            if choice == "c":
+                self._action_toggle_task(week, day, ordered_task_ids)
+                continue
+
+            if choice == "j":
+                self._action_jira_task(week, day)
                 continue
 
             if choice == "+":
-                now = datetime.now()
-                def_day = now.day if now.weekday() in (5, 6) else (week.days[-1].day_number + 1)
-                num_input = self.input(f"Número de día a añadir ({def_day} por defecto): ").strip()
-                try:
-                    add_num = int(num_input) if num_input else def_day
-                except ValueError:
-                    add_num = def_day
-
-                self.print("\nSelecciona ubicación/tipo:")
-                self.print("  [1] 🛠️ Guardia / Intervención")
-                self.print("  [2] 🏠 Teletrabajo")
-                self.print("  [3] 🚗 Oficina / Presencial")
-                loc_opt = self.input("Opción (1 por defecto): ").strip()
-                if loc_opt == "2":
-                    emoji, note = "🏠", "Teletrabajo"
-                elif loc_opt == "3":
-                    emoji, note = "🚗", "Oficina"
-                else:
-                    emoji, note = "🛠️", "Intervención"
-
-                new_day = self.manager.add_day_to_week(
-                    week=week,
-                    day_number=add_num,
-                    location_emoji=emoji,
-                    location_note=note
-                )
-                self.active_day_number = new_day.day_number
-                self._sync_markdown(week)
-                self.print(f"✅ ¡Día {add_num} ({emoji} {note}) añadido con éxito a la semana!")
-                self.input("Presiona Enter para continuar...")
+                self._action_add_intervention_day(week)
                 continue
 
-            if choice == "s":
-                # Cambiar día activo o añadir día
-                self.print("\n📅 DÍAS DE LA SEMANA:")
-                for idx, d in enumerate(week.days, start=1):
-                    current_marker = " 👈 (Activo)" if d.day_number == day.day_number else ""
-                    note_str = f" ({d.location_note})" if d.location_note else ""
-                    task_count = len(d.task_ids)
-                    self.print(f"  [{idx}] {d.location_emoji} Día {d.day_number}{note_str} - {task_count} tarea(s){current_marker}")
-                self.print("  [+] Añadir día de guardia / intervención de fin de semana")
+            if choice == "a":
+                self._action_schedule_topic(week, day)
+                continue
 
-                day_choice_str = self.input(f"\nSelecciona día (1-{len(week.days)} o +): ").strip()
-                if day_choice_str == "+":
-                    now = datetime.now()
-                    def_day = now.day if now.weekday() in (5, 6) else (week.days[-1].day_number + 1)
-                    num_input = self.input(f"Número de día a añadir ({def_day} por defecto): ").strip()
-                    try:
-                        add_num = int(num_input) if num_input else def_day
-                    except ValueError:
-                        add_num = def_day
+    def manage_tasks_menu(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> Optional[str]:
+        """Subpantalla interactiva de gestión de tareas con MenuNavigator (Opción B)."""
+        options = [
+            MenuOption("1", "➕ Nueva Tarea HOY", "new_task", aliases=["n"]),
+            MenuOption("2", "🎫 Tarea Jira HOY", "jira_task", aliases=["j"]),
+            MenuOption("3", "✅ Marcar Tarea (completar / reactivar)", "toggle_task", aliases=["c", "m"]),
+            MenuOption("4", "🗑️  Borrar Tarea", "delete_task", aliases=["d", "b"]),
+            MenuOption("5", "🎯 Crear nuevo Topic Semanal", "new_topic", aliases=["t"]),
+            MenuOption("6", "➡️  Agendar Topic Semanal a HOY", "schedule_topic", aliases=["a"]),
+        ]
 
-                    self.print("\nSelecciona ubicación/tipo:")
-                    self.print("  [1] 🛠️ Guardia / Intervención")
-                    self.print("  [2] 🏠 Teletrabajo")
-                    self.print("  [3] 🚗 Oficina / Presencial")
-                    loc_opt = self.input("Opción (1 por defecto): ").strip()
-                    if loc_opt == "2":
-                        emoji, note = "🏠", "Teletrabajo"
-                    elif loc_opt == "3":
-                        emoji, note = "🚗", "Oficina"
-                    else:
-                        emoji, note = "🛠️", "Intervención"
+        title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
+        navigator = MenuNavigator(
+            title=title,
+            options=options,
+            show_back=True,
+            show_main_menu=True,
+            print_fn=self.print,
+            input_fn=self.input,
+            read_single_key_fn=self.read_single_key,
+            clear_screen_fn=self.clear_screen,
+        )
 
-                    new_day = self.manager.add_day_to_week(
-                        week=week,
-                        day_number=add_num,
-                        location_emoji=emoji,
-                        location_note=note
-                    )
-                    self.active_day_number = new_day.day_number
-                    self._sync_markdown(week)
-                    self.print(f"✅ ¡Día {add_num} ({emoji} {note}) añadido con éxito a la semana!")
-                    self.input("Presiona Enter para continuar...")
-                    continue
+        while True:
+            nav_status, opt = navigator.prompt()
+            if nav_status == "back":
+                return "back"
+            if nav_status == "menu":
+                return "menu"
+            if nav_status == "exit":
+                return "exit"
 
-                try:
-                    d_idx = int(day_choice_str)
-                    if 1 <= d_idx <= len(week.days):
-                        self.active_day_number = week.days[d_idx - 1].day_number
-                    else:
-                        self.print("❌ Selección fuera de rango.")
-                        self.input("Presiona Enter para continuar...")
-                except ValueError:
-                    self.print("❌ Ingresa un número válido.")
-                    self.input("Presiona Enter para continuar...")
+            if opt:
+                if opt.action_id == "new_task":
+                    self._action_new_task(week, day)
+                    return "refresh"
+                elif opt.action_id == "jira_task":
+                    self._action_jira_task(week, day)
+                    return "refresh"
+                elif opt.action_id == "toggle_task":
+                    self._action_toggle_task(week, day, ordered_task_ids)
+                    return "refresh"
+                elif opt.action_id == "delete_task":
+                    self._action_delete_task(week, day, ordered_task_ids)
+                    return "refresh"
+                elif opt.action_id == "new_topic":
+                    self._action_new_topic(week)
+                    return "refresh"
+                elif opt.action_id == "schedule_topic":
+                    self._action_schedule_topic(week, day)
+                    return "refresh"
 
-            elif choice == "c":
-                # Marcar / desmarcar tarea
-                if not ordered_task_ids:
-                    self.print("❌ No hay tareas para marcar.")
-                    self.input("Presiona Enter para continuar...")
-                    continue
+    def manage_day_menu(self, week: WeekSchedule) -> Optional[str]:
+        """Subpantalla interactiva de selección de día y guardias con MenuNavigator (Opción B)."""
+        options = []
+        for idx, d in enumerate(week.days, start=1):
+            is_active = " 👈 (Activo)" if d.day_number == self.active_day_number else ""
+            note = f" ({d.location_note})" if d.location_note else ""
+            options.append(MenuOption(
+                str(idx),
+                f"{d.location_emoji} Día {d.day_number}{note}{is_active}",
+                f"day_{d.day_number}",
+                aliases=[str(d.day_number)]
+            ))
+        options.append(MenuOption(
+            "+",
+            "🛠️ Activar Guardia / Intervención Fin de Semana",
+            "add_day",
+            aliases=["intervencion", "guardia"]
+        ))
 
-                num_str = self.input(f"Número de tarea (1-{len(ordered_task_ids)}): ").strip()
-                try:
-                    num = int(num_str)
-                    if 1 <= num <= len(ordered_task_ids):
-                        target_id = ordered_task_ids[num - 1]
-                        toggled = self.manager.toggle_task(target_id)
-                        self._sync_markdown(week)
-                    else:
-                        self.print("❌ Número fuera de rango.")
-                        self.input("Presiona Enter para continuar...")
-                except ValueError:
-                    self.print("❌ Ingresa un número válido.")
-                    self.input("Presiona Enter para continuar...")
+        navigator = MenuNavigator(
+            title=f"📅 S E L E C C I Ó N  D E  D Í A  (Semana W{week.week_number:02d} / {week.year})",
+            options=options,
+            show_back=True,
+            show_main_menu=True,
+            print_fn=self.print,
+            input_fn=self.input,
+            read_single_key_fn=self.read_single_key,
+            clear_screen_fn=self.clear_screen,
+        )
 
-            elif choice == "n":
-                # Nueva tarea
-                text = self.input("📝 Texto de la nueva tarea: ").strip()
-                if text:
-                    proj_id = self.prompt_project_selection()
-                    self.manager.create_task(
-                        title=text,
-                        project_id=proj_id,
-                        year=week.year,
-                        week_num=week.week_number,
-                        day_number=day.day_number
-                    )
-                    self._sync_markdown(week)
+        nav_status, opt = navigator.prompt()
+        if nav_status == "back":
+            return "back"
+        if nav_status == "menu":
+            return "menu"
+        if nav_status == "exit":
+            return "exit"
 
-            elif choice == "t":
-                # Añadir nuevo Topic para la semana
-                text = self.input("📝 Texto del nuevo Topic semanal: ").strip()
-                if text:
-                    proj_id = self.prompt_project_selection()
-                    task = self.manager.create_task(
-                        title=text,
-                        project_id=proj_id
-                    )
-                    self.manager.add_topic_to_week(week, task.id)
-                    self._sync_markdown(week)
-                    self.print(f"✅ Topic añadido a la semana: {task.title}")
-                    self.input("Presiona Enter para continuar...")
+        if opt:
+            if opt.action_id == "add_day":
+                self._action_add_intervention_day(week)
+                return "refresh"
+            elif opt.action_id.startswith("day_"):
+                day_num = int(opt.action_id.replace("day_", ""))
+                self.active_day_number = day_num
+                return "refresh"
+        return "refresh"
 
-            elif choice == "a":
-                # Agendar un Topic semanal a las tareas de HOY
-                available_topics = [
-                    self.manager.tasks[tid] for tid in week.topics_task_ids
-                    if tid in self.manager.tasks and self.manager.tasks[tid].is_pending and tid not in day.task_ids
-                ]
-                if not available_topics:
-                    self.print("\n⚠️ No hay topics pendientes disponibles para agendar a hoy.")
-                    self.input("Presiona Enter para continuar...")
-                    continue
+    def _action_new_task(self, week: WeekSchedule, day: DaySchedule) -> None:
+        text = self.input("📝 Texto de la nueva tarea: ").strip()
+        if text:
+            proj_id = self.prompt_project_selection()
+            self.manager.create_task(
+                title=text,
+                project_id=proj_id,
+                year=week.year,
+                week_num=week.week_number,
+                day_number=day.day_number
+            )
+            self._sync_markdown(week)
 
-                self.print(f"\n📋 TOPICS SEMANALES DISPONIBLES PARA AGENDAR AL DÍA {day.day_number}:")
-                for idx, t in enumerate(available_topics, start=1):
-                    proj_tag = f" [{t.project_id}]" if t.project_id else ""
-                    self.print(f"  [{idx}] {t.title}{proj_tag}")
+    def _action_jira_task(self, week: WeekSchedule, day: DaySchedule) -> None:
+        ticket_code = self.input("🎫 Código Jira (ej: ATLM-12703): ").strip()
+        desc = self.input("📝 Descripción de la tarea: ").strip()
+        if ticket_code and desc:
+            proj_id = self.prompt_project_selection()
+            jira_def = self.manager.ensure_jira_definition(ticket_code)
+            full_title = f"{desc} {jira_def.id}"
+            self.manager.create_task(
+                title=full_title,
+                project_id=proj_id,
+                year=week.year,
+                week_num=week.week_number,
+                day_number=day.day_number
+            )
+            self._sync_markdown(week)
 
-                t_choice = self.input(f"Selecciona topic a agendar a HOY (1-{len(available_topics)}, 0 para cancelar): ").strip()
-                try:
-                    t_idx = int(t_choice)
-                    if 1 <= t_idx <= len(available_topics):
-                        chosen_topic = available_topics[t_idx - 1]
-                        self.manager.assign_topic_to_day(week, chosen_topic.id, day.day_number)
-                        self._sync_markdown(week)
-                        self.print(f"✅ Topic '{chosen_topic.title}' agendado para HOY (Día {day.day_number}).")
-                        self.input("Presiona Enter para continuar...")
-                except ValueError:
-                    pass
+    def _action_toggle_task(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> None:
+        if not ordered_task_ids:
+            self.print("❌ No hay tareas para marcar.")
+            self.input("Presiona Enter para continuar...")
+            return
+        num_str = self.input(f"Número de tarea (1-{len(ordered_task_ids)}): ").strip()
+        try:
+            num = int(num_str)
+            if 1 <= num <= len(ordered_task_ids):
+                target_id = ordered_task_ids[num - 1]
+                self.manager.toggle_task(target_id)
+                self._sync_markdown(week)
+            else:
+                self.print("❌ Número fuera de rango.")
+                self.input("Presiona Enter para continuar...")
+        except ValueError:
+            self.print("❌ Ingresa un número válido.")
+            self.input("Presiona Enter para continuar...")
 
-            elif choice == "j":
-                # Tarea con Jira Ticket
-                ticket_code = self.input("🎫 Código Jira (ej: ATLM-12703): ").strip()
-                desc = self.input("📝 Descripción de la tarea: ").strip()
-                if ticket_code and desc:
-                    proj_id = self.prompt_project_selection()
-                    jira_def = self.manager.ensure_jira_definition(ticket_code)
-                    full_title = f"{desc} {jira_def.id}"
-                    self.manager.create_task(
-                        title=full_title,
-                        project_id=proj_id,
-                        year=week.year,
-                        week_num=week.week_number,
-                        day_number=day.day_number
-                    )
-                    self._sync_markdown(week)
-
-            elif choice == "m":
-                # Abrir módulo de gestión completa (CRUD) de Notas
-                from brackets.core.note_crud_controller import NoteCrudController
-                crud = NoteCrudController(
-                    entity_manager=self.manager,
-                    current_week=week,
-                    vault_root=self.vault_root,
-                    input_fn=self.input,
-                    print_fn=self.print,
-                    clear_screen_fn=self.clear_screen,
-                    read_single_key_fn=self.read_single_key
+    def _action_delete_task(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> None:
+        if not ordered_task_ids:
+            self.print("❌ No hay tareas para borrar.")
+            self.input("Presiona Enter para continuar...")
+            return
+        num_str = self.input(f"Número de tarea a eliminar (1-{len(ordered_task_ids)}): ").strip()
+        try:
+            num = int(num_str)
+            if 1 <= num <= len(ordered_task_ids):
+                target_id = ordered_task_ids[num - 1]
+                self.manager.delete_task(
+                    task_id=target_id,
+                    year=week.year,
+                    week_num=week.week_number,
+                    day_number=day.day_number
                 )
-                res = crud.run()
-                if res == "menu":
-                    return "menu"
+                self._sync_markdown(week)
+            else:
+                self.print("❌ Número fuera de rango.")
+                self.input("Presiona Enter para continuar...")
+        except ValueError:
+            self.print("❌ Ingresa un número válido.")
+            self.input("Presiona Enter para continuar...")
 
-            elif choice == "d":
-                # Borrar tarea
-                if not ordered_task_ids:
-                    self.print("❌ No hay tareas para borrar.")
-                    self.input("Presiona Enter para continuar...")
-                    continue
+    def _action_new_topic(self, week: WeekSchedule) -> None:
+        text = self.input("📝 Texto del nuevo Topic semanal: ").strip()
+        if text:
+            proj_id = self.prompt_project_selection()
+            task = self.manager.create_task(title=text, project_id=proj_id)
+            self.manager.add_topic_to_week(week, task.id)
+            self._sync_markdown(week)
+            self.print(f"✅ Topic añadido a la semana: {task.title}")
+            self.input("Presiona Enter para continuar...")
 
-                num_str = self.input(f"Número de tarea a eliminar (1-{len(ordered_task_ids)}): ").strip()
-                try:
-                    num = int(num_str)
-                    if 1 <= num <= len(ordered_task_ids):
-                        target_id = ordered_task_ids[num - 1]
-                        self.manager.delete_task(
-                            task_id=target_id,
-                            year=week.year,
-                            week_num=week.week_number,
-                            day_number=day.day_number
-                        )
-                        self._sync_markdown(week)
-                    else:
-                        self.print("❌ Número fuera de rango.")
-                        self.input("Presiona Enter para continuar...")
-                except ValueError:
-                    self.print("❌ Ingresa un número válido.")
-                    self.input("Presiona Enter para continuar...")
+    def _action_schedule_topic(self, week: WeekSchedule, day: DaySchedule) -> None:
+        available_topics = [
+            self.manager.tasks[tid] for tid in week.topics_task_ids
+            if tid in self.manager.tasks and self.manager.tasks[tid].is_pending and tid not in day.task_ids
+        ]
+        if not available_topics:
+            self.print("\n⚠️ No hay topics pendientes disponibles para agendar a hoy.")
+            self.input("Presiona Enter para continuar...")
+            return
+
+        self.print(f"\n📋 TOPICS SEMANALES DISPONIBLES PARA AGENDAR AL DÍA {day.day_number}:")
+        for idx, t in enumerate(available_topics, start=1):
+            proj_tag = f" [{t.project_id}]" if t.project_id else ""
+            self.print(f"  [{idx}] {t.title}{proj_tag}")
+
+        t_choice = self.input(f"Selecciona topic a agendar a HOY (1-{len(available_topics)}, 0 para cancelar): ").strip()
+        try:
+            t_idx = int(t_choice)
+            if 1 <= t_idx <= len(available_topics):
+                chosen_topic = available_topics[t_idx - 1]
+                self.manager.assign_topic_to_day(week, chosen_topic.id, day.day_number)
+                self._sync_markdown(week)
+                self.print(f"✅ Topic '{chosen_topic.title}' agendado para HOY (Día {day.day_number}).")
+                self.input("Presiona Enter para continuar...")
+        except ValueError:
+            pass
+
+    def _action_add_intervention_day(self, week: WeekSchedule) -> None:
+        now = datetime.now()
+        def_day = now.day if now.weekday() in (5, 6) else (week.days[-1].day_number + 1)
+        num_input = self.input(f"Número de día a añadir ({def_day} por defecto): ").strip()
+        try:
+            add_num = int(num_input) if num_input else def_day
+        except ValueError:
+            add_num = def_day
+
+        self.print("\nSelecciona ubicación/tipo:")
+        self.print("  [1] 🛠️ Guardia / Intervención")
+        self.print("  [2] 🏠 Teletrabajo")
+        self.print("  [3] 🚗 Oficina / Presencial")
+        loc_opt = self.input("Opción (1 por defecto): ").strip()
+        if loc_opt == "2":
+            emoji, note = "🏠", "Teletrabajo"
+        elif loc_opt == "3":
+            emoji, note = "🚗", "Oficina"
+        else:
+            emoji, note = "🛠️", "Intervención"
+
+        new_day = self.manager.add_day_to_week(
+            week=week,
+            day_number=add_num,
+            location_emoji=emoji,
+            location_note=note
+        )
+        self.active_day_number = new_day.day_number
+        self._sync_markdown(week)
+        self.print(f"✅ ¡Día {add_num} ({emoji} {note}) añadido con éxito a la semana!")
+        self.input("Presiona Enter para continuar...")
