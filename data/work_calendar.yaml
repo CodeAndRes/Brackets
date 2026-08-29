@@ -1,3 +1,12 @@
+# ==============================================================================
+# ⚠️ ARCHIVO BASE / PLANTILLA POR DEFECTO DEL MOTOR BRACKETS
+# ==============================================================================
+# Este archivo es EXCLUSIVAMENTE una plantilla inicial y fallback del framework.
+# NO se utiliza en el día a día de tus bitácoras de trabajo reales.
+# Cada Vault (ej: MyJobNotes) tiene y debe usar su propio:
+#   <tu_vault>/data/work_calendar.yaml
+# ==============================================================================
+
 version: 1
 locations:
   home: 🏠

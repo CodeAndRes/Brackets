@@ -1,3 +1,12 @@
+# ==============================================================================
+# ⚠️ MENÚ GLOBAL DE RESPALDO (FALLBACK) DEL MOTOR BRACKETS
+# ==============================================================================
+# Este menú solo se carga si el Vault activo NO dispone de su propio:
+#   <tu_vault>/data/menu_config.yaml
+# Cada Vault es soberano y gobierna sus propios menús desde su propia carpeta data/.
+# Para nuevas plantillas de Vault, consultar: data/templates/
+# ==============================================================================
+
 menus:
   main:
     title: "M E N U  P R I N C I P A L"

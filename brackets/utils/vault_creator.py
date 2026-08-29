@@ -230,17 +230,27 @@ sync_yaml:
 
 def _generate_menu_config_yaml(vault_type: str = "work") -> str:
     """Obtiene el contenido de menu_config.yaml según la plantilla del tipo de vault."""
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    template_path = os.path.join(base_dir, "data", "templates", f"menu_config.{vault_type}.yaml")
-    if os.path.exists(template_path):
-        with open(template_path, "r", encoding="utf-8") as f:
-            return f.read()
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    candidate_dirs = [
+        os.path.normpath(os.path.join(current_dir, "..", "..", "data", "templates")),
+        os.path.normpath(os.path.join(current_dir, "..", "data", "templates")),
+    ]
+    for d in candidate_dirs:
+        template_path = os.path.join(d, f"menu_config.{vault_type}.yaml")
+        if os.path.exists(template_path):
+            with open(template_path, "r", encoding="utf-8") as f:
+                return f.read()
 
     # Fallback al menu_config global
-    fallback_path = os.path.join(base_dir, "data", "menu_config.yaml")
-    if os.path.exists(fallback_path):
-        with open(fallback_path, "r", encoding="utf-8") as f:
-            return f.read()
+    fallback_dirs = [
+        os.path.normpath(os.path.join(current_dir, "..", "..", "data")),
+        os.path.normpath(os.path.join(current_dir, "..", "data")),
+    ]
+    for d in fallback_dirs:
+        fallback_path = os.path.join(d, "menu_config.yaml")
+        if os.path.exists(fallback_path):
+            with open(fallback_path, "r", encoding="utf-8") as f:
+                return f.read()
 
     return "menus: {}\n"
 
