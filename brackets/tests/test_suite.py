@@ -40,6 +40,7 @@ from brackets.tests.test_core_vault_selection import TestCoreVaultSelection
 from brackets.tests.test_version_policy import TestVersionPolicy
 from brackets.tests.test_event_log import TestEventLog
 import unittest
+from brackets.tests.test_core_menu_navigator import TestCoreMenuNavigator
 from brackets.tests.test_relational_bitacora_renderer import TestRelationalBitacoraRenderer
 from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubController
 from brackets.tests.test_core_project_backlog_controller import TestCoreProjectBacklogController
@@ -233,6 +234,18 @@ def run_all_tests():
     relational_failed = len(result.failures) + len(result.errors)
     total_passed += relational_passed
     total_failed += relational_failed
+
+    # Tests de MenuNavigator (Navegación Unificada)
+    try:
+        nav_tester = TestCoreMenuNavigator()
+        if nav_tester.run_all():
+            total_passed += nav_tester.passed
+        else:
+            total_passed += nav_tester.passed
+            total_failed += nav_tester.failed
+    except Exception as e:
+        print(f"❌ TestCoreMenuNavigator falló: {e}")
+        total_failed += 1
 
     # Tests de DailyHubController
     print("\n" + "=" * 60)

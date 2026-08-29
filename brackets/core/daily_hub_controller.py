@@ -198,7 +198,7 @@ class DailyHubController:
         self.print("[d] Borrar Tarea        [m] Añadir Nota Semana  [p] 📁 Backlog & Ideas")
         if is_weekend_missing:
             self.print("[+] 🛠️ Activar Intervención Fin de Semana")
-        self.print("[b] Menú General        [q] Salir")
+        self.print("[0/b/Esc] Menú General        [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -245,12 +245,12 @@ class DailyHubController:
             else:
                 choice = self.input("Selecciona una opción: ").strip().lower()
 
-            if choice in ("q", "0", "exit"):
+            if choice in ("q", "exit"):
                 self.clear_screen()
                 self.print("\n👋 ¡Hasta luego!")
                 return "exit"
 
-            if choice in ("b", "menu"):
+            if choice in ("0", "b", "menu", "back", "volver", "__ESC__", "\x1b"):
                 return "menu"
 
             if choice == "p":
@@ -262,9 +262,14 @@ class DailyHubController:
                     vault_root=self.vault_root,
                     input_fn=self.input,
                     print_fn=self.print,
-                    clear_screen_fn=self.clear_screen
+                    clear_screen_fn=self.clear_screen,
+                    read_single_key_fn=self.read_single_key
                 )
-                ctrl.run()
+                res = ctrl.run()
+                if res == "menu":
+                    return "menu"
+                continue
+
             if choice == "+":
                 now = datetime.now()
                 def_day = now.day if now.weekday() in (5, 6) else (week.days[-1].day_number + 1)
@@ -456,9 +461,12 @@ class DailyHubController:
                     vault_root=self.vault_root,
                     input_fn=self.input,
                     print_fn=self.print,
-                    clear_screen_fn=self.clear_screen
+                    clear_screen_fn=self.clear_screen,
+                    read_single_key_fn=self.read_single_key
                 )
-                crud.run()
+                res = crud.run()
+                if res == "menu":
+                    return "menu"
 
             elif choice == "d":
                 # Borrar tarea

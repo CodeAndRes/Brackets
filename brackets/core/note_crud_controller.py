@@ -12,6 +12,7 @@ from typing import Optional, List, Callable
 from brackets.models.entities import Note, WeekSchedule
 from brackets.managers.entity_manager import EntityManager
 from brackets.generators.bitacora_renderer import BitacoraRenderer
+from brackets.core.menu_navigator import MenuNavigator, MenuOption
 
 
 class NoteCrudController:
@@ -24,7 +25,8 @@ class NoteCrudController:
         vault_root: str = ".",
         input_fn: Optional[Callable[[str], str]] = None,
         print_fn: Optional[Callable[..., None]] = None,
-        clear_screen_fn: Optional[Callable[[], None]] = None
+        clear_screen_fn: Optional[Callable[[], None]] = None,
+        read_single_key_fn: Optional[Callable[[str], str]] = None
     ):
         self.manager = entity_manager
         self.current_week = current_week
@@ -32,6 +34,12 @@ class NoteCrudController:
         self.input = input_fn or input
         self.print = print_fn or print
         self.clear_screen = clear_screen_fn or (lambda: None)
+        if read_single_key_fn is not None:
+            self.read_single_key = read_single_key_fn
+        elif input_fn is not None and input_fn is not input:
+            self.read_single_key = lambda prompt="": self.input(prompt)
+        else:
+            self.read_single_key = None
 
     def _sync_current_week_markdown(self) -> None:
         """Regenera la bitácora semanal en Markdown si hay semana cargada."""
@@ -435,40 +443,50 @@ class NoteCrudController:
     # -------------------------------------------------------------------------
     # Bucle Principal del Módulo CRUD
     # -------------------------------------------------------------------------
+    # Bucle Principal CRUD
+    # -------------------------------------------------------------------------
     def run(self) -> str:
-        """Bucle interactivo del menú CRUD de Notas. Retorna 'back'."""
+        """Bucle interactivo del menú CRUD de Notas. Retorna 'back', 'menu' o 'exit'."""
+        if self.current_week:
+            title = f"📝 G E S T I Ó N  D E  N O T A S  (Semana W{self.current_week.week_number:02d} / {self.current_week.year})"
+            query_label = "🔍 Consultar Notas (Semana Actual por defecto / Filtros / Búsqueda)"
+        else:
+            title = "📝 G E S T I Ó N  D E  N O T A S  ( M Ó D U L O  C R U D )"
+            query_label = "🔍 Consultar y Buscar Notas (Filtros por Proyecto / Mes / Texto)"
+
+        options = [
+            MenuOption("1", query_label, "query", aliases=["c", "s"]),
+            MenuOption("2", "➕ Alta: Crear Nueva Nota", "create", aliases=["a", "n"]),
+            MenuOption("3", "✏️  Modificación: Editar Nota Existente", "edit", aliases=["e"]),
+            MenuOption("4", "🗑️  Baja: Eliminar Nota", "delete", aliases=["d", "b"]),
+        ]
+
+        navigator = MenuNavigator(
+            title=title,
+            options=options,
+            show_back=True,
+            show_main_menu=True,
+            print_fn=self.print,
+            input_fn=self.input,
+            read_single_key_fn=self.read_single_key,
+            clear_screen_fn=self.clear_screen,
+        )
+
         while True:
-            self.clear_screen()
-            self.print("=" * 65)
-            if self.current_week:
-                self.print(f"📝 G E S T I Ó N  D E  N O T A S  (Semana W{self.current_week.week_number:02d} / {self.current_week.year})")
-            else:
-                self.print("📝 G E S T I Ó N  D E  N O T A S  ( M Ó D U L O  C R U D )")
-            self.print("=" * 65)
-
-            if self.current_week:
-                self.print("  [1] 🔍 Consultar Notas (Semana Actual por defecto / Filtros / Búsqueda)")
-            else:
-                self.print("  [1] 🔍 Consultar y Buscar Notas (Filtros por Proyecto / Mes / Texto)")
-            self.print("  [2] ➕ Alta: Crear Nueva Nota")
-            self.print("  [3] ✏️  Modificación: Editar Nota Existente")
-            self.print("  [4] 🗑️  Baja: Eliminar Nota")
-            self.print("\n  [0] ↩️  Volver")
-            self.print("=" * 65)
-
-            choice = self.input("Selecciona una opción: ").strip().lower()
-
-            if choice in ("0", "q", "back", "exit"):
+            nav_status, opt = navigator.prompt()
+            if nav_status == "back":
                 return "back"
+            if nav_status == "menu":
+                return "menu"
+            if nav_status == "exit":
+                return "exit"
 
-            if choice == "1":
-                self.query_notes()
-            elif choice == "2":
-                self.create_new_note()
-            elif choice == "3":
-                self.edit_existing_note()
-            elif choice == "4":
-                self.delete_note()
-            else:
-                self.print("❌ Opción inválida.")
-                self.input("Presiona Enter para continuar...")
+            if opt:
+                if opt.action_id == "query":
+                    self.query_notes()
+                elif opt.action_id == "create":
+                    self.create_new_note()
+                elif opt.action_id == "edit":
+                    self.edit_existing_note()
+                elif opt.action_id == "delete":
+                    self.delete_note()

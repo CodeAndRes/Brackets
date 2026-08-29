@@ -49,76 +49,13 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-KEY_UP = "__UP__"
-KEY_DOWN = "__DOWN__"
-KEY_ENTER = "__ENTER__"
-
-
-def read_single_key(prompt: str = "Selecciona una opción: ") -> str:
-    """Lee una sola tecla para navegación rápida de menús (sin Enter)."""
-    print(prompt, end="", flush=True)
-
-    try:
-        if os.name == "nt":
-            import msvcrt
-
-            key = msvcrt.getwch()
-            if key in ("\x00", "\xe0"):
-                # Teclas especiales (flechas/F-keys).
-                extended = msvcrt.getwch().lower()
-                print()
-                if extended == "h":
-                    return KEY_UP
-                if extended == "p":
-                    return KEY_DOWN
-                return ""
-        else:
-            import termios
-            import tty
-
-            fd = sys.stdin.fileno()
-            old_settings = termios.tcgetattr(fd)
-            try:
-                tty.setraw(fd)
-                key = sys.stdin.read(1)
-            finally:
-                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-
-        if key in ("\x03",):
-            raise KeyboardInterrupt
-        if key in ("\r", "\n"):
-            print()
-            return KEY_ENTER
-
-        if key == "\x1b":
-            # Secuencias ANSI para flechas en terminals POSIX.
-            try:
-                import termios
-                import tty
-
-                fd = sys.stdin.fileno()
-                old_settings = termios.tcgetattr(fd)
-                try:
-                    tty.setraw(fd)
-                    second = sys.stdin.read(1)
-                    third = sys.stdin.read(1)
-                finally:
-                    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-                print()
-                if second == "[" and third == "A":
-                    return KEY_UP
-                if second == "[" and third == "B":
-                    return KEY_DOWN
-            except Exception:
-                pass
-            return ""
-
-        print(key)
-        return key.strip().lower()
-
-    except Exception:
-        # Fallback seguro para terminales no compatibles.
-        return input(prompt).strip().lower()
+from brackets.core.menu_navigator import (
+    KEY_UP,
+    KEY_DOWN,
+    KEY_ENTER,
+    KEY_ESC,
+    read_single_key,
+)
 
 
 class BitacoraManager:
@@ -363,6 +300,13 @@ class BitacoraManager:
                 return "__NOOP__", selected_index, True
             command = items[selected_index].get("command")
             return str(command) if command is not None else None, selected_index, True
+
+        if choice == KEY_ESC:
+            for item in items:
+                keys = item.get("keys", [])
+                if "0" in keys or "q" in keys or item.get("command") in ("exit", "back"):
+                    return str(item.get("command")), selected_index, True
+            return None, selected_index, False
 
         resolved = self.menu_engine.resolve_choice(menu_id, choice, self._menu_context())
         if not resolved:
@@ -785,6 +729,7 @@ class BitacoraManager:
             input_fn=input,
             print_fn=print,
             clear_screen_fn=clear_screen,
+            read_single_key_fn=read_single_key,
         )
         ctrl.run()
 
@@ -799,6 +744,7 @@ class BitacoraManager:
             input_fn=input,
             print_fn=print,
             clear_screen_fn=clear_screen,
+            read_single_key_fn=read_single_key,
         )
         ctrl.run()
 

@@ -13,6 +13,7 @@ from brackets.models.entities import WeekSchedule, DaySchedule, Task, Note, Idea
 from brackets.managers.entity_manager import EntityManager
 from brackets.generators.bitacora_renderer import BitacoraRenderer
 from brackets.utils.legacy_utils import generate_filename
+from brackets.core.menu_navigator import MenuNavigator, MenuOption
 
 
 class ProjectBacklogController:
@@ -32,7 +33,8 @@ class ProjectBacklogController:
         vault_root: Optional[str] = None,
         input_fn: Callable[[str], str] = input,
         print_fn: Callable[..., None] = print,
-        clear_screen_fn: Optional[Callable[[], None]] = None
+        clear_screen_fn: Optional[Callable[[], None]] = None,
+        read_single_key_fn: Optional[Callable[[str], str]] = None
     ):
         self.manager = entity_manager
         self.current_week = current_week
@@ -41,6 +43,12 @@ class ProjectBacklogController:
         self.input = input_fn
         self.print = print_fn
         self.clear_screen = clear_screen_fn or (lambda: None)
+        if read_single_key_fn is not None:
+            self.read_single_key = read_single_key_fn
+        elif input_fn is not input:
+            self.read_single_key = lambda prompt="": self.input(prompt)
+        else:
+            self.read_single_key = None
 
     def _sync_markdown(self, week: WeekSchedule) -> None:
         """Regenera y guarda el archivo Markdown de la semana si existe vault_root."""
@@ -334,45 +342,46 @@ class ProjectBacklogController:
     # Bucle Principal del Submenú
     # -------------------------------------------------------------------------
     def run(self) -> str:
-        """Bucle interactivo del submenú. Retorna 'back'."""
+        """Bucle interactivo del submenú. Retorna 'back', 'menu' o 'exit'."""
+        day_str = f"Día {self.current_day.day_number}" if self.current_day else "Hoy"
+        options = [
+            MenuOption("1", "📋 Añadir tarea al Backlog (sin fecha / en cola)", "add_task", aliases=["t"], group="➕ CAPTURA RÁPIDA"),
+            MenuOption("2", "💡 Capturar nueva Idea (propuesta / hipótesis)", "capture_idea", aliases=["i"], group="➕ CAPTURA RÁPIDA"),
+            MenuOption("3", f"➡️  Traer tarea del Backlog a las tareas de HOY ({day_str})", "schedule_today", aliases=["h", "a"], group="🔄 PLANIFICACIÓN"),
+            MenuOption("4", "📂 Ver Proyectos y estado general", "view_projects", aliases=["p"], group="🔍 CONSULTA Y ESTADO"),
+            MenuOption("5", "📋 Ver Backlog de un Proyecto (tareas en cola)", "view_backlog", aliases=["b"], group="🔍 CONSULTA Y ESTADO"),
+            MenuOption("6", "💡 Ver Ideas de un Proyecto (evaluar / aterrizar / descartar)", "view_ideas", group="🔍 CONSULTA Y ESTADO"),
+        ]
+        navigator = MenuNavigator(
+            title="📁 G E S T I Ó N  D E  B A C K L O G ,  I D E A S  Y  P R O Y E C T O S",
+            options=options,
+            show_back=True,
+            show_main_menu=True,
+            print_fn=self.print,
+            input_fn=self.input,
+            read_single_key_fn=self.read_single_key,
+            clear_screen_fn=self.clear_screen,
+        )
+
         while True:
-            self.clear_screen()
-            self.print("=" * 65)
-            self.print("📁 G E S T I Ó N  D E  B A C K L O G ,  I D E A S  Y  P R O Y E C T O S")
-            self.print("=" * 65)
-            self.print("  ➕ CAPTURA RÁPIDA:")
-            self.print("    [1] 📋 Añadir tarea al Backlog (sin fecha / en cola)")
-            self.print("    [2] 💡 Capturar nueva Idea (propuesta / hipótesis)")
-            self.print("\n  🔄 PLANIFICACIÓN:")
-            if self.current_day:
-                day_str = f"Día {self.current_day.day_number}"
-            else:
-                day_str = "Hoy"
-            self.print(f"    [3] ➡️  Traer tarea del Backlog a las tareas de HOY ({day_str})")
-            self.print("\n  🔍 CONSULTA Y ESTADO:")
-            self.print("    [4] 📂 Ver Proyectos y estado general")
-            self.print("    [5] 📋 Ver Backlog de un Proyecto (tareas en cola)")
-            self.print("    [6] 💡 Ver Ideas de un Proyecto (evaluar / aterrizar / descartar)")
-            self.print("\n  [0] ↩️  Volver")
-            self.print("=" * 65)
-
-            choice = self.input("Selecciona una opción: ").strip().lower()
-
-            if choice in ("0", "v", "b", "volver", "q", "exit"):
+            nav_status, opt = navigator.prompt()
+            if nav_status == "back":
                 return "back"
+            if nav_status == "menu":
+                return "menu"
+            if nav_status == "exit":
+                return "exit"
 
-            if choice == "1":
-                self.add_backlog_task()
-            elif choice == "2":
-                self.capture_idea()
-            elif choice == "3":
-                self.schedule_backlog_task_to_today()
-            elif choice == "4":
-                self.view_projects_overview()
-            elif choice == "5":
-                self.view_project_backlog()
-            elif choice == "6":
-                self.view_project_ideas()
-            else:
-                self.print("❌ Opción inválida.")
-                self.input("Presiona Enter para continuar...")
+            if opt:
+                if opt.action_id == "add_task":
+                    self.add_backlog_task()
+                elif opt.action_id == "capture_idea":
+                    self.capture_idea()
+                elif opt.action_id == "schedule_today":
+                    self.schedule_backlog_task_to_today()
+                elif opt.action_id == "view_projects":
+                    self.view_projects_overview()
+                elif opt.action_id == "view_backlog":
+                    self.view_project_backlog()
+                elif opt.action_id == "view_ideas":
+                    self.view_project_ideas()
