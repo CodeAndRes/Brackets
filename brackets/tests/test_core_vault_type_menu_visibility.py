@@ -138,6 +138,63 @@ class TestCoreVaultTypeMenuVisibility:
             print(f"❌ Test menu_context_tag_hides_pomodoro_for_personal falló: {e}")
             self.failed += 1
 
+    def test_vault_specific_menu_config_override(self):
+        """Valida que un vault con su propio data/menu_config.yaml anule el fallback global."""
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                data_dir = os.path.join(tmp, "data")
+                os.makedirs(data_dir, exist_ok=True)
+
+                custom_menu = {
+                    "menus": {
+                        "main": {
+                            "title": "MENU PERSONALIZADO DEL VAULT",
+                            "items": [
+                                {
+                                    "id": "custom_action",
+                                    "label": "Mi Accion Unica",
+                                    "keys": ["x"],
+                                    "action": "exec",
+                                    "command": "do_custom"
+                                }
+                            ]
+                        }
+                    }
+                }
+                with open(os.path.join(data_dir, "menu_config.yaml"), "w", encoding="utf-8") as f:
+                    yaml.safe_dump(custom_menu, f)
+
+                menu_engine = MenuEngine(vault_root=tmp)
+                title = menu_engine.menu_title("main")
+                self._assert(title == "MENU PERSONALIZADO DEL VAULT", "Debe cargar el título del menu_config del vault")
+                items = menu_engine.visible_items("main", {})
+                self._assert(len(items) == 1, "Debe tener solo el item del vault")
+                self._assert(items[0]["command"] == "do_custom", "Debe resolver el comando del vault")
+
+            print("✅ Test: data/menu_config.yaml propio del vault se carga prioritariamente")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test vault_specific_menu_config_override falló: {e}")
+            self.failed += 1
+
+    def test_generate_menu_config_templates(self):
+        """Valida que _generate_menu_config_yaml genere las plantillas de work, personal y project."""
+        try:
+            from brackets.utils.vault_creator import _generate_menu_config_yaml
+            work_cfg = _generate_menu_config_yaml("work")
+            pers_cfg = _generate_menu_config_yaml("personal")
+            proj_cfg = _generate_menu_config_yaml("project")
+
+            self._assert("TRABAJO" in work_cfg or "Hub Diario" in work_cfg, "Plantilla work debe contener opciones de trabajo")
+            self._assert("PERSONAL" in pers_cfg or "Personal" in pers_cfg, "Plantilla personal debe contener opciones personales")
+            self._assert("PROYECTO" in proj_cfg or "Proyecto" in proj_cfg, "Plantilla project debe contener opciones de proyecto")
+
+            print("✅ Test: plantillas de menús (work, personal, project) generadas correctamente")
+            self.passed += 1
+        except Exception as e:
+            print(f"❌ Test generate_menu_config_templates falló: {e}")
+            self.failed += 1
+
     def run_all(self):
         print("\n🧪 TESTS: core/vault_type_menu_visibility.py")
         print("=" * 50)
@@ -145,6 +202,8 @@ class TestCoreVaultTypeMenuVisibility:
         self.test_explicit_vault_type_personal_sets_context()
         self.test_description_personal_fallback_sets_personal()
         self.test_menu_context_tag_hides_pomodoro_for_personal()
+        self.test_vault_specific_menu_config_override()
+        self.test_generate_menu_config_templates()
 
         print(f"\n📊 Resultado: ✅ {self.passed} | ❌ {self.failed}")
         return self.failed == 0

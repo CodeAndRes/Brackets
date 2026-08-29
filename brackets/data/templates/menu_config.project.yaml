@@ -1,0 +1,89 @@
+# Configuración de menús para Vault de Proyecto (Mínimo / Standalone)
+# Enfocado exclusivamente en entregables, backlog y notas técnicas del proyecto.
+
+menus:
+  main:
+    title: "M E N U  D E L  P R O Y E C T O"
+    items:
+      - id: project_backlog
+        label: "Tareas y Backlog del Proyecto"
+        keys: ["1", "p", "t"]
+        action: exec
+        command: open_project_backlog
+
+      - id: notes_crud
+        label: "Notas Tecnicas y Decisiones (ADRs)"
+        keys: ["2", "n"]
+        action: exec
+        command: open_notes_crud
+
+      - id: files
+        label: "Documentacion y Especificaciones"
+        keys: ["3", "f"]
+        action: exec
+        command: open_file_management
+
+      - id: tools
+        label: "Herramientas y Utilidades"
+        keys: ["4", "u"]
+        action: exec
+        command: open_tools
+
+      - id: settings
+        label: "Configuracion"
+        keys: ["5", "s"]
+        action: exec
+        command: open_settings
+
+      - id: exit
+        label: "Salir"
+        keys: ["0", "q", "x"]
+        action: exec
+        command: exit
+
+  file_management:
+    title: "D O C U M E N T A C I O N  D E L  P R O Y E C T O"
+    items:
+      - id: list
+        label: "Listar archivos"
+        keys: ["1", "l"]
+        action: exec
+        command: list_files
+      - id: replace
+        label: "Busqueda y reemplazo global en repo"
+        keys: ["2", "r"]
+        action: exec
+        command: global_replace
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v", "b"]
+        action: exec
+        command: back
+
+  tools:
+    title: "H E R R A M I E N T A S"
+    items:
+      - id: pomodoro
+        label: "Pomodoro Timer"
+        keys: ["1", "p"]
+        action: exec
+        command: tool_pomodoro
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v", "b"]
+        action: exec
+        command: back
+
+  configuration:
+    title: "C O N F I G U R A C I O N"
+    items:
+      - id: view
+        label: "Ver configuracion"
+        keys: ["1", "v"]
+        action: exec
+        command: config_view
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "b", "v"]
+        action: exec
+        command: back

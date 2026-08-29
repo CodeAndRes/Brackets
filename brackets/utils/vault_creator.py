@@ -52,23 +52,46 @@ def create_new_vault(workspace_root: str) -> str:
     print("\n📄 Paso 2: Descripción (opcional)")
     description = input("Descripción breve: ").strip()
 
-    # 3. Activar bitácoras
-    print("\n📅 Paso 3: Configuración de bitácoras")
-    print("¿Activar generación de bitácoras semanales?")
-    print("  Sí: Para notas de trabajo organizadas por semanas")
-    print("  No: Solo gestión de documentos por categorías")
+    # 3. Tipo de vault
+    print("\n🏢 Paso 3: Tipo de vault")
+    print("  [1] Trabajo (Profesional: Daily Hub, Backlog, Reuniones, Sprints)")
+    print("  [2] Personal (Hábitos, Reflexiones, Proyectos personales)")
+    print("  [3] Proyecto / Mínimo (Entregables, ADRs, Documentación técnica)")
+    vtype_choice = input("Selecciona tipo (1 por defecto): ").strip()
+    if vtype_choice == "2":
+        vault_type = "personal"
+    elif vtype_choice == "3":
+        vault_type = "project"
+    else:
+        vault_type = "work"
+
+    # 4. Activar bitácoras
+    print("\n📅 Paso 4: Configuración de bitácoras")
+    if vault_type == "project":
+        default_bitacoras = "n"
+        print("¿Activar generación de bitácoras semanales? (No recomendado para proyectos)")
+    else:
+        default_bitacoras = "s"
+        print("¿Activar generación de bitácoras semanales?")
+        print("  Sí: Para notas organizadas por semanas")
+        print("  No: Solo gestión de documentos por categorías")
 
     while True:
-        bitacoras = input("Activar bitácoras (S/n): ").strip().lower()
-        if bitacoras in ['s', 'y', '', 'n']:
-            bitacoras_enabled = bitacoras != 'n'
+        prompt_b = "Activar bitácoras (S/n): " if default_bitacoras == "s" else "Activar bitácoras (s/N): "
+        bitacoras = input(prompt_b).strip().lower()
+        if not bitacoras:
+            bitacoras_enabled = (default_bitacoras == "s")
+            break
+        if bitacoras in ['s', 'y', 'n']:
+            bitacoras_enabled = (bitacoras in ['s', 'y'])
             break
         print("❌ Responde S (sí) o N (no)")
 
-    # 4. Confirmación
+    # 5. Confirmación
     print("\n" + "-" * 60)
     print("📋 RESUMEN DE CONFIGURACIÓN:")
     print(f"  Nombre: {vault_name}")
+    print(f"  Tipo: {vault_type.capitalize()}")
     print(f"  Ubicación: {vault_path}")
     if description:
         print(f"  Descripción: {description}")
@@ -80,7 +103,7 @@ def create_new_vault(workspace_root: str) -> str:
         print("❌ Creación cancelada")
         return None
 
-    # 5. Crear estructura
+    # 6. Crear estructura
     try:
         print(f"\n🔨 Creando vault '{vault_name}'...")
 
@@ -90,11 +113,18 @@ def create_new_vault(workspace_root: str) -> str:
         os.makedirs(data_dir, exist_ok=True)
 
         # Crear config.yaml
-        config_content = _generate_config_yaml(description, bitacoras_enabled)
+        config_content = _generate_config_yaml(description, bitacoras_enabled, vault_type=vault_type, vault_name=vault_name)
         config_path = os.path.join(data_dir, "config.yaml")
         with open(config_path, 'w', encoding='utf-8') as f:
             f.write(config_content)
         print(f"  ✅ Creado: data/config.yaml")
+
+        # Crear menu_config.yaml según plantilla de tipo de vault
+        menu_content = _generate_menu_config_yaml(vault_type)
+        menu_path = os.path.join(data_dir, "menu_config.yaml")
+        with open(menu_path, 'w', encoding='utf-8') as f:
+            f.write(menu_content)
+        print(f"  ✅ Creado: data/menu_config.yaml (plantilla {vault_type})")
 
         # Crear categories.yaml
         categories_content = _generate_categories_yaml()
@@ -163,14 +193,21 @@ def create_new_vault(workspace_root: str) -> str:
         return None
 
 
-def _generate_config_yaml(description: str, bitacoras_enabled: bool) -> str:
+def _generate_config_yaml(
+    description: str,
+    bitacoras_enabled: bool,
+    vault_type: str = "work",
+    vault_name: str = ""
+) -> str:
     """Genera el contenido de config.yaml."""
     desc_line = f'description: "{description}"\n' if description else ''
+    name_line = f'vault_name: "{vault_name}"\n' if vault_name else ''
+    type_line = f'vault_type: "{vault_type}"\n'
 
     return f"""# Configuración del vault
 version: "1.0.0"
 system: "Brackets"
-{desc_line}
+{name_line}{type_line}{desc_line}
 # Feature flags del sistema
 feature_flags:
   bitacoras_enabled: {str(bitacoras_enabled).lower()}
@@ -189,6 +226,23 @@ sync_yaml:
     - "[2026]"
   output_file: "categories_SYNCED.yaml"
 """
+
+
+def _generate_menu_config_yaml(vault_type: str = "work") -> str:
+    """Obtiene el contenido de menu_config.yaml según la plantilla del tipo de vault."""
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    template_path = os.path.join(base_dir, "data", "templates", f"menu_config.{vault_type}.yaml")
+    if os.path.exists(template_path):
+        with open(template_path, "r", encoding="utf-8") as f:
+            return f.read()
+
+    # Fallback al menu_config global
+    fallback_path = os.path.join(base_dir, "data", "menu_config.yaml")
+    if os.path.exists(fallback_path):
+        with open(fallback_path, "r", encoding="utf-8") as f:
+            return f.read()
+
+    return "menus: {}\n"
 
 
 def _generate_categories_yaml() -> str:

@@ -1,0 +1,158 @@
+# Configuración de menús para Vault Personal
+# Diseñado para hábitos, reflexiones, ideas y proyectos personales.
+
+menus:
+  main:
+    title: "M E N U  P R I N C I P A L  ( P E R S O N A L )"
+    items:
+      - id: daily_hub
+        label: "Mi Dia (Bitacora y Habitos)"
+        keys: ["1", "d"]
+        action: exec
+        command: open_daily_hub
+        context_tag: bitacoras_enabled
+
+      - id: project_backlog
+        label: "Ideas y Proyectos Personales"
+        keys: ["2", "i", "p"]
+        action: exec
+        command: open_project_backlog
+
+      - id: notes_crud
+        label: "Diario y Notas Personales (CRUD)"
+        keys: ["3", "n"]
+        action: exec
+        command: open_notes_crud
+
+      - id: generation
+        label: "Bitacoras Semanales / Mensuales"
+        keys: ["4", "b"]
+        action: exec
+        command: open_generation
+        context_tag: bitacoras_enabled
+
+      - id: consolidation
+        label: "Consolidar Recuerdos / Historico"
+        keys: ["5", "c"]
+        action: exec
+        command: open_consolidation
+        context_tag: bitacoras_enabled
+
+      - id: files
+        label: "Documentos y Categorias"
+        keys: ["6", "f"]
+        action: exec
+        command: open_file_management
+
+      - id: tools
+        label: "Utilidades (Pomodoro / Enfoque)"
+        keys: ["7", "t"]
+        action: exec
+        command: open_tools
+
+      - id: settings
+        label: "Configuracion del Vault"
+        keys: ["8", "s"]
+        action: exec
+        command: open_settings
+
+      - id: exit
+        label: "Salir"
+        keys: ["0", "q", "x"]
+        action: exec
+        command: exit
+
+  generation:
+    title: "B I T A C O R A S  P E R S O N A L E S"
+    items:
+      - id: weekly_auto
+        label: "Nueva semana"
+        keys: ["1", "w"]
+        action: exec
+        command: create_weekly
+      - id: monthly
+        label: "Nuevo mes"
+        keys: ["2", "m"]
+        action: exec
+        command: create_monthly
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v", "b"]
+        action: exec
+        command: back
+
+  consolidation:
+    title: "C O N S O L I D A C I O N"
+    items:
+      - id: consolidate_month
+        label: "Consolidar mes"
+        keys: ["1", "m"]
+        action: exec
+        command: consolidate_month
+      - id: consolidate_year
+        label: "Consolidar anio"
+        keys: ["2", "y"]
+        action: exec
+        command: consolidate_year
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v", "b"]
+        action: exec
+        command: back
+
+  file_management:
+    title: "D O C U M E N T O S  P E R S O N A L E S"
+    items:
+      - id: list
+        label: "Listar documentos recientes"
+        keys: ["1", "l"]
+        action: exec
+        command: list_files
+      - id: categories
+        label: "Categorias personales"
+        keys: ["2", "g"]
+        action: exec
+        command: manage_categories
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v", "b"]
+        action: exec
+        command: back
+
+  tools:
+    title: "U T I L I D A D E S"
+    items:
+      - id: pomodoro
+        label: "Sesion de Enfoque (Pomodoro)"
+        keys: ["1", "p"]
+        action: exec
+        command: tool_pomodoro
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "v", "b"]
+        action: exec
+        command: back
+
+  configuration:
+    title: "C O N F I G U R A C I O N"
+    items:
+      - id: view
+        label: "Ver configuracion actual"
+        keys: ["1", "v"]
+        action: exec
+        command: config_view
+      - id: holidays
+        label: "Gestionar dias festivos / eventos"
+        keys: ["2", "f"]
+        action: exec
+        command: config_holidays
+      - id: vacations
+        label: "Vacaciones y viajes"
+        keys: ["3", "a"]
+        action: exec
+        command: config_vacations
+      - id: back
+        label: "Volver al menu principal"
+        keys: ["0", "b", "v"]
+        action: exec
+        command: back
