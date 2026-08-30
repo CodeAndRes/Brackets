@@ -980,10 +980,16 @@ class EntityManager:
         """
         Arrastra tareas pendientes de días previos de la misma semana al día actual,
         eliminándolas del día anterior para que no queden duplicadas.
+        PROTECCIÓN: No arrastra tareas automáticamente hacia días de guardia o intervención,
+        ni arrastra tareas propias de una intervención hacia días regulares.
         Devuelve el número de tareas arrastradas.
         """
         current_day = next((d for d in week.days if d.day_number == current_day_number), None)
         if not current_day:
+            return 0
+
+        # Si el día actual es de intervención o guardia, NO recibir tareas automáticas
+        if current_day.is_intervention:
             return 0
 
         # Encontrar el índice del día actual en la semana
@@ -995,6 +1001,10 @@ class EntityManager:
         rolled_count = 0
         for i in range(curr_idx):
             prev_day = week.days[i]
+            # Si el día previo fue de intervención/guardia, sus tareas son específicas de esa intervención y no se arrastran
+            if prev_day.is_intervention:
+                continue
+
             for tid in list(prev_day.task_ids):
                 task = self.tasks.get(tid)
                 if task and task.is_pending:
@@ -1070,8 +1080,8 @@ class EntityManager:
     ) -> int:
         """
         Traspasa tareas pendientes de la semana anterior a Week Tasks de la nueva semana.
-        Aplica la regla de 2 semanas: si una tarea ya estuvo en prev_prev_week y sigue
-        pendiente en prev_week, se desagenda (no pasa a new_week y queda en backlog).
+        Aplica la regla de 2 semanas: si una tarea ya estuvo en prev_prev_week o semanas
+        anteriores, o nació hace >= 2 semanas y sigue pendiente, se desagenda (no pasa a new_week y queda en backlog).
         """
         two_weeks_old_ids: Set[str] = set()
         if prev_prev_week:
@@ -1079,6 +1089,14 @@ class EntityManager:
             two_weeks_old_ids.update(prev_prev_week.topics_task_ids)
             for d in prev_prev_week.days:
                 two_weeks_old_ids.update(d.task_ids)
+
+        # Incluir todas las semanas anteriores registradas en self.weeks (< prev_week)
+        for w_key, w in self.weeks.items():
+            if w.year < prev_week.year or (w.year == prev_week.year and w.week_number < prev_week.week_number):
+                two_weeks_old_ids.update(w.week_task_ids)
+                two_weeks_old_ids.update(w.topics_task_ids)
+                for d in w.days:
+                    two_weeks_old_ids.update(d.task_ids)
 
         pending_from_prev: List[str] = []
         # Revisar week_task_ids y topics_task_ids de la semana anterior
@@ -1096,8 +1114,19 @@ class EntityManager:
 
         rolled_count = 0
         for tid in pending_from_prev:
-            # Regla de 2 semanas: si ya estuvo hace 2 semanas, se desagenda
-            if tid in two_weeks_old_ids:
+            is_two_weeks_old = tid in two_weeks_old_ids
+            task = self.tasks.get(tid)
+            if not is_two_weeks_old and task and task.created_at:
+                try:
+                    dt = datetime.strptime(task.created_at, "%Y-%m-%d")
+                    iso_y, iso_w, _ = dt.isocalendar()
+                    if (new_week.year - iso_y) * 52 + (new_week.week_number - iso_w) >= 2:
+                        is_two_weeks_old = True
+                except Exception:
+                    pass
+
+            # Regla de 2 semanas: si ya estuvo hace 2 semanas o más, se desagenda
+            if is_two_weeks_old:
                 continue  # Pasa automáticamente a quedar en Backlog no agendado
 
             if tid not in new_week.week_task_ids:
@@ -1109,5 +1138,71 @@ class EntityManager:
         if rolled_count > 0:
             self.save_week(new_week)
         return rolled_count
+
+    def prune_tasks_older_than_two_weeks(self, week: WeekSchedule) -> int:
+        """
+        Revisa todas las tareas agendadas en la semana (en week_task_ids y en days).
+        Si una tarea pendiente lleva 2 o más semanas de antigüedad (nació o estuvo presente
+        en semanas anteriores a (week_number - 1)), se desagenda de la semana para que
+        quede limpia y preservada en el Backlog de su proyecto.
+        Devuelve el número de tareas migradas al backlog.
+        """
+        prior_week_task_ids: Set[str] = set()
+        for w_key, w in self.weeks.items():
+            if w.year < week.year or (w.year == week.year and w.week_number <= week.week_number - 2):
+                prior_week_task_ids.update(w.week_task_ids)
+                prior_week_task_ids.update(w.topics_task_ids)
+                for d in w.days:
+                    prior_week_task_ids.update(d.task_ids)
+
+        pruned_count = 0
+
+        # Comprobar week_task_ids
+        for tid in list(week.week_task_ids):
+            task = self.tasks.get(tid)
+            if not task or not task.is_pending:
+                continue
+
+            is_old = tid in prior_week_task_ids
+            if not is_old and task.created_at:
+                try:
+                    dt = datetime.strptime(task.created_at, "%Y-%m-%d")
+                    iso_y, iso_w, _ = dt.isocalendar()
+                    if (week.year - iso_y) * 52 + (week.week_number - iso_w) >= 2:
+                        is_old = True
+                except Exception:
+                    pass
+
+            if is_old:
+                week.week_task_ids.remove(tid)
+                if tid in week.topics_task_ids:
+                    week.topics_task_ids.remove(tid)
+                pruned_count += 1
+
+        # Comprobar días
+        for d in week.days:
+            for tid in list(d.task_ids):
+                task = self.tasks.get(tid)
+                if not task or not task.is_pending:
+                    continue
+
+                is_old = tid in prior_week_task_ids
+                if not is_old and task.created_at:
+                    try:
+                        dt = datetime.strptime(task.created_at, "%Y-%m-%d")
+                        iso_y, iso_w, _ = dt.isocalendar()
+                        if (week.year - iso_y) * 52 + (week.week_number - iso_w) >= 2:
+                            is_old = True
+                    except Exception:
+                        pass
+
+                if is_old:
+                    d.task_ids.remove(tid)
+                    pruned_count += 1
+
+        if pruned_count > 0:
+            self.save_week(week)
+
+        return pruned_count
 
 

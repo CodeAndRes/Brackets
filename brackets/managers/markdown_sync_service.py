@@ -137,7 +137,6 @@ class MarkdownSyncService:
                     t_text = m_chk.group(2).strip()
                     if t_text:
                         week_tasks_lines.append((m_chk.group(1).lower() == 'x', t_text))
-                        topics_lines.append(t_text)
                 else:
                     m_item = re.match(r'^\s*-\s*(.*)$', line)
                     if m_item:
@@ -240,6 +239,10 @@ class MarkdownSyncService:
             else:
                 proj_id = "GENERAL"
                 title = clean
+
+            # Evitar crear topics espurios si el texto coincide con una tarea existente y no tenía proyecto
+            if not proj_match and any(t.title == title for t in self.manager.tasks.values()):
+                continue
 
             # Buscar topic existente
             matched = next((t for t in current_topics if t.title == title), None)

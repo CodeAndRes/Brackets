@@ -197,6 +197,108 @@ class TestTopicsAndWeekTasks(unittest.TestCase):
         self.assertIn(completed_task.id, day_obj.task_ids)
         self.assertNotIn(completed_task.id, reloaded_week.week_task_ids)
 
+    def test_intervention_day_is_immune_to_rollover(self):
+        """Verifica que los días de guardia o intervención NO reciban arrastre automático de tareas previas."""
+        week = self.manager.load_week(2026, 34)
+        friday = week.days[4]  # Viernes
+        task_fri = self.manager.create_task(
+            title="Tarea pendiente del viernes",
+            day_number=friday.day_number,
+            year=2026,
+            week_num=34
+        )
+
+        # Añadir sábado de intervención
+        sat = self.manager.add_day_to_week(
+            week=week,
+            day_number=22,
+            location_emoji="🛠️",
+            location_note="Intervención"
+        )
+        task_interv = self.manager.create_task(
+            title="Deploy general de producción",
+            day_number=22,
+            year=2026,
+            week_num=34
+        )
+
+        # Ejecutar rollover sobre el sábado
+        rolled = self.manager.rollover_day_tasks(week, 22)
+        self.assertEqual(rolled, 0)
+
+        # La tarea del viernes debe seguir en el viernes y NO en el sábado
+        self.assertIn(task_fri.id, friday.task_ids)
+        self.assertNotIn(task_fri.id, sat.task_ids)
+        self.assertIn(task_interv.id, sat.task_ids)
+
+    def test_prune_tasks_older_than_two_weeks(self):
+        """Valida que tareas de >= 2 semanas de antigüedad se desasignen de la semana hacia el backlog."""
+        week35 = WeekSchedule(
+            year=2026,
+            month=8,
+            week_number=35,
+            days=[DaySchedule(day_number=24)]
+        )
+        self.manager.save_week(week35)
+
+        # Tarea vieja (creada hace 3 semanas, ej: 2026-08-01 en semana 31)
+        old_task = self.manager.create_task(
+            title="Tarea vieja arrastrada de julio",
+            is_week_task=True,
+            year=2026,
+            week_num=35
+        )
+        old_task.created_at = "2026-08-01"
+        self.manager.save_tasks()
+
+        # Tarea fresca de la semana actual
+        fresh_task = self.manager.create_task(
+            title="Tarea creada esta semana",
+            is_week_task=True,
+            year=2026,
+            week_num=35
+        )
+
+        pruned = self.manager.prune_tasks_older_than_two_weeks(week35)
+        self.assertEqual(pruned, 1)
+
+        # La vieja se fue de la semana, pero sigue viva en la tabla (backlog de proyecto)
+        self.assertNotIn(old_task.id, week35.week_task_ids)
+        self.assertIn(old_task.id, self.manager.tasks)
+
+        # La fresca se mantiene en la semana
+        self.assertIn(fresh_task.id, week35.week_task_ids)
+
+    def test_markdown_sync_topics_with_checkbox_not_treated_as_topics(self):
+        """Valida que viñetas con checkbox - [ ] bajo ## Topics no creen entidades Topic con [GENERAL]."""
+        md_content = """# 🗓️Week 34
+
+## ✅Topics
+  - [ ] Tarea con checkbox legacy en topics
+  ---
+
+## 📝Notes
+  - 
+  ---
+
+## 🚗17 (Oficina)
+  - 
+"""
+        md_path = os.path.join(self.tmp_dir, "legacy_topics_week.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            f.write(md_content)
+
+        sync_service = MarkdownSyncService(self.manager, self.tmp_dir)
+        sync_service.sync_week_from_markdown(md_path, 2026, 34)
+
+        # No debe haberse creado ningún Topic para la tarea con checkbox
+        matching_topics = [t for t in self.manager.topics.values() if "Tarea con checkbox legacy" in t.title]
+        self.assertEqual(len(matching_topics), 0)
+
+        # Debe haberse creado como tarea en week_task_ids
+        matching_tasks = [t for t in self.manager.tasks.values() if "Tarea con checkbox legacy" in t.title]
+        self.assertEqual(len(matching_tasks), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

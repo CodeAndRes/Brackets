@@ -239,6 +239,17 @@ class DaySchedule:
             task_ids=data.get("task_ids", [])
         )
 
+    @property
+    def is_intervention(self) -> bool:
+        """Indica si el día es de intervención, guardia o soporte especial fuera de rutina."""
+        if self.location_emoji in ("🛠️", "🚨", "🔧", "⚡"):
+            return True
+        if self.location_note:
+            note_lower = self.location_note.lower()
+            if any(term in note_lower for term in ("intervenci", "guardia", "soporte", "on-call", "oncall")):
+                return True
+        return False
+
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
