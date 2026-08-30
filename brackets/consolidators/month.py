@@ -87,9 +87,15 @@ class MonthConsolidator(BaseConsolidator):
         """
         return self.consolidate_month(year, month)
     
-    def consolidate_month(self, year: int, month: int) -> bool:
+    def consolidate_month(
+        self,
+        year: int,
+        month: int,
+        interactive: bool = True,
+        delete_source: bool = False
+    ) -> bool:
         """
-        Consolida todos los archivos de un mes en un único archivo.
+        Consolida todos los archivos y datos de un mes en un único archivo ejecutivo.
         El orden es inverso: semanas de mayor a menor.
         """
         print(f"\n🔍 Buscando archivos para {year}-{month:02d}...")
@@ -104,7 +110,7 @@ class MonthConsolidator(BaseConsolidator):
         output_filename = f"[{year}][{month:02d}].md"
         output_path = os.path.join(self.directory, output_filename)
         
-        if os.path.exists(output_path):
+        if os.path.exists(output_path) and interactive:
             action = self.handle_existing_output(output_filename)
             
             if action == 'delete_only':
@@ -130,43 +136,121 @@ class MonthConsolidator(BaseConsolidator):
         # Encabezado principal
         content_parts.append(f"# {season_emoji} {month_name} - {year}")
         content_parts.append("")
-        content_parts.append(f"> Consolidado del mes {month:02d}/{year}")
+        content_parts.append(f"> 📊 Consolidado Ejecutivo del mes {month:02d}/{year}")
         content_parts.append(f"> Generado el {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         content_parts.append("")
         content_parts.append("---")
         content_parts.append("")
         
-        # Agregar temas mensuales si existe
+        # 1. Agregar temas mensuales si existe
         if monthly_file:
             content_parts.append("## 📋 Temas Mensuales")
             content_parts.append("")
             monthly_content = safe_file_read(monthly_file)
             if monthly_content:
-                # Remover el primer encabezado del archivo
                 lines = monthly_content.split('\n')
                 content_without_title = '\n'.join(lines[1:]).strip()
                 content_parts.append(content_without_title)
                 content_parts.append("")
                 content_parts.append("---")
                 content_parts.append("")
-        
-        # Agregar semanas (en orden inverso, ya están ordenadas)
-        for i, weekly_file in enumerate(weekly_files, 1):
-            # Extraer número de semana del nombre del archivo
-            match = re.search(r'Week(\d{2})', os.path.basename(weekly_file))
-            week_num = match.group(1) if match else "??"
-            
-            content_parts.append(f"## 🗓️ Semana {week_num}")
+
+        # 2. SECCIÓN EJECUTIVA: LOGROS DEL MES (TAREAS COMPLETADAS POR PROYECTO)
+        tasks_file = os.path.join(self.directory, "data", "tables", "tasks.yaml")
+        tasks_done_this_month = []
+        if os.path.exists(tasks_file):
+            try:
+                import yaml
+                with open(tasks_file, "r", encoding="utf-8") as f:
+                    tdata = yaml.safe_load(f)
+                all_tasks = tdata.get("tasks", [])
+                month_prefix = f"{year}-{month:02d}"
+                tasks_done_this_month = [
+                    t for t in all_tasks
+                    if t.get("status") == "done" and str(t.get("completed_at", "")).startswith(month_prefix)
+                ]
+            except Exception:
+                pass
+
+        if tasks_done_this_month:
+            content_parts.append("## 🏆 Logros del Mes (Tareas Completadas)")
             content_parts.append("")
-            
-            weekly_content = safe_file_read(weekly_file)
-            if weekly_content:
-                # Usar método de BaseConsolidator para ajustar encabezados
-                adjusted_content = self.adjust_markdown_headings(weekly_content, skip_first_line=True)
-                content_parts.append(adjusted_content.strip())
+            from collections import defaultdict
+            by_proj = defaultdict(list)
+            for t in tasks_done_this_month:
+                proj = t.get("project_id") or "POR_ASIGNAR"
+                by_proj[proj].append(t)
+
+            for proj, tlist in sorted(by_proj.items(), key=lambda x: -len(x[1])):
+                content_parts.append(f"### 📂 {proj} ({len(tlist)} tareas resueltas)")
+                for t in sorted(tlist, key=lambda x: str(x.get("completed_at", ""))):
+                    d_str = t.get("completed_at")
+                    d_suffix = f" _(Resuelta el {d_str})_" if d_str else ""
+                    content_parts.append(f"  - [x] {t['title']}{d_suffix}")
+                content_parts.append("")
+            content_parts.append("---")
+            content_parts.append("")
+
+        # 3. SECCIÓN EJECUTIVA: DECISIONES Y NOTAS CLAVE DEL MES
+        notes_file = os.path.join(self.directory, "data", "tables", "notes", f"{year}-{month:02d}.yaml")
+        if os.path.exists(notes_file):
+            try:
+                import yaml
+                with open(notes_file, "r", encoding="utf-8") as f:
+                    ndata = yaml.safe_load(f)
+                notes = ndata.get("notes", [])
+                if notes:
+                    content_parts.append("## 📝 Decisiones y Notas Clave")
+                    content_parts.append("")
+                    for n in notes:
+                        title = n.get("title") or "Nota"
+                        content_parts.append(f"### {title}")
+                        for item in n.get("content", []):
+                            content_parts.append(f"  - {item}")
+                        content_parts.append("")
+                    content_parts.append("---")
+                    content_parts.append("")
+            except Exception:
+                pass
+
+        # 4. MÉTRICAS Y LOG DEL MES
+        log_file = os.path.join(self.directory, "data", "log", f"{year}-{month:02d}.log")
+        if os.path.exists(log_file):
+            try:
+                with open(log_file, "r", encoding="utf-8") as f:
+                    log_lines = f.readlines()
+                pomodoros = sum(1 for l in log_lines if "[POMODORO]" in l)
+                tasks_created = sum(1 for l in log_lines if "[TASK] created" in l)
+                content_parts.append("## ⏱️ Registro de Actividad")
+                content_parts.append(f"- **Eventos registrados en el mes:** {len(log_lines)}")
+                content_parts.append(f"- **Nuevas tareas registradas:** {tasks_created}")
+                content_parts.append(f"- **Tareas completadas:** {len(tasks_done_this_month)}")
+                if pomodoros > 0:
+                    content_parts.append(f"- **Sesiones Pomodoro de foco:** {pomodoros}")
                 content_parts.append("")
                 content_parts.append("---")
                 content_parts.append("")
+            except Exception:
+                pass
+
+        # 5. SEMANAS CONSOLIDADAS (en orden inverso, ya están ordenadas)
+        if weekly_files:
+            content_parts.append("## 🗓️ Bitácoras Semanales del Mes")
+            content_parts.append("")
+            for i, weekly_file in enumerate(weekly_files, 1):
+                match = re.search(r'Week(\d{2})', os.path.basename(weekly_file))
+                week_num = match.group(1) if match else "??"
+                
+                content_parts.append(f"### 🗓️ Semana {week_num}")
+                content_parts.append("")
+                
+                weekly_content = safe_file_read(weekly_file)
+                if weekly_content:
+                    adjusted_content = self.adjust_markdown_headings(weekly_content, skip_first_line=True)
+                    content_parts.append(adjusted_content.strip())
+                    content_parts.append("")
+                    content_parts.append("---")
+                    content_parts.append("")
         
         # Escribir archivo consolidado
         final_content = '\n'.join(content_parts)
@@ -174,17 +258,27 @@ class MonthConsolidator(BaseConsolidator):
         if safe_file_write(output_path, final_content):
             print(f"\n✅ Archivo consolidado creado: {output_filename}")
             print(f"📍 Ruta: {output_path}")
+
+            # Registrar en log4brackets si está disponible
+            try:
+                from brackets.worklog.log4brackets import log4brackets
+                log4brackets.log_consolidation(year, month, output_filename)
+            except Exception:
+                pass
             
-            # Preguntar si borrar archivos origen
-            delete = input("\n🗑️  ¿Deseas borrar los archivos origen? (s/N): ").strip().lower()
-            
-            if delete in ['s', 'si', 'sí', 'y', 'yes']:
+            # Preguntar si borrar archivos origen si es interactivo
+            if interactive:
+                delete = input("\n🗑️  ¿Deseas borrar los archivos origen? (s/N): ").strip().lower()
+                if delete in ['s', 'si', 'sí', 'y', 'yes']:
+                    self.delete_source_files(weekly_files, monthly_file)
+            elif delete_source:
                 self.delete_source_files(weekly_files, monthly_file)
             
             return True
         else:
             print(f"\n❌ Error al crear el archivo consolidado")
             return False
+
     
     def list_available_months(self) -> List[Tuple[int, int]]:
         """Lista todos los meses disponibles con archivos."""
