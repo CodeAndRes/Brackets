@@ -52,6 +52,7 @@ from brackets.tests.test_file_rename_manager import test_file_rename_manager
 from brackets.tests.test_global_search_replace import test_global_search_replace
 from brackets.tests.test_manual_creation import test_manual_bitacora_generation, test_manual_weekly_creation
 from brackets.tests.test_pomodoro_timer import TestPomodoroTimer
+from brackets.tests.test_log4brackets import TestLog4Brackets
 
 
 def run_all_tests():
@@ -364,6 +365,17 @@ def run_all_tests():
     pomodoro_passed = tester.run_all()
     total_passed += tester.passed
     total_failed += tester.failed
+
+    # Tests de log4brackets (Event Logging clásico)
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: log4brackets (Logging clásico de una sola línea por mes)")
+    print("=" * 60)
+    l4b_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestLog4Brackets)
+    l4b_result = unittest.TextTestRunner(verbosity=1).run(l4b_suite)
+    l4b_passed = l4b_result.testsRun - len(l4b_result.failures) - len(l4b_result.errors)
+    l4b_failed = len(l4b_result.failures) + len(l4b_result.errors)
+    total_passed += l4b_passed
+    total_failed += l4b_failed
 
     # Mostrar resumen final
     print("\n" + "=" * 60)

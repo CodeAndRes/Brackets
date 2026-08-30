@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Any
 import yaml
 
 from brackets.models.entities import Task, Note, Definition, Project, Idea, Topic, RecurringTask, WeekSchedule, DaySchedule
+from brackets.worklog.log4brackets import log4brackets
 
 
 class EntityManager:
@@ -18,6 +19,8 @@ class EntityManager:
 
     def __init__(self, base_data_dir: str):
         self.base_data_dir = os.path.abspath(base_data_dir)
+        vault_root = os.path.dirname(self.base_data_dir)
+        log4brackets.set_vault_root(vault_root)
         self.tables_dir = os.path.join(self.base_data_dir, "tables")
         self.notes_dir = os.path.join(self.tables_dir, "notes")
         self.weeks_dir = os.path.join(self.base_data_dir, "weeks")
@@ -329,6 +332,7 @@ class EntityManager:
                 week.topic_ids.append(topic_id)
                 self.save_week(week)
 
+        log4brackets.log_topic_created(topic.id, topic.project_id, topic.title)
         return topic
 
     def add_topic_to_week(self, week: WeekSchedule, topic_or_task_id: str) -> bool:
@@ -628,6 +632,7 @@ class EntityManager:
                             break
                 self.save_week(week)
 
+        log4brackets.log_task_created(task.id, task.project_id, task.title, day_number=day_number)
         return task
 
     def toggle_task(self, task_id: str) -> Optional[Task]:
@@ -640,11 +645,14 @@ class EntityManager:
         if task.is_done:
             task.status = "pending"
             task.completed_at = None
+            self.save_tasks()
+            log4brackets.log_task_reopened(task.id, task.project_id, task.title)
         else:
             task.status = "done"
             task.completed_at = today_str
+            self.save_tasks()
+            log4brackets.log_task_completed(task.id, task.project_id, task.title)
 
-        self.save_tasks()
         return task
 
     def delete_task(
@@ -759,6 +767,7 @@ class EntityManager:
                 week.note_ids.append(note_id)
             self.save_week(week)
 
+        log4brackets.log_note_created(note.id, note.project_id, note.title or "Nota sin título", topic_id=note.topic_id)
         return note
 
     def list_notes(
@@ -1137,6 +1146,7 @@ class EntityManager:
 
         if rolled_count > 0:
             self.save_week(new_week)
+            log4brackets.log_rollover(prev_week.week_number, new_week.week_number, rolled_count)
         return rolled_count
 
     def prune_tasks_older_than_two_weeks(self, week: WeekSchedule) -> int:
@@ -1178,6 +1188,7 @@ class EntityManager:
                 if tid in week.topics_task_ids:
                     week.topics_task_ids.remove(tid)
                 pruned_count += 1
+                log4brackets.log_task_backlogged(task.id, task.project_id, task.title)
 
         # Comprobar días
         for d in week.days:
@@ -1199,6 +1210,7 @@ class EntityManager:
                 if is_old:
                     d.task_ids.remove(tid)
                     pruned_count += 1
+                    log4brackets.log_task_backlogged(task.id, task.project_id, task.title)
 
         if pruned_count > 0:
             self.save_week(week)

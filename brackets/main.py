@@ -753,6 +753,12 @@ class BitacoraManager:
     def run(self) -> None:
         """Ejecuta el menú principal o inicia en el Hub Diario si las bitácoras están activas."""
         self.event_log.append("session_start", vault=self.vault_name)
+        try:
+            from brackets.worklog.log4brackets import log4brackets
+            log4brackets.set_vault_root(self.vault_root)
+            log4brackets.log_startup(vault_name=self.vault_name)
+        except Exception:
+            pass
 
         if self.bitacoras_enabled:
             hub_result = self.handle_daily_hub()

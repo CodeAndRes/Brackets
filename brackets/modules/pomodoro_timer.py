@@ -111,8 +111,14 @@ class PomodoroTimerEngine:
         self.blink_open: bool = True
         self.last_event: Optional[str] = None
         self.last_session_record: Optional[Dict] = None
-        self._session_start_ts: Optional[str] = None
+        self.active_task_id: Optional[str] = None
+        self.active_project_id: Optional[str] = None
         self._on_session_completed: Optional[Callable[[Dict], None]] = None
+
+    def set_active_task(self, task_id: Optional[str], project_id: Optional[str] = None) -> None:
+        """Asocia una tarea al temporizador de foco actual."""
+        self.active_task_id = task_id
+        self.active_project_id = project_id
 
     def set_session_completed_hook(self, callback: Optional[Callable[[Dict], None]]) -> None:
         """Hook de extensión para integración futura con notas/tareas."""
@@ -176,6 +182,15 @@ class PomodoroTimerEngine:
         if self.phase == "focus":
             self.completed_focus_sessions += 1
             self.worked_seconds_today += self.config.focus_seconds
+            try:
+                from brackets.worklog.log4brackets import log4brackets
+                log4brackets.log_pomodoro(
+                    task_id=self.active_task_id,
+                    project_id=self.active_project_id,
+                    duration_min=int(self.config.focus_seconds // 60)
+                )
+            except Exception:
+                pass
 
         self.last_session_record = {
             "phase": self.phase,
