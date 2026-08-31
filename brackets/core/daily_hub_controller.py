@@ -301,7 +301,7 @@ class DailyHubController:
             self.print(f"\n⚡ Fin de semana detectado: pulsa [+] para activar {day_name} {now.day} (Intervención/Guardia)")
 
         self.print("\n" + "=" * 65)
-        self.print("  [1-9] ✅ Marcar   [e] ✏️ Editar   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
+        self.print("  [1-9] ✅ Marcar tarea   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
         self.print("  [d] 📅 Cambiar día      [y] 🔄 Sync MD➔YAML    [0/b] Menú    [q] Salir")
         self.print("=" * 65)
 
@@ -453,10 +453,6 @@ class DailyHubController:
 
             if choice == "c":
                 self._action_toggle_task(week, day, ordered_task_ids)
-                continue
-
-            if choice == "e":
-                self._action_edit_task(week, day, ordered_task_ids)
                 continue
 
             if choice == "j":

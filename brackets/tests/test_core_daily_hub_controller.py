@@ -339,10 +339,11 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertIn("Sincronizando Markdown (.md) ➔ Base de datos YAML...", output_text)
 
     def test_run_edit_task(self):
-        """Simula pulsar 'e', seleccionar tarea '1', escribir nuevo texto y luego 'q' para salir."""
+        """Simula pulsar 't' (menú de tareas), '8' (editar tarea), seleccionar '1', escribir nuevo texto y salir con 'q'."""
         inputs = [
-            "e",                          # Editar tarea
-            "1",                          # Tarea 1 (TSK-0010)
+            "t",                          # Menú de tareas
+            "8",                          # Opción 8: Editar tarea
+            "1",                          # Tarea 1
             "Título editado de la tarea",  # Nuevo texto
             "n",                          # No cambiar proyecto
             "",                           # Enter continuar
