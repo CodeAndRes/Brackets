@@ -302,7 +302,7 @@ class DailyHubController:
 
         self.print("\n" + "=" * 65)
         self.print("  [1-9] ✅ Marcar tarea   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
-        self.print("  [d] 📅 Cambiar día      [0/b] Menú       [q] Salir")
+        self.print("  [d] 📅 Cambiar día      [y] 🔄 Sync MD➔YAML    [0/b] Menú    [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -321,6 +321,38 @@ class DailyHubController:
             service = MarkdownSyncService(self.manager, self.vault_root)
             if service.sync_week_from_markdown(md_path, week.year, week.week_number):
                 self._sync_markdown(week)
+
+    def _action_sync_markdown_to_yaml(self, week: WeekSchedule) -> None:
+        """Sincroniza todos los archivos Markdown de bitácoras hacia la base de datos relacional YAML."""
+        from brackets.managers.markdown_sync_service import MarkdownSyncService
+        self.print("\n🔄 Sincronizando Markdown (.md) ➔ Base de datos YAML...")
+        service = MarkdownSyncService(self.manager, self.vault_root)
+
+        synced_files: List[str] = []
+        if os.path.exists(self.vault_root):
+            for fname in sorted(os.listdir(self.vault_root)):
+                m = re.match(r'^\[(\d{4})\]\[\d{2}\]Week(\d{2})\.md$', fname)
+                if m:
+                    y = int(m.group(1))
+                    w = int(m.group(2))
+                    full_path = os.path.join(self.vault_root, fname)
+                    try:
+                        if service.sync_week_from_markdown(full_path, y, w):
+                            synced_files.append(fname)
+                            self.print(f"  ✓ {fname} sincronizado")
+                    except Exception as ex:
+                        self.print(f"  ⚠️ Error al sincronizar {fname}: {ex}")
+
+        # Recargar la semana activa y sincronizar markdown limpio
+        reloaded_week = self.manager.load_week(week.year, week.week_number, reload=True)
+        if reloaded_week:
+            self._sync_markdown(reloaded_week)
+
+        if synced_files:
+            self.print(f"\n✅ {len(synced_files)} archivo(s) sincronizado(s) con la base de datos YAML.")
+        else:
+            self.print("\nℹ️ No se detectaron cambios pendientes en los archivos Markdown.")
+        self.input("\nPresiona Enter para continuar...")
 
     def run(self) -> str:
         """Bucle principal de interacción del Hub Diario. Retorna 'menu' o 'exit'."""
@@ -436,6 +468,10 @@ class DailyHubController:
                 self._action_schedule_topic(week, day)
                 continue
 
+            if choice in ("y", "sync", "md2yaml"):
+                self._action_sync_markdown_to_yaml(week)
+                continue
+
     def manage_tasks_menu(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> Optional[str]:
         """Subpantalla interactiva de gestión de tareas con MenuNavigator (Opción B)."""
         options = [
@@ -447,6 +483,7 @@ class DailyHubController:
             MenuOption("6", "📋 Nueva Tarea SEMANAL (sin día fijo)", "new_week_task", aliases=["w"]),
             MenuOption("7", "➡️  Agendar Tarea Semanal / Topic a HOY", "schedule_topic", aliases=["a"]),
             MenuOption("8", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
+            MenuOption("9", "🔄 Sincronizar Markdown (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
         ]
 
         title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
@@ -496,6 +533,9 @@ class DailyHubController:
                     res = self.manage_recurring_menu(week, day)
                     if res in ("menu", "exit"):
                         return res
+                    return "refresh"
+                elif opt.action_id == "sync_markdown":
+                    self._action_sync_markdown_to_yaml(week)
                     return "refresh"
 
     def manage_day_menu(self, week: WeekSchedule) -> Optional[str]:

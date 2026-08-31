@@ -315,6 +315,29 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(added_day.location_emoji, "🛠️")
         self.assertEqual(added_day.location_note, "Intervención")
 
+    def test_run_manual_sync_markdown_to_yaml(self):
+        """Simula pulsar 'y' para arrancar la sincronización .md -> .yaml y luego 'q' para salir."""
+        inputs = [
+            "y",  # Sincronizar markdown a YAML
+            "",   # Enter confirmación
+            "q"   # Salir
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=mock_input,
+            print_fn=self._mock_print
+        )
+
+        result = controller.run()
+        self.assertEqual(result, "exit")
+        output_text = "\n".join(self.output_lines)
+        self.assertIn("Sincronizando Markdown (.md) ➔ Base de datos YAML...", output_text)
+
 
 if __name__ == "__main__":
     unittest.main()
