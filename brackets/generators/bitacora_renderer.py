@@ -47,7 +47,7 @@ class BitacoraRenderer:
                 if not task:
                     continue
                 lines.append(BitacoraRenderer._format_task_line(task))
-                used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title))
+                used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title, manager))
         else:
             lines.append("  - [ ] ")
         lines.append("  ---\n")
@@ -61,14 +61,14 @@ class BitacoraRenderer:
                     continue
                 if note.title:
                     lines.append(f"- ### {note.title}")
-                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(note.title))
+                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(note.title, manager))
                     for content_line in note.content:
                         lines.append(f"  - {content_line}")
-                        used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line))
+                        used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line, manager))
                 else:
                     for content_line in note.content:
                         lines.append(f"- {content_line}")
-                        used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line))
+                        used_def_ids.update(BitacoraRenderer._extract_definition_ids(content_line, manager))
         else:
             lines.append("  - ")
         lines.append("  ---\n")
@@ -85,13 +85,13 @@ class BitacoraRenderer:
                         continue
                     seen_titles.add(task.title)
                     lines.append(BitacoraRenderer._format_task_line(task))
-                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title))
+                    used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title, manager))
             else:
                 lines.append("  - ")
             lines.append("")
 
         # 5. Sección Definiciones (al pie)
-        # Resolver todas las definiciones usadas
+        # Siempre colocar por defecto la sección de definiciones al pie de la bitácora
         definitions_to_render: List[Definition] = []
         for def_id in sorted(used_def_ids):
             # Normalizar para buscar en manager
@@ -99,10 +99,9 @@ class BitacoraRenderer:
             if def_obj:
                 definitions_to_render.append(def_obj)
 
-        if definitions_to_render:
-            lines.append("<!-- Definiciones -->")
-            for d in definitions_to_render:
-                lines.append(f"{d.id}: {d.url}")
+        lines.append("<!-- Definiciones -->")
+        for d in definitions_to_render:
+            lines.append(f"{d.id}: {d.url}")
 
         return "\n".join(lines).strip() + "\n"
 
@@ -120,13 +119,16 @@ class BitacoraRenderer:
             return f"  - [ ] {task.title}"
 
     @staticmethod
-    def _extract_definition_ids(text: str) -> Set[str]:
-        """Detecta automáticamente IDs de definición tipo [🎫TICKET] o [🤖Agente] en el texto."""
+    def _extract_definition_ids(text: str, manager: Optional[EntityManager] = None) -> Set[str]:
+        """Detecta automáticamente IDs de definición tipo [🎫TICKET] o cualquier definición registrada."""
         found: Set[str] = set()
-        # Busca patrones tipo [🎫...] o [🦒...] o [🤖...]
         pattern = r'(\[(?:🎫|🦒|🤖|📺|🎫)[^\]]+\])'
         matches = re.findall(pattern, text)
         found.update(matches)
+        if manager:
+            for def_id in manager.definitions.keys():
+                if def_id in text:
+                    found.add(def_id)
         return found
 
     @staticmethod

@@ -369,6 +369,42 @@ class TestCoreDailyHubController(unittest.TestCase):
         task = self.entity_manager.tasks.get(first_task_id)
         self.assertEqual(task.title, "Título editado de la tarea")
 
+    def test_run_create_definition(self):
+        """Simula pulsar 'l' (definiciones), '1' (nueva Jira), indicar SUPPLY-18495 y luego salir."""
+        inputs = [
+            "l",             # Menú de definiciones
+            "1",             # 1: Nueva Jira
+            "SUPPLY-18495",  # Código Jira
+            "",              # Enter para aceptar URL por defecto
+            "",              # Enter confirmación (vuelve al Hub)
+            "q"              # Salir del Hub
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=mock_input,
+            print_fn=self._mock_print
+        )
+
+        result = controller.run()
+        self.assertEqual(result, "exit")
+
+        # Verificar que la definición existe en el EntityManager
+        self.assertIn("[🎫SUPPLY-18495]", self.entity_manager.definitions)
+        defn = self.entity_manager.definitions["[🎫SUPPLY-18495]"]
+        self.assertEqual(defn.url, "https://mangospain.atlassian.net/browse/SUPPLY-18495")
+
+    def test_render_week_default_definitions_section(self):
+        """Verifica que la sección <!-- Definiciones --> siempre se incluye por defecto en la bitácora semanal."""
+        from brackets.generators.bitacora_renderer import BitacoraRenderer
+        week = self.entity_manager.load_week(2026, 34)
+        rendered = BitacoraRenderer.render_week(week, self.entity_manager)
+        self.assertIn("<!-- Definiciones -->", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -302,7 +302,7 @@ class DailyHubController:
 
         self.print("\n" + "=" * 65)
         self.print("  [1-9] ✅ Marcar tarea   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
-        self.print("  [d] 📅 Cambiar día      [y] 🔄 Sync MD➔YAML    [0/b] Menú    [q] Salir")
+        self.print("  [d] 📅 Cambiar día      [l] 🔗 Definiciones   [y] 🔄 Sync   [0/b] Menú   [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -471,6 +471,12 @@ class DailyHubController:
                 self._action_sync_markdown_to_yaml(week)
                 continue
 
+            if choice in ("l", "f", "def", "link", "links", "definicion", "definiciones"):
+                res = self.manage_definitions_menu(week)
+                if res in ("menu", "exit"):
+                    return res
+                continue
+
     def manage_tasks_menu(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> Optional[str]:
         """Subpantalla interactiva de gestión de tareas con MenuNavigator (Opción B)."""
         options = [
@@ -484,6 +490,7 @@ class DailyHubController:
             MenuOption("8", "✏️  Editar Tarea (texto / proyecto)", "edit_task", aliases=["e"]),
             MenuOption("9", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
             MenuOption("10", "🔄 Sincronizar Markdown (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
+            MenuOption("11", "🔗 Crear / Gestionar Definiciones", "manage_defs", aliases=["l", "f", "def", "link"]),
         ]
 
         title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
@@ -539,6 +546,11 @@ class DailyHubController:
                     return "refresh"
                 elif opt.action_id == "sync_markdown":
                     self._action_sync_markdown_to_yaml(week)
+                    return "refresh"
+                elif opt.action_id == "manage_defs":
+                    res = self.manage_definitions_menu(week)
+                    if res in ("menu", "exit"):
+                        return res
                     return "refresh"
 
     def manage_day_menu(self, week: WeekSchedule) -> Optional[str]:
@@ -1021,3 +1033,122 @@ class DailyHubController:
                     self.input("Presiona Enter para continuar...")
         except ValueError:
             pass
+
+    def manage_definitions_menu(self, week: WeekSchedule) -> Optional[str]:
+        """Subpantalla interactiva para gestionar y crear definiciones/enlaces."""
+        options = [
+            MenuOption("1", "🎫 Nueva Definición Jira (ej: SUPPLY-18495)", "new_jira_def", aliases=["j"]),
+            MenuOption("2", "🔗 Nueva Definición Personalizada (ID + URL)", "new_custom_def", aliases=["c"]),
+            MenuOption("3", "📋 Listar Definiciones registradas", "list_defs", aliases=["l"]),
+            MenuOption("4", "🗑️  Eliminar Definición", "delete_def", aliases=["d"]),
+        ]
+
+        title = "🔗 G E S T I Ó N  D E  D E F I N I C I O N E S  Y  E N L A C E S"
+        navigator = MenuNavigator(
+            title=title,
+            options=options,
+            show_back=True,
+            show_main_menu=True,
+            print_fn=self.print,
+            input_fn=self.input,
+            read_single_key_fn=self.read_single_key,
+            clear_screen_fn=self.clear_screen,
+        )
+
+        while True:
+            nav_status, opt = navigator.prompt()
+            if nav_status == "back":
+                return "back"
+            if nav_status == "menu":
+                return "menu"
+            if nav_status == "exit":
+                return "exit"
+
+            if opt:
+                if opt.action_id == "new_jira_def":
+                    self._action_new_jira_definition(week)
+                    return "refresh"
+                elif opt.action_id == "new_custom_def":
+                    self._action_new_custom_definition(week)
+                    return "refresh"
+                elif opt.action_id == "list_defs":
+                    self._action_list_definitions()
+                elif opt.action_id == "delete_def":
+                    self._action_delete_definition(week)
+                    return "refresh"
+
+    def _action_new_jira_definition(self, week: WeekSchedule) -> None:
+        code = self.input("🎫 Código del ticket Jira (ej: SUPPLY-18495 o ATLM-12703): ").strip()
+        if not code:
+            return
+        clean_code = code.replace("[", "").replace("]", "").replace("🎫", "").strip().upper()
+        formatted_id = f"[🎫{clean_code}]"
+        default_url = f"https://mangospain.atlassian.net/browse/{clean_code}"
+        url_input = self.input(f"URL [{default_url}] (Enter para aceptar): ").strip()
+        final_url = url_input if url_input else default_url
+
+        def_obj = self.manager.ensure_definition(def_id=formatted_id, url=final_url, title=clean_code)
+        self._sync_markdown(week)
+        self.print(f"\n✅ Definición creada: {def_obj.id}: {def_obj.url}")
+        self.input("Presiona Enter para continuar...")
+
+    def _action_new_custom_definition(self, week: WeekSchedule) -> None:
+        tag = self.input("🏷️  Etiqueta / ID (ej: [🤖Export Validator] o [📊Grafana]): ").strip()
+        if not tag:
+            return
+        if not tag.startswith("[") or not tag.endswith("]"):
+            tag = f"[{tag}]"
+        url = self.input("🌐 URL de destino: ").strip()
+        if not url:
+            self.print("❌ La URL es obligatoria.")
+            self.input("Presiona Enter para continuar...")
+            return
+        title = self.input("📝 Título descriptivo (opcional): ").strip() or None
+
+        def_obj = self.manager.ensure_definition(def_id=tag, url=url, title=title)
+        self._sync_markdown(week)
+        self.print(f"\n✅ Definición creada: {def_obj.id}: {def_obj.url}")
+        self.input("Presiona Enter para continuar...")
+
+    def _action_list_definitions(self) -> None:
+        self.clear_screen()
+        self.print("=" * 65)
+        self.print("🔗 DEFINICIONES Y ENLACES REGISTRADOS")
+        self.print("=" * 65)
+        if not self.manager.definitions:
+            self.print("  (No hay definiciones registradas)")
+        else:
+            for def_id, d in sorted(self.manager.definitions.items()):
+                title_suffix = f" ({d.title})" if d.title else ""
+                self.print(f"  • {d.id}: {d.url}{title_suffix}")
+        self.print("=" * 65)
+        self.input("\nPresiona Enter para continuar...")
+
+    def _action_delete_definition(self, week: WeekSchedule) -> None:
+        if not self.manager.definitions:
+            self.print("❌ No hay definiciones para eliminar.")
+            self.input("Presiona Enter para continuar...")
+            return
+        sorted_keys = sorted(self.manager.definitions.keys())
+        self.print("\nDefiniciones registradas:")
+        for idx, k in enumerate(sorted_keys, start=1):
+            d = self.manager.definitions[k]
+            self.print(f"  [{idx}] {d.id}: {d.url}")
+        num_str = self.input(f"\nNúmero de definición a eliminar (1-{len(sorted_keys)}) [Enter para cancelar]: ").strip()
+        if not num_str:
+            return
+        try:
+            num = int(num_str)
+            if 1 <= num <= len(sorted_keys):
+                target_key = sorted_keys[num - 1]
+                del self.manager.definitions[target_key]
+                self.manager.save_definitions()
+                self._sync_markdown(week)
+                self.print(f"✅ Definición eliminada: {target_key}")
+                self.input("Presiona Enter para continuar...")
+            else:
+                self.print("❌ Número fuera de rango.")
+                self.input("Presiona Enter para continuar...")
+        except ValueError:
+            self.print("❌ Ingresa un número válido.")
+            self.input("Presiona Enter para continuar...")

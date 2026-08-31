@@ -113,6 +113,7 @@ class ContentGenerator:
             content += f"{header}\n"
             content += "  - \n\n"
 
+        content += "<!-- Definiciones -->\n"
         return content
 
     def create_monthly_topics(self,
