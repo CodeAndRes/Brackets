@@ -636,6 +636,18 @@ class DailyHubController:
             self.print("✅ Tarea añadida a las Tareas de la Semana.")
             self.input("Presiona Enter para continuar...")
 
+    def _print_day_tasks_list(self, day: DaySchedule, ordered_task_ids: List[str]) -> None:
+        """Imprime la lista numerada de tareas del día para selección interactiva."""
+        self.print(f"\n📋 TAREAS DE HOY (Día {day.day_number}):")
+        for idx, tid in enumerate(ordered_task_ids, start=1):
+            task = self.manager.tasks.get(tid)
+            if task:
+                status_box = "[x]" if task.is_done else ("[ ] ~~" if task.is_cancelled else "[ ]")
+                suffix = "~~" if task.is_cancelled else ""
+                proj_tag = f" [{task.project_id}]" if task.project_id else ""
+                self.print(f"  [{idx}] {status_box} {task.title}{proj_tag}{suffix}")
+        self.print("")
+
     def _action_toggle_task(
         self,
         week: WeekSchedule,
@@ -648,7 +660,10 @@ class DailyHubController:
             self.input("Presiona Enter para continuar...")
             return
         if target_num is None:
-            num_str = self.input(f"Número de tarea (1-{len(ordered_task_ids)}): ").strip()
+            self._print_day_tasks_list(day, ordered_task_ids)
+            num_str = self.input(f"Número de tarea (1-{len(ordered_task_ids)}) [Enter/0 para cancelar]: ").strip()
+            if not num_str or num_str in ("0", "b", "c", "q"):
+                return
             try:
                 target_num = int(num_str)
             except ValueError:
@@ -669,7 +684,10 @@ class DailyHubController:
             self.print("❌ No hay tareas para borrar.")
             self.input("Presiona Enter para continuar...")
             return
-        num_str = self.input(f"Número de tarea a eliminar (1-{len(ordered_task_ids)}): ").strip()
+        self._print_day_tasks_list(day, ordered_task_ids)
+        num_str = self.input(f"Número de tarea a eliminar (1-{len(ordered_task_ids)}) [Enter/0 para cancelar]: ").strip()
+        if not num_str or num_str in ("0", "b", "c", "q"):
+            return
         try:
             num = int(num_str)
             if 1 <= num <= len(ordered_task_ids):
@@ -681,6 +699,8 @@ class DailyHubController:
                     day_number=day.day_number
                 )
                 self._sync_markdown(week)
+                self.print("✅ Tarea eliminada.")
+                self.input("Presiona Enter para continuar...")
             else:
                 self.print("❌ Número fuera de rango.")
                 self.input("Presiona Enter para continuar...")
@@ -701,7 +721,10 @@ class DailyHubController:
             return
 
         if target_num is None:
-            num_str = self.input(f"Número de tarea a editar (1-{len(ordered_task_ids)}): ").strip()
+            self._print_day_tasks_list(day, ordered_task_ids)
+            num_str = self.input(f"Número de tarea a editar (1-{len(ordered_task_ids)}) [Enter/0 para cancelar]: ").strip()
+            if not num_str or num_str in ("0", "b", "c", "q"):
+                return
             try:
                 target_num = int(num_str)
             except ValueError:
@@ -717,7 +740,7 @@ class DailyHubController:
                 self.input("Presiona Enter para continuar...")
                 return
 
-            self.print(f"\n✏️ Tarea actual: [{task.project_id or 'GENERAL'}] {task.title}")
+            self.print(f"\n✏️ Tarea seleccionada: [{task.project_id or 'GENERAL'}] {task.title}")
             new_title = self.input("Nuevo texto (Enter para mantener actual): ").strip()
             if new_title:
                 task.title = new_title
