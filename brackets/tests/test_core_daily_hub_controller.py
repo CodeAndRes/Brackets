@@ -338,6 +338,36 @@ class TestCoreDailyHubController(unittest.TestCase):
         output_text = "\n".join(self.output_lines)
         self.assertIn("Sincronizando Markdown (.md) ➔ Base de datos YAML...", output_text)
 
+    def test_run_edit_task(self):
+        """Simula pulsar 'e', seleccionar tarea '1', escribir nuevo texto y luego 'q' para salir."""
+        inputs = [
+            "e",                          # Editar tarea
+            "1",                          # Tarea 1 (TSK-0010)
+            "Título editado de la tarea",  # Nuevo texto
+            "n",                          # No cambiar proyecto
+            "",                           # Enter continuar
+            "q"                           # Salir
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=mock_input,
+            print_fn=self._mock_print
+        )
+        controller.active_day_number = 17
+
+        result = controller.run()
+        self.assertEqual(result, "exit")
+
+        week, day = controller._get_active_week_and_day()
+        first_task_id = day.task_ids[0]
+        task = self.entity_manager.tasks.get(first_task_id)
+        self.assertEqual(task.title, "Título editado de la tarea")
+
 
 if __name__ == "__main__":
     unittest.main()

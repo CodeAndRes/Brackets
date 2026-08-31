@@ -301,7 +301,7 @@ class DailyHubController:
             self.print(f"\n⚡ Fin de semana detectado: pulsa [+] para activar {day_name} {now.day} (Intervención/Guardia)")
 
         self.print("\n" + "=" * 65)
-        self.print("  [1-9] ✅ Marcar tarea   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
+        self.print("  [1-9] ✅ Marcar   [e] ✏️ Editar   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
         self.print("  [d] 📅 Cambiar día      [y] 🔄 Sync MD➔YAML    [0/b] Menú    [q] Salir")
         self.print("=" * 65)
 
@@ -451,9 +451,12 @@ class DailyHubController:
                     self._action_toggle_task(week, day, ordered_task_ids, target_num=task_num)
                     continue
 
-            # Atajos directos para compatibilidad y rapidez
             if choice == "c":
                 self._action_toggle_task(week, day, ordered_task_ids)
+                continue
+
+            if choice == "e":
+                self._action_edit_task(week, day, ordered_task_ids)
                 continue
 
             if choice == "j":
@@ -482,8 +485,9 @@ class DailyHubController:
             MenuOption("5", "🎯 Crear nuevo Topic Semanal", "new_topic", aliases=["t"]),
             MenuOption("6", "📋 Nueva Tarea SEMANAL (sin día fijo)", "new_week_task", aliases=["w"]),
             MenuOption("7", "➡️  Agendar Tarea Semanal / Topic a HOY", "schedule_topic", aliases=["a"]),
-            MenuOption("8", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
-            MenuOption("9", "🔄 Sincronizar Markdown (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
+            MenuOption("8", "✏️  Editar Tarea (texto / proyecto)", "edit_task", aliases=["e"]),
+            MenuOption("9", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
+            MenuOption("10", "🔄 Sincronizar Markdown (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
         ]
 
         title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
@@ -516,6 +520,9 @@ class DailyHubController:
                     return "refresh"
                 elif opt.action_id == "toggle_task":
                     self._action_toggle_task(week, day, ordered_task_ids)
+                    return "refresh"
+                elif opt.action_id == "edit_task":
+                    self._action_edit_task(week, day, ordered_task_ids)
                     return "refresh"
                 elif opt.action_id == "delete_task":
                     self._action_delete_task(week, day, ordered_task_ids)
@@ -683,6 +690,54 @@ class DailyHubController:
                 self.input("Presiona Enter para continuar...")
         except ValueError:
             self.print("❌ Ingresa un número válido.")
+            self.input("Presiona Enter para continuar...")
+
+    def _action_edit_task(
+        self,
+        week: WeekSchedule,
+        day: DaySchedule,
+        ordered_task_ids: List[str],
+        target_num: Optional[int] = None
+    ) -> None:
+        if not ordered_task_ids:
+            self.print("❌ No hay tareas para editar.")
+            self.input("Presiona Enter para continuar...")
+            return
+
+        if target_num is None:
+            num_str = self.input(f"Número de tarea a editar (1-{len(ordered_task_ids)}): ").strip()
+            try:
+                target_num = int(num_str)
+            except ValueError:
+                self.print("❌ Ingresa un número válido.")
+                self.input("Presiona Enter para continuar...")
+                return
+
+        if 1 <= target_num <= len(ordered_task_ids):
+            target_id = ordered_task_ids[target_num - 1]
+            task = self.manager.tasks.get(target_id)
+            if not task:
+                self.print("❌ Tarea no encontrada.")
+                self.input("Presiona Enter para continuar...")
+                return
+
+            self.print(f"\n✏️ Tarea actual: [{task.project_id or 'GENERAL'}] {task.title}")
+            new_title = self.input("Nuevo texto (Enter para mantener actual): ").strip()
+            if new_title:
+                task.title = new_title
+
+            change_proj = self.input(f"¿Cambiar proyecto actual '{task.project_id or 'GENERAL'}'? (s/N): ").strip().lower()
+            if change_proj in ("s", "si", "y", "yes"):
+                new_proj = self.prompt_project_selection()
+                if new_proj:
+                    task.project_id = new_proj
+
+            self.manager.save_tasks()
+            self._sync_markdown(week)
+            self.print(f"✅ Tarea actualizada: [{task.project_id or 'GENERAL'}] {task.title}")
+            self.input("Presiona Enter para continuar...")
+        else:
+            self.print("❌ Número fuera de rango.")
             self.input("Presiona Enter para continuar...")
 
     def _action_new_topic(self, week: WeekSchedule) -> None:

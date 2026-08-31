@@ -655,6 +655,24 @@ class EntityManager:
 
         return task
 
+    def update_task(
+        self,
+        task_id: str,
+        title: Optional[str] = None,
+        project_id: Optional[str] = None
+    ) -> Optional[Task]:
+        """Actualiza título y/o proyecto de una tarea existente."""
+        task = self.tasks.get(task_id)
+        if not task:
+            return None
+        if title is not None and title.strip():
+            task.title = title.strip()
+        if project_id is not None and project_id.strip():
+            self.ensure_project(project_id.strip())
+            task.project_id = project_id.strip()
+        self.save_tasks()
+        return task
+
     def delete_task(
         self,
         task_id: str,
