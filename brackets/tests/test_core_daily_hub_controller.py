@@ -218,8 +218,10 @@ class TestCoreDailyHubController(unittest.TestCase):
         self.assertEqual(result, "exit")
 
         reloaded_week = self.entity_manager.load_week(active_week.year, active_week.week_number, reload=True)
-        matching = [tid for tid in reloaded_week.topics_task_ids if self.entity_manager.tasks[tid].title == "Definir estrategia Q3 para métricas"]
-        self.assertEqual(len(matching), 1)
+        matching_topics = [top_id for top_id in reloaded_week.topic_ids if self.entity_manager.topics[top_id].title == "Definir estrategia Q3 para métricas"]
+        self.assertEqual(len(matching_topics), 1)
+        matching_tasks = [t for t in self.entity_manager.tasks.values() if t.title == "Definir estrategia Q3 para métricas"]
+        self.assertEqual(len(matching_tasks), 0)
 
     def test_run_schedule_topic_to_today(self):
         """Simula pulsar 'a', agendar un topic existente a hoy y salir con 'q'."""

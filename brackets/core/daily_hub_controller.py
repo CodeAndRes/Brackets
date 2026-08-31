@@ -640,14 +640,6 @@ class DailyHubController:
                 year=week.year,
                 week_num=week.week_number
             )
-            task = self.manager.create_task(
-                title=text,
-                project_id=proj_id,
-                topic_id=topic.id,
-                is_week_task=True,
-                year=week.year,
-                week_num=week.week_number
-            )
             self._sync_markdown(week)
             self.print(f"✅ Topic añadido a la semana: [{topic.project_id}] {topic.title}")
             self.input("Presiona Enter para continuar...")
