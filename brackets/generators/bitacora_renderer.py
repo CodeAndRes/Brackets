@@ -78,10 +78,12 @@ class BitacoraRenderer:
             note_suffix = f" ({day.location_note})" if day.location_note else ""
             lines.append(f"## {day.location_emoji}{day.day_number}{note_suffix}")
             if day.task_ids:
+                seen_titles = set()
                 for task_id in day.task_ids:
                     task = manager.tasks.get(task_id)
-                    if not task:
+                    if not task or task.title in seen_titles:
                         continue
+                    seen_titles.add(task.title)
                     lines.append(BitacoraRenderer._format_task_line(task))
                     used_def_ids.update(BitacoraRenderer._extract_definition_ids(task.title))
             else:

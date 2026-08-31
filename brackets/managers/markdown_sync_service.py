@@ -376,13 +376,97 @@ class MarkdownSyncService:
                     # Guardar el último día donde aparece como pendiente
                     pending_task_latest_day[clean_title] = day_num
 
+    def _find_task_for_day(self, day: DaySchedule, week: WeekSchedule, title: str) -> Optional[Task]:
+        """
+        Busca inteligentemente una tarea con ese título priorizando:
+        1. Tareas asignadas a este día concreto.
+        2. Tareas en otros días de esta misma semana o en week_task_ids.
+        3. Tareas pendientes globales no resueltas (sin recurring_id).
+        Evita reutilizar tareas recurrentes o completadas de semanas/meses anteriores.
+        """
+        # 1. En este día
+        for tid in day.task_ids:
+            t = self.manager.tasks.get(tid)
+            if t and t.title == title:
+                return t
+
+        # 2. En otros días de esta semana
+        for other_day in week.days:
+            if other_day.day_number != day.day_number:
+                for tid in other_day.task_ids:
+                    t = self.manager.tasks.get(tid)
+                    if t and t.title == title:
+                        return t
+
+        # 3. En tareas de la semana
+        for tid in week.week_task_ids:
+            t = self.manager.tasks.get(tid)
+            if t and t.title == title:
+                return t
+
+        # 4. Comprobar si coincide con una tarea recurrente activa
+        # Si es una tarea recurrente, NUNCA reutilizar una tarea histórica antigua de meses atrás
+        is_recurring = any(r.title == title for r in self.manager.list_recurring_tasks())
+        if is_recurring:
+            return None
+
+        # 5. Tarea pendiente global no asignada a otra semana
+        for t in self.manager.tasks.values():
+            if t.title == title and t.is_pending:
+                return t
+
+        return None
+
+    def _reconcile_all_days(
+        self,
+        week: WeekSchedule,
+        days_dict: Dict[int, List[Tuple[bool, str]]],
+        days_meta: Dict[int, Dict[str, Optional[str]]],
+        year: int,
+        week_num: int,
+        today_str: str
+    ) -> None:
+        """
+        Reconcilia todos los días de la semana sincronizando tareas [x] y [ ],
+        evitando duplicidades entre días para una misma tarea arrastrada.
+        """
+        day_by_number: Dict[int, DaySchedule] = {d.day_number: d for d in week.days}
+
+        # Asegurar días que existan en el markdown pero no en week.days
+        for day_num, meta in days_meta.items():
+            if day_num not in day_by_number:
+                new_day = DaySchedule(
+                    day_number=day_num,
+                    location_emoji=meta.get("emoji") or "🚗",
+                    location_note=meta.get("note")
+                )
+                week.days.append(new_day)
+                day_by_number[day_num] = new_day
+
+        ordered_day_numbers = [d.day_number for d in week.days]
+
+        pending_task_latest_day: Dict[str, int] = {}
+        done_tasks_by_day: Dict[int, List[str]] = {d_num: [] for d_num in ordered_day_numbers}
+
+        for day_num in ordered_day_numbers:
+            tuples = days_dict.get(day_num, [])
+            for is_done, title in tuples:
+                clean_title = title.strip()
+                if not clean_title:
+                    continue
+                if is_done:
+                    done_tasks_by_day.setdefault(day_num, []).append(clean_title)
+                else:
+                    # Guardar el último día donde aparece como pendiente
+                    pending_task_latest_day[clean_title] = day_num
+
         # 1. Reconciliar tareas COMPLETADAS ([x])
         for day_num, done_titles in done_tasks_by_day.items():
             day = day_by_number.get(day_num)
             if not day:
                 continue
             for title in done_titles:
-                matched_task = next((t for t in self.manager.tasks.values() if t.title == title), None)
+                matched_task = self._find_task_for_day(day, week, title)
                 if not matched_task:
                     matched_task = self.manager.create_task(
                         title=title,
@@ -405,7 +489,7 @@ class MarkdownSyncService:
             if not target_day:
                 continue
 
-            matched_task = next((t for t in self.manager.tasks.values() if t.title == title), None)
+            matched_task = self._find_task_for_day(target_day, week, title)
             if not matched_task:
                 matched_task = self.manager.create_task(
                     title=title,
@@ -427,13 +511,18 @@ class MarkdownSyncService:
                         if matched_task.is_pending:
                             other_day.task_ids.remove(matched_task.id)
 
-        # 3. Deduplicar IDs en cada día preservando orden y remover de tareas semanales
+        # 3. Deduplicar IDs y títulos en cada día preservando orden y remover de tareas semanales
         for day in week.days:
-            seen = set()
+            seen_ids = set()
+            seen_titles = set()
             deduped = []
             for tid in day.task_ids:
-                if tid not in seen and tid in self.manager.tasks:
-                    seen.add(tid)
+                t = self.manager.tasks.get(tid)
+                if not t:
+                    continue
+                if tid not in seen_ids and t.title not in seen_titles:
+                    seen_ids.add(tid)
+                    seen_titles.add(t.title)
                     deduped.append(tid)
                     if tid in week.week_task_ids:
                         week.week_task_ids.remove(tid)
