@@ -270,6 +270,11 @@ class SettingsManager:
         emoji = self._location_for_day(day_key, week_number)
         return emoji, None
 
+    def get_day_location(self, target_date: datetime, week_number: Optional[int] = None) -> str:
+        """Alias para compatibilidad. Retorna el emoji para la fecha dada."""
+        emoji, _ = self.get_location_for_date(target_date, week_number)
+        return emoji
+
     def _location_for_day(self, day_key: str, week_number: Optional[int]) -> str:
         self._validate_day(day_key)
         defaults: Dict[str, str] = self.data["work_pattern"]["defaults"]

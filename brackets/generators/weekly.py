@@ -87,8 +87,13 @@ class WeeklyGenerator:
         if self.entity_manager and os.path.exists(self.entity_manager.tables_dir):
             days = []
             for d in next_week_dates:
-                loc_emoji = self.settings.get_day_location(d.day) if hasattr(self.settings, "get_day_location") else "🏠"
-                days.append(DaySchedule(day_number=d.day, location_emoji=loc_emoji, location_note=None, task_ids=[]))
+                if self.settings and hasattr(self.settings, "get_location_for_date"):
+                    loc_emoji, loc_note = self.settings.get_location_for_date(d, next_week)
+                else:
+                    from brackets.utils.legacy_utils import get_work_location
+                    loc_emoji = get_work_location(d.weekday(), next_week, d)
+                    loc_note = None
+                days.append(DaySchedule(day_number=d.day, location_emoji=loc_emoji, location_note=loc_note, task_ids=[]))
 
             new_week_schedule = WeekSchedule(
                 year=next_year,

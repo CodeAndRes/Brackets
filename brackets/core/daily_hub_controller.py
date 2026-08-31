@@ -5,6 +5,7 @@ Controlador del Hub Diario Interactivo (CLI Dashboard) para Brackets.
 
 from __future__ import annotations
 import os
+import re
 import sys
 from datetime import datetime
 from typing import Callable, Optional, List, Tuple
@@ -67,11 +68,18 @@ class DailyHubController:
         # Intentar cargar la semana actual
         week = self.manager.load_week(iso_year, iso_week)
         if not week:
-            # Si no hay semana actual cargada, buscar la última semana disponible en el manager
-            if self.manager.weeks:
+            # Si no hay semana actual en disco, buscar la más reciente en weeks_dir
+            if hasattr(self.manager, "weeks_dir") and os.path.exists(self.manager.weeks_dir):
+                week_files = sorted([f for f in os.listdir(self.manager.weeks_dir) if re.match(r'^\d{4}-W\d{2}\.yaml$', f)])
+                if week_files:
+                    last_fn = week_files[-1]
+                    m = re.match(r'^(\d{4})-W(\d{2})\.yaml$', last_fn)
+                    if m:
+                        week = self.manager.load_week(int(m.group(1)), int(m.group(2)))
+            if not week and self.manager.weeks:
                 last_key = sorted(self.manager.weeks.keys())[-1]
                 week = self.manager.weeks[last_key]
-            else:
+            elif not week:
                 return None, None
 
         if not week or not week.days:
