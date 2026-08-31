@@ -301,9 +301,8 @@ class DailyHubController:
             self.print(f"\n⚡ Fin de semana detectado: pulsa [+] para activar {day_name} {now.day} (Intervención/Guardia)")
 
         self.print("\n" + "=" * 65)
-        self.print("  [t] 📋 Tareas      [n] 📝 Notas      [p] 📁 Proyectos      [d] 📅 Día")
-        self.print("-" * 65)
-        self.print("  [0/b/Esc] Menú General                         [q] Salir")
+        self.print("  [1-9] ✅ Marcar tarea   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
+        self.print("  [d] 📅 Cambiar día      [0/b] Menú       [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -412,6 +411,13 @@ class DailyHubController:
                 if res == "exit":
                     return "exit"
                 continue
+
+            # Atajo directo: Marcar/desmarcar tarea de hoy por número (1..N)
+            if choice.isdigit() and choice != "0":
+                task_num = int(choice)
+                if 1 <= task_num <= len(ordered_task_ids):
+                    self._action_toggle_task(week, day, ordered_task_ids, target_num=task_num)
+                    continue
 
             # Atajos directos para compatibilidad y rapidez
             if choice == "c":
@@ -587,23 +593,32 @@ class DailyHubController:
             self.print("✅ Tarea añadida a las Tareas de la Semana.")
             self.input("Presiona Enter para continuar...")
 
-    def _action_toggle_task(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> None:
+    def _action_toggle_task(
+        self,
+        week: WeekSchedule,
+        day: DaySchedule,
+        ordered_task_ids: List[str],
+        target_num: Optional[int] = None
+    ) -> None:
         if not ordered_task_ids:
             self.print("❌ No hay tareas para marcar.")
             self.input("Presiona Enter para continuar...")
             return
-        num_str = self.input(f"Número de tarea (1-{len(ordered_task_ids)}): ").strip()
-        try:
-            num = int(num_str)
-            if 1 <= num <= len(ordered_task_ids):
-                target_id = ordered_task_ids[num - 1]
-                self.manager.toggle_task(target_id)
-                self._sync_markdown(week)
-            else:
-                self.print("❌ Número fuera de rango.")
+        if target_num is None:
+            num_str = self.input(f"Número de tarea (1-{len(ordered_task_ids)}): ").strip()
+            try:
+                target_num = int(num_str)
+            except ValueError:
+                self.print("❌ Ingresa un número válido.")
                 self.input("Presiona Enter para continuar...")
-        except ValueError:
-            self.print("❌ Ingresa un número válido.")
+                return
+
+        if 1 <= target_num <= len(ordered_task_ids):
+            target_id = ordered_task_ids[target_num - 1]
+            self.manager.toggle_task(target_id)
+            self._sync_markdown(week)
+        else:
+            self.print("❌ Número fuera de rango.")
             self.input("Presiona Enter para continuar...")
 
     def _action_delete_task(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> None:

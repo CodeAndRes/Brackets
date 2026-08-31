@@ -81,6 +81,28 @@ class TestCoreDailyHubController(unittest.TestCase):
         task = self.entity_manager.tasks.get("TSK-0010")
         self.assertFalse(task.is_done)  # Antes estaba done, ahora es pending
 
+    def test_run_toggle_task_by_direct_number(self):
+        """Simula pulsar directamente '1' para marcar/desmarcar la primera tarea y luego 'q' para salir."""
+        inputs = ["1", "q"]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=mock_input,
+            print_fn=self._mock_print
+        )
+        controller.active_day_number = 17
+
+        result = controller.run()
+        self.assertEqual(result, "exit")
+
+        # Verificar que la tarea TSK-0010 cambió de estado
+        task = self.entity_manager.tasks.get("TSK-0010")
+        self.assertFalse(task.is_done)  # Antes estaba done, ahora es pending
+
     def test_run_switch_day(self):
         """Simula pulsar 's', elegir día 4 (día 20) y luego 'q'."""
         inputs = ["s", "4", "q"]
