@@ -223,6 +223,34 @@ class TestMarkdownSyncService(unittest.TestCase):
         task_obj = self.manager.tasks[day29.task_ids[0]]
         self.assertEqual(task_obj.title, "Tarea de guardia el sábado")
 
+    def test_sync_week_move_task_between_days_and_mark_done(self):
+        """Verifica que mover una tarea a otro día y marcarla como [x] la quita del día original, la pone en el nuevo y la marca resuelta."""
+        with open(self.md_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # task_day24 estaba en día 24. Lo quitamos de día 24 y lo ponemos en día 25 como [x]
+        content_modified = content.replace(f"  - [ ] {self.task_day24.title}\n", "")
+        content_modified = content_modified.replace(
+            "## 🚗25",
+            f"## 🚗25\n  - [x] {self.task_day24.title}"
+        )
+        with open(self.md_path, "w", encoding="utf-8") as f:
+            f.write(content_modified)
+
+        synced = self.sync_service.sync_week_from_markdown(self.md_path, 2026, 35)
+        self.assertTrue(synced)
+
+        day24 = next(d for d in self.week.days if d.day_number == 24)
+        day25 = next(d for d in self.week.days if d.day_number == 25)
+
+        # Debe estar en día 25 y NO en día 24
+        self.assertIn(self.task_day24.id, day25.task_ids)
+        self.assertNotIn(self.task_day24.id, day24.task_ids)
+
+        # Debe estar marcada como done
+        self.assertTrue(self.task_day24.is_done)
+        self.assertEqual(self.task_day24.status, "done")
+
 
 if __name__ == "__main__":
     unittest.main()

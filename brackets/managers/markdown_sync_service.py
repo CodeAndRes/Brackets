@@ -460,7 +460,9 @@ class MarkdownSyncService:
                     # Guardar el último día donde aparece como pendiente
                     pending_task_latest_day[clean_title] = day_num
 
-        # 1. Reconciliar tareas COMPLETADAS ([x])
+        new_day_task_ids: Dict[int, List[str]] = {d_num: [] for d_num in ordered_day_numbers}
+
+        # 1. Reconciliar tareas COMPLETADAS ([x]) por día
         for day_num, done_titles in done_tasks_by_day.items():
             day = day_by_number.get(day_num)
             if not day:
@@ -480,8 +482,7 @@ class MarkdownSyncService:
                     if not matched_task.completed_at:
                         matched_task.completed_at = today_str
 
-                if matched_task.id not in day.task_ids:
-                    day.task_ids.append(matched_task.id)
+                new_day_task_ids[day_num].append(matched_task.id)
 
         # 2. Reconciliar tareas PENDIENTES ([ ])
         for title, latest_day_num in pending_task_latest_day.items():
@@ -498,25 +499,19 @@ class MarkdownSyncService:
                     day_number=latest_day_num,
                     status="pending"
                 )
+            else:
+                if matched_task.is_done:
+                    matched_task.status = "pending"
+                    matched_task.completed_at = None
 
-            # Asegurar que esté en el latest_day
-            if matched_task.id not in target_day.task_ids:
-                target_day.task_ids.append(matched_task.id)
+            new_day_task_ids[latest_day_num].append(matched_task.id)
 
-            # ELIMINAR de todos los días distintos a latest_day_num para evitar duplicidades
-            for d_num in ordered_day_numbers:
-                if d_num != latest_day_num:
-                    other_day = day_by_number.get(d_num)
-                    if other_day and matched_task.id in other_day.task_ids:
-                        if matched_task.is_pending:
-                            other_day.task_ids.remove(matched_task.id)
-
-        # 3. Deduplicar IDs y títulos en cada día preservando orden y remover de tareas semanales
+        # 3. Asignar los task_ids a cada día, deduplicar preservando orden y remover de tareas semanales
         for day in week.days:
             seen_ids = set()
             seen_titles = set()
             deduped = []
-            for tid in day.task_ids:
+            for tid in new_day_task_ids.get(day.day_number, []):
                 t = self.manager.tasks.get(tid)
                 if not t:
                     continue
