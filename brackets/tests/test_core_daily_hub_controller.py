@@ -405,6 +405,30 @@ class TestCoreDailyHubController(unittest.TestCase):
         rendered = BitacoraRenderer.render_week(week, self.entity_manager)
         self.assertIn("<!-- Definiciones -->", rendered)
 
+    def test_run_launch_pomodoro_from_tasks_menu(self):
+        """Simula pulsar 't' (tareas), '12' (Pomodoro timer), '0' (salir del timer) y 'q' (salir del hub)."""
+        inputs = [
+            "t",   # Submenú tareas
+            "12",  # Opción 12: Pomodoro
+            "0",   # Opción 0 del Pomodoro: Salir del timer
+            "q"    # Salir del Hub
+        ]
+
+        def mock_input(prompt=""):
+            return inputs.pop(0)
+
+        controller = DailyHubController(
+            vault_root=self.tmp_dir,
+            entity_manager=self.entity_manager,
+            input_fn=mock_input,
+            print_fn=self._mock_print
+        )
+
+        result = controller.run()
+        self.assertEqual(result, "exit")
+        output_text = "\n".join(self.output_lines)
+        self.assertIn("POMODORO TIMER", output_text)
+
 
 if __name__ == "__main__":
     unittest.main()

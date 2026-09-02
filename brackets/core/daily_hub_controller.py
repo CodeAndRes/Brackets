@@ -302,7 +302,7 @@ class DailyHubController:
 
         self.print("\n" + "=" * 65)
         self.print("  [1-9] ✅ Marcar tarea   [t] 📋 Tareas   [n] 📝 Notas   [p] 📁 Proyectos")
-        self.print("  [d] 📅 Cambiar día      [l] 🔗 Definiciones   [y] 🔄 Sync   [0/b] Menú   [q] Salir")
+        self.print("  [d] 📅 Cambiar día      [l] 🔗 Defs     [k] 🍅 Pomodoro [y] 🔄 Sync   [0/b] Menú   [q] Salir")
         self.print("=" * 65)
 
         return ordered_task_ids
@@ -355,6 +355,22 @@ class DailyHubController:
             self.print(f"❌ Error al sincronizar semana: {ex}")
 
         self.input("\nPresiona Enter para continuar...")
+
+    def _action_run_pomodoro(self, week: WeekSchedule, day: DaySchedule) -> None:
+        """Inicia el temporizador Pomodoro con las tareas de la jornada activa."""
+        from brackets.modules.pomodoro_timer import run_pomodoro_standalone
+        run_pomodoro_standalone(
+            base_dir=self.vault_root,
+            event_log=getattr(self, "_event_log", None),
+            entity_manager=self.manager,
+            current_week=week,
+            current_day=day,
+            input_fn=self.input,
+            print_fn=self.print,
+        )
+        reloaded_week = self.manager.load_week(week.year, week.week_number, reload=True)
+        if reloaded_week:
+            self._sync_markdown(reloaded_week)
 
     def run(self) -> str:
         """Bucle principal de interacción del Hub Diario. Retorna 'menu' o 'exit'."""
@@ -479,6 +495,10 @@ class DailyHubController:
                     return res
                 continue
 
+            if choice in ("k", "pomo", "pomodoro"):
+                self._action_run_pomodoro(week, day)
+                continue
+
     def manage_tasks_menu(self, week: WeekSchedule, day: DaySchedule, ordered_task_ids: List[str]) -> Optional[str]:
         """Subpantalla interactiva de gestión de tareas con MenuNavigator (Opción B)."""
         options = [
@@ -493,6 +513,7 @@ class DailyHubController:
             MenuOption("9", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
             MenuOption("10", "🔄 Sincronizar Semana Actual (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
             MenuOption("11", "🔗 Crear / Gestionar Definiciones", "manage_defs", aliases=["l", "f", "def", "link"]),
+            MenuOption("12", "🍅 Iniciar Pomodoro Timer", "run_pomodoro", aliases=["k", "pomo"]),
         ]
 
         title = f"📋 G E S T I Ó N  D E  T A R E A S  (Día {day.day_number})"
@@ -553,6 +574,9 @@ class DailyHubController:
                     res = self.manage_definitions_menu(week)
                     if res in ("menu", "exit"):
                         return res
+                    return "refresh"
+                elif opt.action_id == "run_pomodoro":
+                    self._action_run_pomodoro(week, day)
                     return "refresh"
 
     def manage_day_menu(self, week: WeekSchedule) -> Optional[str]:
