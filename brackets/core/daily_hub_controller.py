@@ -323,35 +323,37 @@ class DailyHubController:
                 self._sync_markdown(week)
 
     def _action_sync_markdown_to_yaml(self, week: WeekSchedule) -> None:
-        """Sincroniza todos los archivos Markdown de bitácoras hacia la base de datos relacional YAML."""
+        """Sincroniza el archivo Markdown de la semana activa hacia la base de datos relacional YAML."""
+        from brackets.utils.legacy_utils import generate_filename
         from brackets.managers.markdown_sync_service import MarkdownSyncService
-        self.print("\n🔄 Sincronizando Markdown (.md) ➔ Base de datos YAML...")
+
+        self.print(f"\n🔄 Sincronizando Markdown (.md) ➔ Base de datos YAML (Semana {week.week_number:02d})...")
+        md_path = generate_filename(
+            year=week.year,
+            month=week.month,
+            week=week.week_number,
+            directory=self.vault_root
+        )
+
+        if not os.path.exists(md_path):
+            self.print(f"⚠️ No se encontró el archivo de la semana: {os.path.basename(md_path)}")
+            self.input("\nPresiona Enter para continuar...")
+            return
+
         service = MarkdownSyncService(self.manager, self.vault_root)
+        try:
+            synced = service.sync_week_from_markdown(md_path, week.year, week.week_number)
+            reloaded_week = self.manager.load_week(week.year, week.week_number, reload=True)
+            if reloaded_week:
+                self._sync_markdown(reloaded_week)
 
-        synced_files: List[str] = []
-        if os.path.exists(self.vault_root):
-            for fname in sorted(os.listdir(self.vault_root)):
-                m = re.match(r'^\[(\d{4})\]\[\d{2}\]Week(\d{2})\.md$', fname)
-                if m:
-                    y = int(m.group(1))
-                    w = int(m.group(2))
-                    full_path = os.path.join(self.vault_root, fname)
-                    try:
-                        if service.sync_week_from_markdown(full_path, y, w):
-                            synced_files.append(fname)
-                            self.print(f"  ✓ {fname} sincronizado")
-                    except Exception as ex:
-                        self.print(f"  ⚠️ Error al sincronizar {fname}: {ex}")
+            if synced:
+                self.print(f"✅ Semana {week.week_number:02d} ({os.path.basename(md_path)}) sincronizada con éxito.")
+            else:
+                self.print("ℹ️ No se detectaron cambios pendientes en la semana actual.")
+        except Exception as ex:
+            self.print(f"❌ Error al sincronizar semana: {ex}")
 
-        # Recargar la semana activa y sincronizar markdown limpio
-        reloaded_week = self.manager.load_week(week.year, week.week_number, reload=True)
-        if reloaded_week:
-            self._sync_markdown(reloaded_week)
-
-        if synced_files:
-            self.print(f"\n✅ {len(synced_files)} archivo(s) sincronizado(s) con la base de datos YAML.")
-        else:
-            self.print("\nℹ️ No se detectaron cambios pendientes en los archivos Markdown.")
         self.input("\nPresiona Enter para continuar...")
 
     def run(self) -> str:
@@ -489,7 +491,7 @@ class DailyHubController:
             MenuOption("7", "➡️  Agendar Tarea Semanal / Topic a HOY", "schedule_topic", aliases=["a"]),
             MenuOption("8", "✏️  Editar Tarea (texto / proyecto)", "edit_task", aliases=["e"]),
             MenuOption("9", "🔄 Tareas Recurrentes y Reuniones", "recurring_menu", aliases=["r"]),
-            MenuOption("10", "🔄 Sincronizar Markdown (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
+            MenuOption("10", "🔄 Sincronizar Semana Actual (.md ➔ YAML)", "sync_markdown", aliases=["y", "sync"]),
             MenuOption("11", "🔗 Crear / Gestionar Definiciones", "manage_defs", aliases=["l", "f", "def", "link"]),
         ]
 

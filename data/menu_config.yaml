@@ -80,6 +80,12 @@ menus:
         command: open_daily_hub
         context_tag: bitacoras_enabled
 
+      - id: sync_markdown
+        label: "Sincronizacion Markdown (.md -> YAML)"
+        keys: ["y", "sync"]
+        action: exec
+        command: open_sync_markdown
+
       - id: quick_new_weekly
         label: "Nueva bitacora semanal (atajo)"
         keys: ["w"]

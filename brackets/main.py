@@ -7,7 +7,8 @@ Proporciona un menú interactivo para todas las funciones.
 
 import sys
 import os
-from typing import Dict, Callable, Optional
+import re
+from typing import Dict, Callable, Optional, Any, List
 from datetime import datetime
 
 # Configurar UTF-8 para Windows
@@ -155,6 +156,8 @@ class BitacoraManager:
             self.handle_configuration()
         elif command == "open_help":
             self.show_help()
+        elif command in ("open_sync_markdown", "sync_markdown"):
+            self.handle_sync_markdown_menu()
         elif command == "open_daily_hub":
             if self.bitacoras_enabled:
                 result = self.handle_daily_hub()
@@ -584,6 +587,145 @@ class BitacoraManager:
     def handle_sync_yaml(self) -> None:
         """Maneja la sincronización del YAML con el repositorio."""
         self._get_sync_yaml_controller().run()
+
+    def handle_sync_markdown_menu(self) -> None:
+        """Submenú de sincronización Markdown -> YAML desde el Menú Principal."""
+        from brackets.core.menu_navigator import MenuNavigator, MenuOption
+        from brackets.managers.markdown_sync_service import MarkdownSyncService
+
+        options = [
+            MenuOption("1", "📅 Sincronizar una semana específica", "sync_specific_week", aliases=["s", "1"]),
+            MenuOption("2", "🌐 Sincronizar TODAS las semanas del Vault", "sync_all_weeks", aliases=["t", "all", "2"]),
+        ]
+
+        navigator = MenuNavigator(
+            title="🔄 S I N C R O N I Z A C I Ó N  M A R K D O W N  ➔  Y A M L",
+            options=options,
+            show_back=True,
+            show_main_menu=False,
+            print_fn=print,
+            input_fn=input,
+            read_single_key_fn=read_single_key,
+            clear_screen_fn=clear_screen,
+        )
+
+        while True:
+            nav_status, opt = navigator.prompt()
+            if nav_status in ("back", "exit"):
+                break
+
+            if opt:
+                hub = self._get_daily_hub_controller()
+                service = MarkdownSyncService(hub.manager, self.vault_root)
+
+                if opt.action_id == "sync_specific_week":
+                    self._sync_specific_week_interactive(service, hub)
+                elif opt.action_id == "sync_all_weeks":
+                    self._sync_all_weeks_interactive(service, hub)
+
+    def _sync_specific_week_interactive(self, service: Any, hub: Any) -> None:
+        from datetime import datetime
+        clear_screen()
+        print("=" * 65)
+        print("📅 SINCRONIZAR SEMANA ESPECÍFICA (.md ➔ YAML)")
+        print("=" * 65)
+
+        available_weeks = []
+        if os.path.exists(self.vault_root):
+            for fname in sorted(os.listdir(self.vault_root)):
+                m = re.match(r'^\[(\d{4})\]\[(\d{2})\]Week(\d{2})\.md$', fname)
+                if m:
+                    available_weeks.append((int(m.group(1)), int(m.group(2)), int(m.group(3)), fname))
+
+        if not available_weeks:
+            print("⚠️ No se encontraron archivos de bitácoras semanales en el vault.")
+            input("\nPresiona Enter para continuar...")
+            return
+
+        print("Semanas disponibles:")
+        recent_subset = available_weeks[-10:]
+        for idx, (y, m, w, fname) in enumerate(recent_subset, start=1):
+            print(f"  [{idx}] {fname} ({y}-W{w:02d})")
+
+        choice = input(f"\nSelecciona número de la lista (1-{len(recent_subset)}) o escribe el número de semana (ej: 36) [Enter para cancelar]: ").strip()
+        if not choice:
+            return
+
+        target_file = None
+        target_year = datetime.now().year
+        target_week_num = None
+
+        try:
+            val = int(choice)
+            if 1 <= val <= len(recent_subset):
+                y, m, w, fname = recent_subset[val - 1]
+                target_year = y
+                target_week_num = w
+                target_file = os.path.join(self.vault_root, fname)
+            else:
+                target_week_num = val
+                match_wk = next(((y, m, w, f) for (y, m, w, f) in available_weeks if w == target_week_num), None)
+                if match_wk:
+                    target_year, _, _, fname = match_wk
+                    target_file = os.path.join(self.vault_root, fname)
+        except ValueError:
+            print("❌ Entrada inválida.")
+            input("\nPresiona Enter para continuar...")
+            return
+
+        if not target_file or not os.path.exists(target_file):
+            print(f"❌ No se encontró el archivo para la semana {target_week_num}.")
+            input("\nPresiona Enter para continuar...")
+            return
+
+        print(f"\n🔄 Sincronizando {os.path.basename(target_file)}...")
+        try:
+            synced = service.sync_week_from_markdown(target_file, target_year, target_week_num)
+            reloaded_week = hub.manager.load_week(target_year, target_week_num, reload=True)
+            if reloaded_week:
+                hub._sync_markdown(reloaded_week)
+            if synced:
+                print(f"✅ Semana {target_week_num:02d} ({os.path.basename(target_file)}) sincronizada con éxito.")
+            else:
+                print("ℹ️ No se detectaron cambios pendientes.")
+        except Exception as ex:
+            print(f"❌ Error al sincronizar semana: {ex}")
+
+        input("\nPresiona Enter para continuar...")
+
+    def _sync_all_weeks_interactive(self, service: Any, hub: Any) -> None:
+        clear_screen()
+        print("=" * 65)
+        print("🌐 SINCRONIZAR TODAS LAS SEMANAS (.md ➔ YAML)")
+        print("=" * 65)
+        confirm = input("¿Deseas sincronizar todas las bitácoras semanales del Vault? (s/N): ").strip().lower()
+        if confirm not in ("s", "si", "y", "yes"):
+            print("Operación cancelada.")
+            input("\nPresiona Enter para continuar...")
+            return
+
+        print("\n🔄 Escaneando y sincronizando todas las semanas...")
+        synced_files: List[str] = []
+        if os.path.exists(self.vault_root):
+            for fname in sorted(os.listdir(self.vault_root)):
+                m = re.match(r'^\[(\d{4})\]\[\d{2}\]Week(\d{2})\.md$', fname)
+                if m:
+                    y = int(m.group(1))
+                    w = int(m.group(2))
+                    full_path = os.path.join(self.vault_root, fname)
+                    try:
+                        if service.sync_week_from_markdown(full_path, y, w):
+                            synced_files.append(fname)
+                            print(f"  ✓ {fname} sincronizado")
+                    except Exception as ex:
+                        print(f"  ⚠️ Error al sincronizar {fname}: {ex}")
+
+        if synced_files:
+            print(f"\n✅ {len(synced_files)} archivo(s) semanal(es) sincronizado(s) con la base de datos YAML.")
+        else:
+            print("\nℹ️ No se detectaron cambios pendientes en los archivos Markdown.")
+
+        input("\nPresiona Enter para continuar...")
 
     def handle_weekly_creation(self) -> None:
         """Maneja la creación de bitácora semanal."""

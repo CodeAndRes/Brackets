@@ -336,7 +336,7 @@ class TestCoreDailyHubController(unittest.TestCase):
         result = controller.run()
         self.assertEqual(result, "exit")
         output_text = "\n".join(self.output_lines)
-        self.assertIn("Sincronizando Markdown (.md) ➔ Base de datos YAML...", output_text)
+        self.assertIn("Sincronizando Markdown (.md) ➔ Base de datos YAML", output_text)
 
     def test_run_edit_task(self):
         """Simula pulsar 't' (menú de tareas), '8' (editar tarea), seleccionar '1', escribir nuevo texto y salir con 'q'."""

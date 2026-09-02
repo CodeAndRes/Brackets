@@ -46,6 +46,7 @@ from brackets.tests.test_core_daily_hub_controller import TestCoreDailyHubContro
 from brackets.tests.test_core_project_backlog_controller import TestCoreProjectBacklogController
 from brackets.tests.test_core_note_crud_controller import TestCoreNoteCrudController
 from brackets.tests.test_markdown_sync_service import TestMarkdownSyncService
+from brackets.tests.test_main_sync_markdown import TestMainSyncMarkdown
 from brackets.tests.test_topics_and_week_tasks import TestTopicsAndWeekTasks
 from brackets.tests.test_recurring_tasks import TestRecurringTasks
 from brackets.tests.test_file_rename_manager import test_file_rename_manager
@@ -293,6 +294,17 @@ def run_all_tests():
     sync_failed = len(sync_result.failures) + len(sync_result.errors)
     total_passed += sync_passed
     total_failed += sync_failed
+
+    # Tests de Sincronización Markdown desde Menú Principal
+    print("\n" + "=" * 60)
+    print("🧪 MÓDULO: MainSyncMarkdown (Sincronización desde Menú Principal: Específica y Total)")
+    print("=" * 60)
+    msync_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestMainSyncMarkdown)
+    msync_result = unittest.TextTestRunner(verbosity=1).run(msync_suite)
+    msync_passed = msync_result.testsRun - len(msync_result.failures) - len(msync_result.errors)
+    msync_failed = len(msync_result.failures) + len(msync_result.errors)
+    total_passed += msync_passed
+    total_failed += msync_failed
 
     # Tests de Topics, Week Tasks y Jerarquía Relacional
     print("\n" + "=" * 60)
